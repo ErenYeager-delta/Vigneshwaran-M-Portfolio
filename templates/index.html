@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigneshwaran M | Portfolio</title>
+    <link rel="icon-box" href="My Photo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">DATA<span> SCIENTIST</span>|DEVELO<span>PER</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h3>Hello, I'm</h3>
+            <h1>VIGNESHWARAN M</h1>
+            <p>Data Scientist <span class="divider">|</span> Python Full Stack Developer</p>
+            <div class="hero-btns">
+                <a href="#projects" class="btn primary">View My Work</a>
+                <a href="#contact" class="btn secondary">Contact Me</a>
+            </div>
+        </div>
+        <div class="hero-shapes">
+            <div class="shape s1"></div>
+            <div class="shape s2"></div>
+        </div>
+    </section>
+
+    <section id="skills" class="skills">
+        <h2 class="section-title">My Expertise</h2>
+        <div class="skills-container">
+            <div class="skill-card">
+                <div class="icon-box"><i class="fas fa-chart-line"></i></div>
+                <h3>Python for Data Science</h3>
+                <ul>
+                    <li>Machine Learning (Scikit-Learn)</li>
+                    <li>Deep Learning (TensorFlow/PyTorch)</li>
+                    <li>Data Visualization (Matplotlib, Seaborn)</li>
+                </ul>
+            </div>
+            <div class="skill-card">
+                <div class="icon-box"><i class="fab fa-python"></i></div>
+                <h3>Python Full Stack</h3>
+                <ul>
+                    <li>Backend: Django, Flask</li>
+                    <li>Frontend: HTML, CSS</li>
+                    <li>Databases: MySQL, MongoDB</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="projects">
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="project-grid">
+
+            <div class="project-card">
+                <div class="project-img ds-gradient"></div>
+                <div class="project-info">
+                    <span class="tag">Data Science</span>
+                    <h3>Predictive Analytics Dashboard</h3>
+                    <p>AI model predicting market trends with 85% accuracy using LSTM networks.</p>
+                    <div class="tech-stack">
+                        <span>Python</span>
+                        <span>TensorFlow</span>
+                        <span>Pandas</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-img fs-gradient"></div>
+                <div class="project-info">
+                    <span class="tag">Full Stack</span>
+                    <h3>E-Commerce Engine</h3>
+                    <p>Scalable Django-React application with real-time inventory management.</p>
+                    <div class="tech-stack">
+                        <span>Django</span>
+                        <span>React</span>
+                        <span>PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-img ai-gradient"></div>
+                <div class="project-info">
+                    <span class="tag">AI Integration</span>
+                    <h3>Natural Language Search</h3>
+                    <p>A smart search engine for technical documentation using OpenAI.</p>
+                    <div class="tech-stack">
+                        <span>FastAPI</span>
+                        <span>LangChain</span>
+                        <span>Vector DB</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="contact-card">
+            <h2>Let's Work Together</h2>
+            <p>Ready to discuss your next Data Science or Web project?</p>
+            <a href="mailto:1771vigneshwaran@gmail.com?subject=Interview%20Invitation
+                &body=Dear%20Vigneshwaran,%0A%0AWe%20would%20like%20to%20invite%20you%20for%20an%20interview%20for%20the%20[Job%20Title]%20role%20on%20[Date]%20at%20[Time]%20at%20[Location].%0A%0AKindly%20confirm%20your%20attendance%20by%20replying%20to%20this%20email." class="btn primary">Send Message</a>
+
+            <!-- Phone Number Section (NEW) -->
+            <div class="phone-section">
+                <button id="viewNumberBtn" class="btn-phone">
+                    <i class="fas fa-phone"></i> +91 83*****609 (Click to View Full Number)
+                </button>
+                <p id="phoneNumber" class="full-phone hidden"></p>
+            </div>
+
+            <div class="socials">
+                <a href="https://www.linkedin.com/in/vigneshwaran-manimaran-b58aa3155"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/ErenYeager-delta?tab=projects"><i class="fab fa-github"></i></a>
+                <a href="https://www.instagram.com/vijay_vignesh_071/"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Verification Modal (NEW) -->
+    <div id="verificationModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Verify to View Contact Number</h2>
+            <p class="modal-subtitle">Please provide your details for verification</p>
+
+            <!-- User Information Box -->
+            <div id="infoBox" class="form-box">
+                <div class="input-group">
+                    <label for="userName">Full Name</label>
+                    <input type="text" id="userName" placeholder="Enter your name" required>
+                </div>
+                <div class="input-group">
+                    <label for="userEmail">Email Address</label>
+                    <input type="email" id="userEmail" placeholder="your.email@gmail.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="userMobile">Mobile Number</label>
+                    <input type="tel" id="userMobile" placeholder="+91 XXXXXXXXXX" required>
+                </div>
+                <button onclick="sendOTP()" class="btn-modal">Send OTP</button>
+                <p id="otpMsg" class="status-msg"></p>
+            </div>
+
+            <!-- OTP Verification Box -->
+            <div id="otpBox" class="form-box hidden">
+                <div class="input-group">
+                    <label for="otpInput">Enter OTP</label>
+                    <input type="text" id="otpInput" placeholder="6-digit OTP" maxlength="6" required>
+                </div>
+                <button id="verifyOtpBtn" class="btn-modal">Verify OTP</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Vigneshwaran M @ All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
