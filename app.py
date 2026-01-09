@@ -7,7 +7,14 @@ import os, random, smtplib, time
 # Load environment variables from .env
 load_dotenv()
 
-app = Flask(__name__)
+# Define paths explicitly
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
+app = Flask(__name__,
+            template_folder=TEMPLATE_DIR,
+            static_folder=STATIC_DIR)
 CORS(app)
 
 # --- MongoDB Connection ---
@@ -62,8 +69,8 @@ Vigneshwaran M
 
         return jsonify({"message": "OTP sent successfully to your email!"})
     except Exception as e:
-        print(f"Error sending email: {e}")
-        return jsonify({"message": "Failed to send OTP.  Please check your email settings. "}), 500
+        print(f"Error sending email:  {e}")
+        return jsonify({"message": "Failed to send OTP. Please check your email settings."}), 500
 
 
 @app.route("/verify-otp", methods=["POST"])
@@ -77,19 +84,19 @@ def verify_otp():
     # Check if OTP exists and is not expired (5 minutes = 300 seconds)
     record = otp_store.get(email)
     if not record:
-        return jsonify({"success": False, "error": "OTP not found.  Please request a new OTP."}), 400
+        return jsonify({"success": False, "error": "OTP not found. Please request a new OTP."}), 400
 
     if (time.time() - record["time"]) > 300:
         del otp_store[email]
-        return jsonify({"success":  False, "error": "OTP has expired. Please request a new one."}), 400
+        return jsonify({"success": False, "error": "OTP has expired.  Please request a new one."}), 400
 
     # Verify OTP
     if user_otp != record["otp"]:
-        return jsonify({"success": False, "error": "Invalid OTP. Please try again."}), 400
+        return jsonify({"success":  False, "error": "Invalid OTP. Please try again."}), 400
 
     # Check for duplicate mobile numbers in MongoDB
     if users.find_one({"mobile":  mobile}):
-        return jsonify({"success": False, "error": "This mobile number is already registered. "}), 400
+        return jsonify({"success": False, "error": "This mobile number is already registered."}), 400
 
     # Save verified user to MongoDB
     try:
@@ -103,13 +110,13 @@ def verify_otp():
         # Remove OTP from temporary storage
         del otp_store[email]
 
-        return jsonify({"success": True})
+        return jsonify({"success":  True})
     except Exception as e:
         print(f"Database error: {e}")
-        return jsonify({"success": False, "error": "Database error.  Please try again. "}), 500
+        return jsonify({"success": False, "error": "Database error.  Please try again."}), 500
 
 
 if __name__ == "__main__":
     # Use environment variable PORT for deployment, default to 5000 for local testing
-    port = int(os. getenv("PORT", 5000))
+    port = int(os.getenv("PORT", 5000))
     app.run(debug=False, host='0.0.0.0', port=port)
