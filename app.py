@@ -20,9 +20,13 @@ CORS(app)
 
 # --- MongoDB Connection ---
 try:
-    # Use the MONGO_URI from your .env file
-    client = MongoClient(os.getenv("MONGO_URI"), serverSelectionTimeoutMS=5000)
-    client.server_info()  # Test connection
+    # We combine the MONGO_URI with the certifi certificate helper in one line
+    uri = os.getenv("MONGO_URI")
+    client = MongoClient(uri, tlsCAFile=certifi.where(), serverSelectionTimeoutMS=5000)
+    
+    # Test connection
+    client.server_info()  
+    
     db = client["otpDB"]
     users = db["verified_users"]
     print("✅ MongoDB connected successfully")
@@ -146,4 +150,5 @@ if __name__ == "__main__":
 
     print(f"🚀 Starting Flask app on port {port}")
     app.run(debug=debug_mode, host='0.0.0.0', port=port)
+
 
