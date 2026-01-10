@@ -3,6 +3,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os, random, time
+import os, random, time, certifi  # Add certifi here
 
 # Load environment variables from .env
 load_dotenv()
@@ -145,3 +146,4 @@ if __name__ == "__main__":
 
     print(f"🚀 Starting Flask app on port {port}")
     app.run(debug=debug_mode, host='0.0.0.0', port=port)
+
