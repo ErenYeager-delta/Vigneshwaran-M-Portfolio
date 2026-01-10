@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vigneshwaran M | Portfolio</title>
-
-    <img src="{{ url_for('static', filename='My Photo.png') }}" alt="Vigneshwaran">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <title>Vigneshwaran M | Portfolio</title>
+
+    <link rel="icon" href="static/My Photo.png" type="image/png">
+    <!-- <link rel="icon" href="{{ url_for('static', filename='My Photo.png') }}" type="image/png"> -->
+
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link rel="stylesheet" href="static/style.css">
 
 </head>
 <body>
@@ -118,10 +120,9 @@
         <div class="contact-card">
             <h2>Let's Work Together</h2>
             <p>Ready to discuss your next Data Science or Web project?</p>
-            <a href="mailto:1771vigneshwaran@gmail.com?subject=Interview%20Invitation
-                &body=Dear%20Vigneshwaran,%0A%0AWe%20would%20like%20to%20invite%20you%20for%20an%20interview%20for%20the%20[Job%20Title]%20role%20on%20[Date]%20at%20[Time]%20at%20[Location].%0A%0AKindly%20confirm%20your%20attendance%20by%20replying%20to%20this%20email." class="btn primary">Send Message</a>
+            <a href="mailto:1771vigneshwaran@gmail.com?subject=Interview%20Invitation&body=Dear%20Vigneshwaran,%0A%0AWe%20would%20like%20to%20invite%20you%20for%20an%20interview%20for%20the%20[Job%20Title]%20role%20on%20[Date]%20at%20[Time]%20at%20[Location].%0A%0AKindly%20confirm%20your%20attendance%20by%20replying%20to%20this%20email." class="btn primary">Send Message</a>
 
-            <!-- Phone Number Section (NEW) -->
+            <!-- Phone Number Section -->
             <div class="phone-section">
                 <button id="viewNumberBtn" class="btn-phone">
                     <i class="fas fa-phone"></i> +91 83*****609 (Click to View Full Number)
@@ -137,7 +138,7 @@
         </div>
     </section>
 
-    <!-- Verification Modal (NEW) -->
+    <!-- Verification Modal -->
     <div id="verificationModal" class="modal hidden">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -158,7 +159,7 @@
                     <label for="userMobile">Mobile Number</label>
                     <input type="tel" id="userMobile" placeholder="+91 XXXXXXXXXX" required>
                 </div>
-                <button onclick="sendOTP()" class="btn-modal">Send OTP</button>
+                <button id="sendOtpBtn" class="btn-modal">Send OTP</button>
                 <p id="otpMsg" class="status-msg"></p>
             </div>
 
@@ -177,6 +178,10 @@
         <p>&copy; 2024 Vigneshwaran M @ All Rights Reserved.</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- <script src="{{ url_for('static', filename='script.js') }}"></script> -->
+
+    <script src="static/script.js"></script>
 </body>
 </html>
