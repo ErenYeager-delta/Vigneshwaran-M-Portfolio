@@ -1,0 +1,115 @@
+"""
+Public routes — portfolio home page and health check.
+All data rendered server-side (backend-heavy).
+"""
+
+import json
+import os
+from flask import Blueprint, render_template, jsonify, make_response
+from app.extensions import cache
+from app.models import (
+    Certificate, Platform, Project, Resume, AppointmentLetter,
+    Incentive, OfferLetter, PaySlip, CompanyExperience
+)
+
+public_bp = Blueprint("public", __name__)
+
+# Site URL — set SITE_URL env var on Render to your custom domain
+_SITE_URL = os.getenv("SITE_URL", "https://vigneshwaranm.onrender.com").rstrip("/")
+
+
+@public_bp.route("/")
+@cache.cached(timeout=60)
+def home():
+    """Render the portfolio page with DB-driven data."""
+    certificates = Certificate.find_active()
+    projects = Project.find_visible()
+    platforms = Platform.find_visible()
+    active_resume = Resume.find_active()
+
+    return render_template(
+        "index.html",
+        certificates=certificates,
+        projects=projects,
+        platforms=platforms,
+        has_resume=active_resume is not None,
+    )
+
+
+@public_bp.route("/experience")
+@cache.cached(timeout=60)
+def experience():
+    """Render the professional experience landing page."""
+    companies = CompanyExperience.find_all_ordered()
+
+    enriched_companies = []
+    json_data = []
+
+    for c in companies:
+        slug = c["slug"]
+        c_dict = dict(c)
+        c_dict["appointment_letter"] = AppointmentLetter.find_by_company(slug)
+        c_dict["offer_letter"] = OfferLetter.find_by_company(slug)
+        c_dict["pay_slip"] = PaySlip.find_by_company(slug)
+        c_dict["incentives"] = Incentive.find_active_by_company(slug)
+        enriched_companies.append(c_dict)
+
+        json_data.append({
+            "name": c.get("name"),
+            "slug": c.get("slug"),
+            "metric_type": c.get("metric_type"),
+            "months": c.get("months", []),
+            "products": c.get("products", [])
+        })
+
+    company_data_json = json.dumps(json_data)
+
+    return render_template(
+        "experience.html",
+        companies=enriched_companies,
+        company_data_json=company_data_json
+    )
+
+
+@public_bp.route("/ping")
+def ping():
+    """Health check for UptimeRobot / monitoring."""
+    return jsonify({"status": "healthy", "version": "2.0"})
+
+
+@public_bp.route("/sitemap.xml")
+def sitemap():
+    """Dynamic XML sitemap — consumed by Google Search Console."""
+    pages = [
+        (_SITE_URL + "/",           "1.0", "weekly"),
+        (_SITE_URL + "/experience", "0.9", "monthly"),
+    ]
+    xml_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+    for url, priority, freq in pages:
+        xml_lines.append(
+            f"  <url>\n"
+            f"    <loc>{url}</loc>\n"
+            f"    <priority>{priority}</priority>\n"
+            f"    <changefreq>{freq}</changefreq>\n"
+            f"  </url>"
+        )
+    xml_lines.append("</urlset>")
+    response = make_response("\n".join(xml_lines))
+    response.headers["Content-Type"] = "application/xml"
+    return response
+
+
+@public_bp.route("/robots.txt")
+def robots_txt():
+    """robots.txt — instructs search crawlers what to allow / disallow."""
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /admin\n"
+        "Disallow: /vignesh-secret-2025\n"
+        f"Sitemap: {_SITE_URL}/sitemap.xml\n"
+    )
+    return content, 200, {"Content-Type": "text/plain; charset=utf-8"}

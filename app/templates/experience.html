@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block title %}Experience & Sales Analytics — Vigneshwaran M | Pharma Field Sales Officer{% endblock %}
+{% block meta_description %}Detailed month-wise pharmaceutical sales targets, achievements, and product analytics for Vigneshwaran M's career at Walter Bushnell Pharma and Integrace Pharma, Madurai.{% endblock %}
+{% block canonical_url %}https://vigneshwaranm.onrender.com/experience{% endblock %}
+{% block og_title %}Pharma Sales Analytics — Vigneshwaran M{% endblock %}
+{% block og_description %}Interactive sales vs. target graphs, product portfolio, and verified corporate documents from Walter Bushnell Pharma and Integrace Pharma.{% endblock %}
+{% block og_url %}https://vigneshwaranm.onrender.com/experience{% endblock %}
+{% block twitter_title %}Pharma Sales Analytics — Vigneshwaran M{% endblock %}
+{% block twitter_description %}Month-wise sales performance dashboard for pharmaceutical field sales roles in Madurai, India.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/experience.css') }}">
+{% endblock %}
+
+{% block content %}
+<nav class="navbar">
+    <div class="logo">VIGNESH<span>WARAN</span></div>
+    <a href="/" class="back-home-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+</nav>
+
+<main class="experience-page-container">
+    <!-- HERO HEADER -->
+    <header class="experience-hero">
+        <span class="stitch-label">SALES & MARKETING METRICS</span>
+        <h1 class="experience-page-title">Professional Experience</h1>
+        <p class="experience-page-subtitle">
+            A track record of high-performance field sales operations in the pharmaceutical sector. Translating market dynamics, relationship management, and sales target modeling into measurable revenue achievements.
+        </p>
+    </header>
+
+    <!-- CAREER TIMELINE -->
+    <section class="experience-timeline-section">
+        <div class="timeline-wrapper">
+            <!-- 1. Integrace Pharma -->
+            <div class="timeline-card-wrapper">
+                <div class="timeline-bullet-node"></div>
+                <div class="exp-page-card">
+                    <div class="exp-card-header">
+                        <div class="exp-meta">
+                            <span class="exp-company-tag">INTEGRACE PHARMA</span>
+                            <span class="exp-location"><i class="fas fa-map-marker-alt"></i> Madurai, India</span>
+                        </div>
+                        <span class="exp-duration"><i class="far fa-calendar-alt"></i> May 2024 - June 2025</span>
+                    </div>
+                    <h2 class="exp-role-title">Field Sales Officer</h2>
+                    <p class="exp-overview-desc">
+                        Collaborated with regional marketing and sales structures to promote specialized healthcare products. Focused on clinical presentations, territory expansion, and team-based revenue strategies.
+                    </p>
+                    <ul class="exp-bullets-list">
+                        <li><strong>Team Collaboration:</strong> Worked well in a structured team setting, providing support, guidance, and sharing client insights to align territory goals.</li>
+                        <li><strong>Strategy Execution:</strong> Partnered with the regional sales team to formulate and execute targeted marketing strategies that directly boosted overall revenue growth.</li>
+                        <li><strong>Strategic Communication:</strong> Built strong verbal and written relationships, presenting pharmacological details to doctors and medical professionals.</li>
+                    </ul>
+                    <div class="exp-tech-pills">
+                        <span>Marketing Strategy</span>
+                        <span>Sales Collaboration</span>
+                        <span>Teamwork</span>
+                        <span>Verbal & Written Communication</span>
+                        <span>Client Relations</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Walter Bushnell Pharma -->
+            <div class="timeline-card-wrapper">
+                <div class="timeline-bullet-node"></div>
+                <div class="exp-page-card">
+                    <div class="exp-card-header">
+                        <div class="exp-meta">
+                            <span class="exp-company-tag">WALTER BUSHNELL PHARMA</span>
+                            <span class="exp-location"><i class="fas fa-map-marker-alt"></i> Madurai, India</span>
+                        </div>
+                        <span class="exp-duration"><i class="far fa-calendar-alt"></i> Feb 2023 - Apr 2024</span>
+                    </div>
+                    <h2 class="exp-role-title">Field Sales Officer</h2>
+                    <p class="exp-overview-desc">
+                        Managed pharmaceutical territory target achievements. Conducted medical presentations and optimized distributorship stock allocations to fulfill regional demand requirements.
+                    </p>
+                    <ul class="exp-bullets-list">
+                        <li><strong>Target Achievement:</strong> Consistently met monthly sales quotas and KPIs through rigorous territory analysis, routing plans, and customer profiling.</li>
+                        <li><strong>Product Demonstrations:</strong> Delivered detailed scientific product presentations to physicians and pharmacists, matching treatment benefits to doctor preferences.</li>
+                        <li><strong>Revenue Maximization:</strong> Analyzed pharmacies' stock patterns to upsell complementary portfolios, increasing territory order values.</li>
+                    </ul>
+                    <div class="exp-tech-pills">
+                        <span>Territory Management</span>
+                        <span>Strategic Planning</span>
+                        <span>Product Presentations</span>
+                        <span>Upselling Techniques</span>
+                        <span>Revenue Maximization</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE SALES & TARGET ANALYTICS -->
+    <section class="analytics-dashboard-section">
+        <div class="section-title-wrap">
+            <span class="stitch-label">ANALYTICS ENGINE</span>
+            <h2>Sales Performance & Target Achievement</h2>
+        </div>
+
+        <div class="analytics-tabs">
+            {% for comp in companies %}
+            <button class="analytics-tab {% if loop.first %}active{% endif %}" data-company="{{ comp.slug }}">{{ comp.name }} ({{ comp.duration }})</button>
+            {% endfor %}
+        </div>
+
+        <!-- Graph Wrapper -->
+        <div class="analytics-card chart-container-card">
+            <h3 class="chart-title"><i class="fas fa-chart-line"></i> Month-wise Sales vs Target Analysis</h3>
+            <div class="canvas-holder">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Statistics Table -->
+        <div class="analytics-card table-container-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                <h3 class="table-card-title" style="margin-bottom: 0;"><i class="fas fa-table"></i> Performance Statistics</h3>
+                <div class="view-toggles" style="display: flex; gap: 6px; background: rgba(255, 255, 255, 0.02); padding: 4px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <button class="view-toggle-btn active" data-view-type="month">Month-wise</button>
+                    <button class="view-toggle-btn" data-view-type="product">Product-wise</button>
+                </div>
+            </div>
+            <div class="table-scroll-wrap">
+                <table class="metrics-data-table" id="metricsTable">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Product Focus</th>
+                            <th>Target Qty</th>
+                            <th>Sales Qty</th>
+                            <th>Achievement %</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metricsTableBody">
+                        <!-- Loaded dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- DOCUMENT VERIFICATION PANEL (APPOINTMENT & INCENTIVE) -->
+    <section class="verification-documents-section">
+        <div class="section-title-wrap">
+            <span class="stitch-label">VERIFIED CREDENTIALS</span>
+            <h2>Corporate Documents & Incentives</h2>
+        </div>
+
+        <div class="docs-grid">
+            <!-- Appointment / Offer / Pay Slip Letters -->
+            <div class="doc-card appointment-doc-card">
+                <h3 class="doc-card-title"><i class="fas fa-file-contract"></i> Verification Documents</h3>
+                
+                <!-- Company Selector -->
+                <div class="doc-company-toggles">
+                    {% for comp in companies %}
+                    <button class="doc-toggle-btn {% if loop.first %}active{% endif %}" data-company-doc="{{ comp.slug }}">{{ comp.name.split(' ')[0] }}</button>
+                    {% endfor %}
+                </div>
+
+                <!-- Document Type Selector -->
+                <div class="doc-type-toggles" style="display: flex; gap: 8px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.01); padding: 4px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.03);">
+                    <button class="doc-type-btn active" data-doc-type="appointment" style="flex: 1; background: transparent; border: none; color: var(--text-secondary); padding: 8px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: var(--transition);">Appointment</button>
+                    <button class="doc-type-btn" data-doc-type="offer" style="flex: 1; background: transparent; border: none; color: var(--text-secondary); padding: 8px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: var(--transition);">Offer</button>
+                    <button class="doc-type-btn" data-doc-type="payslip" style="flex: 1; background: transparent; border: none; color: var(--text-secondary); padding: 8px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: var(--transition);">Pay Slip</button>
+                </div>
+
+                <div class="doc-viewer-container">
+                    {% for comp in companies %}
+                    <!-- {{ comp.name }} documents group -->
+                    <div id="doc-{{ comp.slug }}-group" class="doc-company-group" style="{% if not loop.first %}display: none;{% endif %}">
+                        <!-- Appointment -->
+                        <div id="doc-{{ comp.slug }}-appointment" class="doc-iframe-wrapper doc-type-item active">
+                            {% if comp.appointment_letter %}
+                            <iframe src="{{ url_for('downloads.preview_appointment_letter', letter_id=comp.appointment_letter._id) }}" class="pdf-iframe" title="{{ comp.name }} Appointment Letter"></iframe>
+                            <div class="doc-action-footer">
+                                <span class="doc-name-label"><i class="fas fa-file-pdf"></i> {{ comp.appointment_letter.original_name }}</span>
+                                <a href="{{ url_for('downloads.download_appointment_letter', letter_id=comp.appointment_letter._id) }}" class="doc-dl-btn"><i class="fas fa-download"></i> Download</a>
+                            </div>
+                            {% else %}
+                            <div class="doc-placeholder-msg">
+                                <i class="fas fa-file-pdf placeholder-icon"></i>
+                                <p>No Appointment Letter uploaded.</p>
+                                <span class="sub-placeholder">Upload via Admin Dashboard.</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Offer -->
+                        <div id="doc-{{ comp.slug }}-offer" class="doc-iframe-wrapper doc-type-item" style="display: none;">
+                            {% if comp.offer_letter %}
+                            <iframe src="{{ url_for('downloads.preview_offer_letter', letter_id=comp.offer_letter._id) }}" class="pdf-iframe" title="{{ comp.name }} Offer Letter"></iframe>
+                            <div class="doc-action-footer">
+                                <span class="doc-name-label"><i class="fas fa-file-pdf"></i> {{ comp.offer_letter.original_name }}</span>
+                                <a href="{{ url_for('downloads.download_offer_letter', letter_id=comp.offer_letter._id) }}" class="doc-dl-btn"><i class="fas fa-download"></i> Download</a>
+                            </div>
+                            {% else %}
+                            <div class="doc-placeholder-msg">
+                                <i class="fas fa-file-pdf placeholder-icon"></i>
+                                <p>No Offer Letter uploaded.</p>
+                                <span class="sub-placeholder">Upload via Admin Dashboard.</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Pay Slip -->
+                        <div id="doc-{{ comp.slug }}-payslip" class="doc-iframe-wrapper doc-type-item" style="display: none;">
+                            {% if comp.pay_slip %}
+                            <iframe src="{{ url_for('downloads.preview_pay_slip', slip_id=comp.pay_slip._id) }}" class="pdf-iframe" title="{{ comp.name }} Pay Slip"></iframe>
+                            <div class="doc-action-footer">
+                                <span class="doc-name-label"><i class="fas fa-file-pdf"></i> {{ comp.pay_slip.original_name }}</span>
+                                <a href="{{ url_for('downloads.download_pay_slip', slip_id=comp.pay_slip._id) }}" class="doc-dl-btn"><i class="fas fa-download"></i> Download</a>
+                            </div>
+                            {% else %}
+                            <div class="doc-placeholder-msg">
+                                <i class="fas fa-file-pdf placeholder-icon"></i>
+                                <p>No Pay Slip uploaded.</p>
+                                <span class="sub-placeholder">Upload via Admin Dashboard.</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Incentive Slideshow -->
+            <div class="doc-card incentives-doc-card">
+                <h3 class="doc-card-title"><i class="fas fa-award"></i> Incentive Receipts & Milestones</h3>
+                <div class="doc-company-toggles">
+                    {% for comp in companies %}
+                    <button class="doc-toggle-btn {% if loop.first %}active{% endif %}" data-company-inc="{{ comp.slug }}">{{ comp.name.split(' ')[0] }}</button>
+                    {% endfor %}
+                </div>
+
+                <div class="incentives-slider-wrapper">
+                    {% for comp in companies %}
+                    <!-- {{ comp.name }} Incentives -->
+                    <div id="inc-{{ comp.slug }}-slider" class="incentive-slide-container {% if not loop.first %}hidden{% endif %}">
+                        {% if comp.incentives %}
+                        <div class="slider-viewport">
+                            {% for inc in comp.incentives %}
+                            <div class="incentive-slide {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}">
+                                <img src="{{ url_for('downloads.preview_incentive', inc_id=inc._id) }}" alt="Incentive Document" class="slide-img">
+                                <div class="slide-caption">{{ inc.original_name }}</div>
+                                <div class="slide-action" style="margin-top: 8px; text-align: center;">
+                                    <a href="{{ url_for('downloads.download_incentive', inc_id=inc._id) }}" class="doc-dl-btn" style="padding: 6px 12px; font-size: 0.8rem;"><i class="fas fa-download"></i> Download</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="slider-controls">
+                            <button class="slider-btn prev-slide"><i class="fas fa-chevron-left"></i></button>
+                            <span class="slider-counter"><span class="current-num">1</span> / {{ comp.incentives|length }}</span>
+                            <button class="slider-btn next-slide"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        {% else %}
+                        <div class="doc-placeholder-msg">
+                            <i class="fas fa-image placeholder-icon"></i>
+                            <p>No Incentive images uploaded for {{ comp.name }} yet.</p>
+                            <span class="sub-placeholder">Upload consecutive series via Admin Dashboard.</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script id="experience-db-data" type="application/json">
+{{ company_data_json|safe }}
+</script>
+<script src="{{ url_for('static', filename='js/experience.js') }}"></script>
+{% endblock %}

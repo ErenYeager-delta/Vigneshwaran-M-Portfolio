@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Edit Company Experience — Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin_dashboard.css') }}">
+    <style>
+        .edit-page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .back-btn {
+            padding: 0.6rem 1.2rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        .back-btn:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.2);
+        }
+        /* Tab Controls */
+        .tabs-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 2px;
+        }
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: #737373;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+        .tab-btn:hover {
+            color: #fff;
+        }
+        .tab-btn.active {
+            color: #A0CFFF;
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #A0CFFF;
+            box-shadow: 0 0 10px rgba(160, 207, 255, 0.5);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Spreadsheet table styles */
+        .sheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: #111;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .sheet-table th {
+            background: rgba(255,255,255,0.02);
+            color: #737373;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .sheet-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 0.92rem;
+            vertical-align: middle;
+        }
+        .sheet-table tr.total-row {
+            background: rgba(160, 207, 255, 0.03);
+            font-weight: 700;
+        }
+        .sheet-table tr.total-row td {
+            border-top: 2px solid rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .sheet-input {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .sheet-input:focus {
+            border-color: #A0CFFF;
+            background: rgba(160, 207, 255, 0.02);
+        }
+        .sheet-input[readonly] {
+            background: transparent;
+            border-color: transparent;
+            color: #fff;
+            font-weight: 700;
+            cursor: default;
+        }
+        .btn-add-row {
+            padding: 0.6rem 1.2rem;
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        .btn-add-row:hover {
+            background: #28a745;
+            color: #000;
+        }
+        .btn-remove-row {
+            background: rgba(255, 77, 77, 0.1);
+            color: #ff4d4d;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-remove-row:hover {
+            background: #ff4d4d;
+            color: #fff;
+        }
+        .badge-percentage {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .badge-percentage-met {
+            background: rgba(40, 167, 69, 0.12);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+        .badge-percentage-miss {
+            background: rgba(255, 193, 7, 0.12);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+        .badge-percentage-low {
+            background: rgba(255, 77, 77, 0.12);
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 77, 77, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-page-container">
+        <!-- Navigation Header -->
+        <header class="header-nav">
+            <div>
+                <h1 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 4px;">Edit Company Analytics</h1>
+                <p style="color: #737373; font-size: 0.9rem; font-weight: 500;">
+                    Company: <span style="color: #fff; font-weight: 700;">{{ company.name }}</span> (Slug: <code>{{ company.slug }}</code>)
+                </p>
+            </div>
+            <a href="{{ url_for('admin.dashboard') }}" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        </header>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Tab Nav -->
+        <div class="tabs-header">
+            <button type="button" class="tab-btn active" data-tab="profile-tab"><i class="fas fa-id-card"></i> Company Profile & Details</button>
+            <button type="button" class="tab-btn" data-tab="months-tab"><i class="fas fa-calendar-alt"></i> Month-wise Progression</button>
+            <button type="button" class="tab-btn" data-tab="products-tab"><i class="fas fa-box-open"></i> Product Portfolio Catalog</button>
+        </div>
+
+        <!-- Master Edit Form -->
+        <form id="editExperienceForm" action="{{ url_for('admin.edit_company_experience', company_id=company._id) }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <!-- Hidden inputs to submit table datasets as serialized JSON -->
+            <input type="hidden" name="months_data" id="months_data_input">
+            <input type="hidden" name="products_data" id="products_data_input">
+
+            <!-- ════════════════ TAB 1: Company Profile ════════════════ -->
+            <div id="profile-tab" class="tab-content active section">
+                <h2><i class="fas fa-id-card"></i> Company Profile & Metadata</h2>
+                <div class="form-row">
+                    <div>
+                        <label class="form-label-blue">Company Name *</label>
+                        <input type="text" name="name" value="{{ company.name }}" class="admin-input" required>
+                    </div>
+                    <div>
+                        <label class="form-label-blue">Role Title *</label>
+                        <input type="text" name="role_title" value="{{ company.role_title }}" class="admin-input" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="form-label-blue">Duration Label (e.g. Feb 2023 - Apr 2024) *</label>
+                        <input type="text" name="duration" value="{{ company.duration }}" class="admin-input" required>
+                    </div>
+                    <div>
+                        <label class="form-label-blue">Location *</label>
+                        <input type="text" name="location" value="{{ company.location }}" class="admin-input" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label class="form-label-blue">Sort Order (integer) *</label>
+                        <input type="number" name="sort_order" value="{{ company.sort_order }}" class="admin-input" required>
+                    </div>
+                    <div>
+                        <label class="form-label-blue">Metric Type Display *</label>
+                        <select name="metric_type" class="admin-input" required style="width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 8px;">
+                            <option value="units" {% if company.metric_type == 'units' %}selected{% endif %}>Units (Packs/Quantities)</option>
+                            <option value="currency" {% if company.metric_type == 'currency' %}selected{% endif %}>Currency (INR / Rupees)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" style="margin-top: 15px;">
+                    <div class="full-width">
+                        <label class="form-label-blue">Overview Description</label>
+                        <textarea name="description" class="admin-input" style="min-height: 100px;" placeholder="Summary of role responsibility...">{{ company.description }}</textarea>
+                    </div>
+                </div>
+                <div class="form-row" style="margin-top: 15px;">
+                    <div class="full-width">
+                        <label class="form-label-blue">Key Responsibilities (One bullet per line) *</label>
+                        <textarea name="bullets" class="admin-input" style="min-height: 120px;" placeholder="Responsibility bullet points..." required>{{ company.bullets | join('\n') }}</textarea>
+                    </div>
+                </div>
+                <div class="form-row" style="margin-top: 15px;">
+                    <div class="full-width">
+                        <label class="form-label-blue">Competencies / Skill Pills (Comma-separated: Territory Management, Planning...)</label>
+                        <input type="text" name="skills" value="{{ company.skills | join(', ') }}" class="admin-input" placeholder="Skills tags...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ════════════════ TAB 2: Monthly Targets & Sales ════════════════ -->
+            <div id="months-tab" class="tab-content section">
+                <div class="section-header-wrap">
+                    <h2><i class="fas fa-calendar-alt"></i> Month-wise Sales & Target Progression</h2>
+                    <span style="color: #737373; font-size: 0.95rem; font-weight: 500;">
+                        Metrics: <strong style="color: #A0CFFF;">{% if company.metric_type == 'currency' %}INR (₹){% else %}Units (Packs){% endif %}</strong>
+                    </span>
+                </div>
+                <p style="color: #888; font-size: 0.88rem; margin-bottom: 20px;">
+                    Add or modify the month-by-month targets and actual sales achievements. Achievement percentage is auto-calculated dynamically.
+                </p>
+
+                <div class="table-container">
+                    <table class="sheet-table" id="monthsTable">
+                        <thead>
+                            <tr>
+                                <th>Month Name</th>
+                                <th>Product Focus Group</th>
+                                <th>Target {% if company.metric_type == 'currency' %}(₹){% endif %}</th>
+                                <th>Sales {% if company.metric_type == 'currency' %}(₹){% endif %}</th>
+                                <th>Achievement %</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthsTableBody">
+                            {% for m in company.months %}
+                            <tr class="month-row">
+                                <td><input type="text" class="sheet-input cell-month" value="{{ m.month }}" placeholder="e.g. Feb 23" required></td>
+                                <td><input type="text" class="sheet-input cell-focus" value="{{ m.product_focus }}" placeholder="e.g. Drotin Range" required></td>
+                                <td><input type="number" step="any" class="sheet-input cell-target-qty text-right" value="{{ m.target }}" placeholder="Target" required></td>
+                                <td><input type="number" step="any" class="sheet-input cell-sales-qty text-right" value="{{ m.sales }}" placeholder="Sales" required></td>
+                                <td><span class="badge-percentage cell-achievement-badge">0.0%</span></td>
+                                <td>
+                                    <button type="button" class="btn-remove-row"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td>TOTAL (FY)</td>
+                                <td>All Focus Groups</td>
+                                <td id="monthTotalTarget" class="text-right">0</td>
+                                <td id="monthTotalSales" class="text-right">0</td>
+                                <td id="monthTotalAchievement">0.0%</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <button type="button" class="btn-add-row" id="btnAddMonthRow"><i class="fas fa-plus"></i> Add Month Row</button>
+            </div>
+
+            <!-- ════════════════ TAB 3: Product Portfolio Catalog ════════════════ -->
+            <div id="products-tab" class="tab-content section">
+                <div class="section-header-wrap">
+                    <h2><i class="fas fa-box-open"></i> Product Portfolio Catalog & Market Rates</h2>
+                    <span style="color: #737373; font-size: 0.95rem; font-weight: 500;">
+                        Metrics: <strong style="color: #A0CFFF;">Quantities (Packs) & Price (INR)</strong>
+                    </span>
+                </div>
+                <p style="color: #888; font-size: 0.88rem; margin-bottom: 20px;">
+                    Edit the individual product profiles, pack sizes, and market prices. Target value and sales value are automatically computed as `Price * Quantity`.
+                </p>
+
+                <div class="table-container">
+                    <table class="sheet-table" id="productsTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Product Name</th>
+                                <th style="width: 12%;">Pack Size</th>
+                                <th style="width: 12%;">Price (₹)</th>
+                                <th style="width: 12%;">Target (Packs)</th>
+                                <th style="width: 15%;">Target Value (₹)</th>
+                                <th style="width: 12%;">Sales (Packs)</th>
+                                <th style="width: 15%;">Sales Value (₹)</th>
+                                <th>Achievement %</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            {% for p in company.products %}
+                            <tr class="product-row">
+                                <td><input type="text" class="sheet-input cell-prod-name" value="{{ p.name }}" placeholder="Product Name" required></td>
+                                <td><input type="text" class="sheet-input cell-prod-pack" value="{{ p.pack }}" placeholder="e.g. 10'S" required></td>
+                                <td><input type="number" step="any" class="sheet-input cell-prod-price text-right" value="{{ p.price }}" placeholder="Price" required></td>
+                                <td><input type="number" class="sheet-input cell-prod-target text-right" value="{{ p.target }}" placeholder="Target Qty" required></td>
+                                <td><input type="text" class="sheet-input cell-prod-target-val text-right" readonly value="0"></td>
+                                <td><input type="number" class="sheet-input cell-prod-sales text-right" value="{{ p.sales }}" placeholder="Sales Qty" required></td>
+                                <td><input type="text" class="sheet-input cell-prod-sales-val text-right" readonly value="0"></td>
+                                <td><span class="badge-percentage cell-prod-ach-badge">0.0%</span></td>
+                                <td>
+                                    <button type="button" class="btn-remove-row"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td>TOTAL (YTD)</td>
+                                <td>All Packs</td>
+                                <td>—</td>
+                                <td id="prodTotalTargetQty" class="text-right">0</td>
+                                <td id="prodTotalTargetVal" class="text-right">₹0</td>
+                                <td id="prodTotalSalesQty" class="text-right">0</td>
+                                <td id="prodTotalSalesVal" class="text-right">₹0</td>
+                                <td id="prodTotalAchievement">0.0%</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <button type="button" class="btn-add-row" id="btnAddProductRow"><i class="fas fa-plus"></i> Add Product Row</button>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-top: 2rem;">
+                <button type="submit" class="submit-btn" style="flex: 1; padding: 1.2rem;"><i class="fas fa-save"></i> Save All Changes & Recalculate</button>
+                <a href="{{ url_for('admin.dashboard') }}" class="submit-btn" style="background: rgba(255,255,255,0.05); color: #fff; text-decoration: none; text-align: center; border: 1px solid rgba(255,255,255,0.1); padding: 1.2rem; flex-shrink: 0;"><i class="fas fa-times"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Spreadsheet Calculation & Tab Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // ════════════════ Tab Switching ════════════════
+            const tabs = document.querySelectorAll(".tab-btn");
+            const contents = document.querySelectorAll(".tab-content");
+
+            tabs.forEach(tab => {
+                tab.addEventListener("click", () => {
+                    tabs.forEach(t => t.classList.remove("active"));
+                    contents.forEach(c => c.classList.remove("active"));
+
+                    tab.classList.add("active");
+                    const target = tab.getAttribute("data-tab");
+                    document.getElementById(target).classList.add("active");
+                });
+            });
+
+            // ════════════════ Spreadsheet Logic Helper ════════════════
+            const fmtPercentage = (num) => {
+                if (isNaN(num) || !isFinite(num)) return "0.0%";
+                return num.toFixed(1) + "%";
+            };
+
+            const getBadgeClass = (percent) => {
+                if (percent >= 100) return "badge-percentage-met";
+                if (percent >= 90) return "badge-percentage-miss";
+                return "badge-percentage-low";
+            };
+
+            // ════════════════ Month-wise Calculation ════════════════
+            const recalculateMonths = () => {
+                const rows = document.querySelectorAll("#monthsTableBody tr.month-row");
+                let sumTarget = 0;
+                let sumSales = 0;
+
+                rows.forEach(row => {
+                    const targetInput = row.querySelector(".cell-target-qty");
+                    const salesInput = row.querySelector(".cell-sales-qty");
+                    const badgeEl = row.querySelector(".cell-achievement-badge");
+
+                    const targetVal = parseFloat(targetInput.value) || 0;
+                    const salesVal = parseFloat(salesInput.value) || 0;
+
+                    const percent = targetVal > 0 ? (salesVal / targetVal) * 100 : 0;
+                    badgeEl.textContent = fmtPercentage(percent);
+                    badgeEl.className = "badge-percentage " + getBadgeClass(percent);
+
+                    sumTarget += targetVal;
+                    sumSales += salesVal;
+                });
+
+                document.getElementById("monthTotalTarget").textContent = sumTarget.toLocaleString(undefined, {maximumFractionDigits: 2});
+                document.getElementById("monthTotalSales").textContent = sumSales.toLocaleString(undefined, {maximumFractionDigits: 2});
+
+                const totalPercent = sumTarget > 0 ? (sumSales / sumTarget) * 100 : 0;
+                const totalBadge = document.getElementById("monthTotalAchievement");
+                totalBadge.textContent = fmtPercentage(totalPercent);
+                totalBadge.className = "badge-percentage " + getBadgeClass(totalPercent);
+            };
+
+            // ════════════════ Product Portfolio Calculation ════════════════
+            const recalculateProducts = () => {
+                const rows = document.querySelectorAll("#productsTableBody tr.product-row");
+                let totalQtyTarget = 0;
+                let totalQtySales = 0;
+                let totalValTarget = 0;
+                let totalValSales = 0;
+
+                rows.forEach(row => {
+                    const priceVal = parseFloat(row.querySelector(".cell-prod-price").value) || 0;
+                    const targetQty = parseInt(row.querySelector(".cell-prod-target").value) || 0;
+                    const salesQty = parseInt(row.querySelector(".cell-prod-sales").value) || 0;
+
+                    const targetVal = targetQty * priceVal;
+                    const salesVal = salesQty * priceVal;
+
+                    row.querySelector(".cell-prod-target-val").value = targetVal.toLocaleString(undefined, {maximumFractionDigits: 2});
+                    row.querySelector(".cell-prod-sales-val").value = salesVal.toLocaleString(undefined, {maximumFractionDigits: 2});
+
+                    const badgeEl = row.querySelector(".cell-prod-ach-badge");
+                    const percent = targetQty > 0 ? (salesQty / targetQty) * 100 : 0;
+                    badgeEl.textContent = fmtPercentage(percent);
+                    badgeEl.className = "badge-percentage " + getBadgeClass(percent);
+
+                    totalQtyTarget += targetQty;
+                    totalQtySales += salesQty;
+                    totalValTarget += targetVal;
+                    totalValSales += salesVal;
+                });
+
+                document.getElementById("prodTotalTargetQty").textContent = totalQtyTarget.toLocaleString();
+                document.getElementById("prodTotalSalesQty").textContent = totalQtySales.toLocaleString();
+                document.getElementById("prodTotalTargetVal").textContent = "₹" + totalValTarget.toLocaleString(undefined, {maximumFractionDigits: 2});
+                document.getElementById("prodTotalSalesVal").textContent = "₹" + totalValSales.toLocaleString(undefined, {maximumFractionDigits: 2});
+
+                // Overall achievement based on Quantities if prices are zero (or units), else based on Currency values.
+                // However, since both companies need exact target percentage calculation, let's look at the company type.
+                const metricType = document.querySelector("select[name='metric_type']").value;
+                let totalPercent = 0;
+                if (metricType === "currency" && totalValTarget > 0) {
+                    totalPercent = (totalValSales / totalValTarget) * 100;
+                } else if (totalQtyTarget > 0) {
+                    totalPercent = (totalQtySales / totalQtyTarget) * 100;
+                }
+
+                const totalBadge = document.getElementById("prodTotalAchievement");
+                totalBadge.textContent = fmtPercentage(totalPercent);
+                totalBadge.className = "badge-percentage " + getBadgeClass(totalPercent);
+            };
+
+            // Recalculate everything on edit inputs change
+            const monthsTable = document.getElementById("monthsTable");
+            const productsTable = document.getElementById("productsTable");
+
+            monthsTable.addEventListener("input", (e) => {
+                if (e.target.classList.contains("cell-target-qty") || e.target.classList.contains("cell-sales-qty")) {
+                    recalculateMonths();
+                }
+            });
+
+            productsTable.addEventListener("input", (e) => {
+                if (e.target.classList.contains("cell-prod-price") || e.target.classList.contains("cell-prod-target") || e.target.classList.contains("cell-prod-sales")) {
+                    recalculateProducts();
+                }
+            });
+
+            // ════════════════ Add/Remove Row Operations ════════════════
+            // Remove month row
+            monthsTable.addEventListener("click", (e) => {
+                const btn = e.target.closest(".btn-remove-row");
+                if (btn && btn.closest("tr").classList.contains("month-row")) {
+                    btn.closest("tr").remove();
+                    recalculateMonths();
+                }
+            });
+
+            // Remove product row
+            productsTable.addEventListener("click", (e) => {
+                const btn = e.target.closest(".btn-remove-row");
+                if (btn && btn.closest("tr").classList.contains("product-row")) {
+                    btn.closest("tr").remove();
+                    recalculateProducts();
+                }
+            });
+
+            // Add new Month Row
+            document.getElementById("btnAddMonthRow").addEventListener("click", () => {
+                const tbody = document.getElementById("monthsTableBody");
+                const tr = document.createElement("tr");
+                tr.className = "month-row";
+                tr.innerHTML = `
+                    <td><input type="text" class="sheet-input cell-month" placeholder="Month" required></td>
+                    <td><input type="text" class="sheet-input cell-focus" placeholder="Product Focus" required></td>
+                    <td><input type="number" step="any" class="sheet-input cell-target-qty text-right" value="0" required></td>
+                    <td><input type="number" step="any" class="sheet-input cell-sales-qty text-right" value="0" required></td>
+                    <td><span class="badge-percentage cell-achievement-badge badge-percentage-low">0.0%</span></td>
+                    <td>
+                        <button type="button" class="btn-remove-row"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+                recalculateMonths();
+            });
+
+            // Add new Product Row
+            document.getElementById("btnAddProductRow").addEventListener("click", () => {
+                const tbody = document.getElementById("productsTableBody");
+                const tr = document.createElement("tr");
+                tr.className = "product-row";
+                tr.innerHTML = `
+                    <td><input type="text" class="sheet-input cell-prod-name" placeholder="Product Name" required></td>
+                    <td><input type="text" class="sheet-input cell-prod-pack" placeholder="Pack Size" required></td>
+                    <td><input type="number" step="any" class="sheet-input cell-prod-price text-right" value="0" required></td>
+                    <td><input type="number" class="sheet-input cell-prod-target text-right" value="0" required></td>
+                    <td><input type="text" class="sheet-input cell-prod-target-val text-right" readonly value="0"></td>
+                    <td><input type="number" class="sheet-input cell-prod-sales text-right" value="0" required></td>
+                    <td><input type="text" class="sheet-input cell-prod-sales-val text-right" readonly value="0"></td>
+                    <td><span class="badge-percentage cell-prod-ach-badge badge-percentage-low">0.0%</span></td>
+                    <td>
+                        <button type="button" class="btn-remove-row"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+                recalculateProducts();
+            });
+
+            // ════════════════ Form Submit Package ════════════════
+            document.getElementById("editExperienceForm").addEventListener("submit", function(e) {
+                // Package Months
+                const monthRows = document.querySelectorAll("#monthsTableBody tr.month-row");
+                const monthsData = [];
+                monthRows.forEach(row => {
+                    const month = row.querySelector(".cell-month").value;
+                    const focus = row.querySelector(".cell-focus").value;
+                    const target = parseFloat(row.querySelector(".cell-target-qty").value) || 0;
+                    const sales = parseFloat(row.querySelector(".cell-sales-qty").value) || 0;
+                    monthsData.push({
+                        month: month,
+                        product_focus: focus,
+                        target: target,
+                        sales: sales
+                    });
+                });
+                document.getElementById("months_data_input").value = JSON.stringify(monthsData);
+
+                // Package Products
+                const productRows = document.querySelectorAll("#productsTableBody tr.product-row");
+                const productsData = [];
+                productRows.forEach(row => {
+                    const name = row.querySelector(".cell-prod-name").value;
+                    const pack = row.querySelector(".cell-prod-pack").value;
+                    const price = parseFloat(row.querySelector(".cell-prod-price").value) || 0;
+                    const target = parseInt(row.querySelector(".cell-prod-target").value) || 0;
+                    const sales = parseInt(row.querySelector(".cell-prod-sales").value) || 0;
+                    productsData.push({
+                        name: name,
+                        pack: pack,
+                        price: price,
+                        target: target,
+                        sales: sales
+                    });
+                });
+                document.getElementById("products_data_input").value = JSON.stringify(productsData);
+            });
+
+            // Run initial calculations
+            recalculateMonths();
+            recalculateProducts();
+
+            // Re-calculate products total if metric display type changes
+            document.querySelector("select[name='metric_type']").addEventListener("change", () => {
+                recalculateProducts();
+            });
+        });
+    </script>
+</body>
+</html>

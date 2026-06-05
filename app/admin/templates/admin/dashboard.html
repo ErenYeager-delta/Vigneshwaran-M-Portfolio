@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Admin Dashboard — Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin_dashboard.css') }}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="dash-header">
+            <h1><span>⚡</span> Admin Dashboard</h1>
+            <form action="{{ url_for('admin.admin_logout') }}" method="POST" class="d-inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- ═══════════ RESUME SECTION ═══════════ -->
+        <div class="section">
+            <h2><i class="fas fa-file-pdf"></i> Resume Management</h2>
+            <form action="{{ url_for('admin.upload_resume') }}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <h3 class="dash-section-h3">Upload New Resume (PDF)</h3>
+                <div class="form-row">
+                    <div class="col-span-2-wrapper">
+                        <div class="file-input-wrap full-width">
+                            <input type="file" id="resume_file_input" name="resume_file" accept=".pdf"
+                                class="admin-input" required>
+                        </div>
+                        <!-- PDF Selection Preview -->
+                        <div id="resume_preview_box" class="upload-preview-container">
+                            <div class="upload-preview-icon-box">
+                                <i class="fas fa-file-pdf upload-preview-icon"></i>
+                            </div>
+                            <div class="upload-preview-details">
+                                <div id="resume_file_name" class="upload-preview-filename">—</div>
+                                <div id="resume_file_size" class="upload-preview-filesize">—</div>
+                            </div>
+                            <span class="upload-preview-ready"><i class="fas fa-check-circle"></i> Ready</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn"><i class="fas fa-upload"></i> Upload New Resume</button>
+            </form>
+
+            {% if resumes %}
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Uploaded</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in resumes %}
+                        <tr>
+                            <td>{{ r.original_name }}</td>
+                            <td>{{ r.uploaded_at | safe_date }}</td>
+                            <td>
+                                {% if r.is_active %}
+                                <span class="badge badge-active">Active</span>
+                                {% else %}
+                                <span class="badge badge-hidden">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{{ url_for('admin.toggle_resume', resume_id=r._id) }}" method="POST" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    {% if r.is_active %}
+                                    <button type="submit" class="toggle-btn toggle-hide">Deactivate</button>
+                                    {% else %}
+                                    <button type="submit" class="toggle-btn toggle-show">Activate</button>
+                                    {% endif %}
+                                </form>
+                                <form action="{{ url_for('admin.delete_resume', resume_id=r._id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('🗑️ Delete this resume forever?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="toggle-btn btn-trash"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ═══════════ CERTIFICATES SECTION ═══════════ -->
+        <div class="section">
+            <div class="section-header-wrap">
+                <h2><i class="fas fa-certificate"></i> Certificate Management</h2>
+                <button type="button" class="toggle-form-btn" data-target="certificate-form-container">
+                    <i class="fas fa-plus"></i> Add Certificate
+                </button>
+            </div>
+
+            <div id="certificate-form-container" class="collapsible-form-container">
+                <form action="{{ url_for('admin.add_certificate') }}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-row">
+                        <input type="text" name="title" placeholder="Certificate Title (e.g. Python for Data Science) *"
+                            class="admin-input" required>
+                        <input type="text" name="issuer" placeholder="Issuer (e.g. Coursera) *" class="admin-input"
+                            required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" name="date_issued" placeholder="Issue Date (e.g. Oct 2023) *"
+                            class="admin-input" required>
+                        <input type="text" name="link" placeholder="Certificate Verification URL" class="admin-input">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" name="tags"
+                            placeholder="Core Competencies (comma-separated: NumPy, Pandas...)" class="admin-input">
+                    </div>
+                    <div class="form-row">
+                        <textarea name="description" placeholder="Short Description / Overview"
+                            class="admin-input"></textarea>
+                    </div>
+                    <!-- 2-column: Upload file  |  Or Provide URL -->
+                    <div class="form-row grid-two-columns">
+                        <div>
+                            <label class="form-label-blue">Upload Certificate Image / PDF (Optional)</label>
+                            <input type="file" id="cert_file_input" name="cert_file" accept=".pdf,.png,.jpg,.jpeg,.webp"
+                                class="admin-input">
+                        </div>
+                        <div>
+                            <label class="form-label-blue">Or Provide Image URL</label>
+                            <input type="text" name="preview_image_url" id="cert_image_url"
+                                placeholder="Paste any image URL (e.g. from Coursera, AWS...)" class="admin-input">
+                        </div>
+                    </div>
+
+                    <!-- Preview area -->
+                    <div class="form-row">
+                        <div class="full-width">
+                            <!-- File preview box -->
+                            <div id="cert_preview_box" class="cert-preview-wrapper-box">
+                                <div id="cert_img_preview" class="cert-image-preview-sub-box">
+                                    <img id="cert_img_el" src="" alt="Certificate Preview" class="cert-img-element-full">
+                                    <div class="cert-image-preview-label" id="cert_img_name"></div>
+                                </div>
+                                <div id="cert_pdf_preview" class="cert-pdf-preview-sub-box">
+                                    <div class="upload-preview-icon-box">
+                                        <i class="fas fa-file-pdf upload-preview-icon"></i>
+                                    </div>
+                                    <div class="upload-preview-details">
+                                        <div id="cert_pdf_name" class="upload-preview-filename">—</div>
+                                        <div id="cert_pdf_size" class="upload-preview-filesize">—</div>
+                                    </div>
+                                    <span class="upload-preview-ready"><i class="fas fa-check-circle"></i> Ready</span>
+                                </div>
+                            </div>
+
+                            <!-- PDF + no URL companion -->
+                            <div id="cert_image_upload_wrap" class="cert-companion-image-wrapper">
+                                <label class="form-label-orange">
+                                    <i class="fas fa-exclamation-triangle"></i> PDF uploaded — add a picture below, or
+                                    paste an Image URL in the field above:
+                                </label>
+                                <input type="file" id="cert_image_input" name="cert_image_file"
+                                    accept=".png,.jpg,.jpeg,.webp" class="admin-input">
+                                <div id="cert_image_preview_box" class="cert-companion-image-preview-box">
+                                    <img id="cert_image_preview_el" src="" class="preview-img-element">
+                                </div>
+                            </div>
+
+                            <!-- URL live preview -->
+                            <div id="cert_url_preview_box" class="cert-url-preview-wrapper-box">
+                                <img id="cert_url_preview_el" src="" alt="URL Preview" class="preview-img-element">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn"><i class="fas fa-plus-circle"></i> Add Certificate</button>
+                </form>
+            </div>
+
+            {% if certificates %}
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Preview</th>
+                            <th>Title</th>
+                            <th>Issuer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in certificates %}
+                        <tr>
+                            <td>
+                                <div class="table-preview-img-wrap">
+                                    {% if c.preview_image %}
+                                    <img src="/certificate/{{ c._id }}/preview-image" alt="" class="table-preview-img"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <span class="table-preview-fallback"><i class="fas fa-image"></i></span>
+                                    {% else %}
+                                    <span class="table-preview-fallback-icon"><i class="fas fa-certificate"></i></span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>{{ c.title }}</td>
+                            <td>{{ c.issuer }}</td>
+                            <td>{{ c.date_issued or 'N/A' }}</td>
+                            <td>
+                                {% if c.is_active %}
+                                <span class="badge badge-active">Visible</span>
+                                {% else %}
+                                <span class="badge badge-hidden">Hidden</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{{ url_for('admin.toggle_certificate', cert_id=c._id) }}" method="POST" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    {% if c.is_active %}
+                                    <button type="submit" class="toggle-btn toggle-hide">Hide</button>
+                                    {% else %}
+                                    <button type="submit" class="toggle-btn toggle-show">Show</button>
+                                    {% endif %}
+                                </form>
+                                <button type="button" class="toggle-btn edit-cert-btn btn-edit"
+                                    data-id="{{ c._id }}" data-title="{{ c.title | e }}"
+                                    data-issuer="{{ c.issuer | e }}" data-date_issued="{{ c.date_issued or '' | e }}"
+                                    data-link="{{ c.link or '' | e }}" data-tags="{{ c.tags | join(', ') | e }}"
+                                    data-description="{{ c.description or '' | e }}"
+                                    data-filename="{{ c.filename or '' }}"
+                                    data-preview_image="{{ c.preview_image or '' }}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <form action="{{ url_for('admin.delete_certificate', cert_id=c._id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('🗑️ Delete this certificate?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="toggle-btn btn-trash"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ═══════════ EXPERIENCE DOCUMENTS SECTION ═══════════ -->
+        <div class="section">
+            <div class="section-header-wrap">
+                <h2><i class="fas fa-file-invoice"></i> Experience Document Management</h2>
+                <button type="button" class="toggle-form-btn" data-target="experience-form-container">
+                    <i class="fas fa-plus"></i> Upload Document
+                </button>
+            </div>
+
+            <div id="experience-form-container" class="collapsible-form-container">
+                <div class="grid-two-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 20px;">
+                    <!-- Upload Appointment Letter -->
+                    <form action="{{ url_for('admin.upload_appointment_letter') }}" method="POST" enctype="multipart/form-data" style="border: 1px solid var(--border); padding: 20px; border-radius: 12px; background: rgba(255,255,255,0.01);">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <h3 class="dash-section-h3" style="margin-top: 0;"><i class="fas fa-file-contract"></i> Upload Appointment Letter</h3>
+                        <div class="form-row">
+                            <label class="form-label-blue">Select Company *</label>
+                            <select name="company" class="admin-input" required style="width: 100%; margin-bottom: 15px; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 8px;">
+                                <option value="">Select Company</option>
+                                {% for comp in companies %}
+                                <option value="{{ comp.slug }}">{{ comp.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <label class="form-label-blue">PDF Document *</label>
+                            <input type="file" name="letter_file" accept=".pdf" class="admin-input" required style="width: 100%; margin-bottom: 15px;">
+                        </div>
+                        <button type="submit" class="submit-btn" style="width: 100%; padding: 12px;"><i class="fas fa-upload"></i> Upload Appointment Letter</button>
+                    </form>
+
+                    <!-- Upload Incentive -->
+                    <form action="{{ url_for('admin.upload_incentive') }}" method="POST" enctype="multipart/form-data" style="border: 1px solid var(--border); padding: 20px; border-radius: 12px; background: rgba(255,255,255,0.01);">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <h3 class="dash-section-h3" style="margin-top: 0;"><i class="fas fa-award"></i> Upload Incentive Image</h3>
+                        <div class="form-row">
+                            <label class="form-label-blue">Select Company *</label>
+                            <select name="company" class="admin-input" required style="width: 100%; margin-bottom: 15px; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 8px;">
+                                <option value="">Select Company</option>
+                                {% for comp in companies %}
+                                <option value="{{ comp.slug }}">{{ comp.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                <div>
+                                    <label class="form-label-blue">Incentive Image *</label>
+                                    <input type="file" name="incentive_file" accept=".png,.jpg,.jpeg,.webp" class="admin-input" required style="width: 100%;">
+                                </div>
+                                <div>
+                                    <label class="form-label-blue">Display Order</label>
+                                    <input type="number" name="order" value="0" min="0" class="admin-input" required style="width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 8px;">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn" style="width: 100%; padding: 12px;"><i class="fas fa-upload"></i> Upload Incentive Image</button>
+                    </form>
+                </div>
+
+                <div class="grid-two-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <!-- Upload Offer Letter -->
+                    <form action="{{ url_for('admin.upload_offer_letter') }}" method="POST" enctype="multipart/form-data" style="border: 1px solid var(--border); padding: 20px; border-radius: 12px; background: rgba(255,255,255,0.01);">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <h3 class="dash-section-h3" style="margin-top: 0;"><i class="fas fa-envelope-open-text"></i> Upload Offer Letter</h3>
+                        <div class="form-row">
+                            <label class="form-label-blue">Select Company *</label>
+                            <select name="company" class="admin-input" required style="width: 100%; margin-bottom: 15px; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 8px;">
+                                <option value="">Select Company</option>
+                                {% for comp in companies %}
+                                <option value="{{ comp.slug }}">{{ comp.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <label class="form-label-blue">PDF Document *</label>
+                            <input type="file" name="offer_file" accept=".pdf" class="admin-input" required style="width: 100%; margin-bottom: 15px;">
+                        </div>
+                        <button type="submit" class="submit-btn" style="width: 100%; padding: 12px;"><i class="fas fa-upload"></i> Upload Offer Letter</button>
+                    </form>
+
+                    <!-- Upload Pay Slip -->
+                    <form action="{{ url_for('admin.upload_pay_slip') }}" method="POST" enctype="multipart/form-data" style="border: 1px solid var(--border); padding: 20px; border-radius: 12px; background: rgba(255,255,255,0.01);">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <h3 class="dash-section-h3" style="margin-top: 0;"><i class="fas fa-file-invoice-dollar"></i> Upload Pay Slip</h3>
+                        <div class="form-row">
+                            <label class="form-label-blue">Select Company *</label>
+                            <select name="company" class="admin-input" required style="width: 100%; margin-bottom: 15px; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 8px;">
+                                <option value="">Select Company</option>
+                                {% for comp in companies %}
+                                <option value="{{ comp.slug }}">{{ comp.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <label class="form-label-blue">PDF Document *</label>
+                            <input type="file" name="slip_file" accept=".pdf" class="admin-input" required style="width: 100%; margin-bottom: 15px;">
+                        </div>
+                        <button type="submit" class="submit-btn" style="width: 100%; padding: 12px;"><i class="fas fa-upload"></i> Upload Pay Slip</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- List Uploaded Appointment Letters -->
+            <h3 class="dash-section-h3" style="margin-top: 25px;"><i class="fas fa-file-contract"></i> Active Appointment Letters</h3>
+            {% if appointment_letters %}
+            <div class="table-container" style="margin-bottom: 25px;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>File Name</th>
+                            <th>Uploaded</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for letter in appointment_letters %}
+                        <tr>
+                            <td>
+                                {% if letter.company == 'integrace' %}
+                                <span class="badge badge-active" style="background: rgba(0, 97, 255, 0.1); color: #0061FF; border: 1px solid rgba(0, 97, 255, 0.2);">Integrace</span>
+                                {% else %}
+                                <span class="badge badge-active" style="background: rgba(160, 207, 255, 0.1); color: var(--accent); border: 1px solid rgba(160, 207, 255, 0.2);">Walter Bushnell</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ letter.original_name }}</td>
+                            <td>{{ letter.uploaded_at | safe_date }}</td>
+                            <td>
+                                {% if letter.is_active %}
+                                <span class="badge badge-active">Active</span>
+                                {% else %}
+                                <span class="badge badge-hidden">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{{ url_for('admin.delete_appointment_letter', letter_id=letter._id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('🗑️ Delete this appointment letter?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="toggle-btn btn-trash"><i class="fas fa-trash"></i> Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p style="color: var(--text-dim); font-style: italic; margin-bottom: 25px;">No appointment letters uploaded yet.</p>
+            {% endif %}
+
+            <!-- List Uploaded Offer Letters -->
+            <h3 class="dash-section-h3" style="margin-top: 25px;"><i class="fas fa-envelope-open-text"></i> Active Offer Letters</h3>
+            {% if offer_letters %}
+            <div class="table-container" style="margin-bottom: 25px;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>File Name</th>
+                            <th>Uploaded</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for letter in offer_letters %}
+                        <tr>
+                            <td>
+                                {% if letter.company == 'integrace' %}
+                                <span class="badge badge-active" style="background: rgba(0, 97, 255, 0.1); color: #0061FF; border: 1px solid rgba(0, 97, 255, 0.2);">Integrace</span>
+                                {% else %}
+                                <span class="badge badge-active" style="background: rgba(160, 207, 255, 0.1); color: var(--accent); border: 1px solid rgba(160, 207, 255, 0.2);">Walter Bushnell</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ letter.original_name }}</td>
+                            <td>{{ letter.uploaded_at | safe_date }}</td>
+                            <td>
+                                {% if letter.is_active %}
+                                <span class="badge badge-active">Active</span>
+                                {% else %}
+                                <span class="badge badge-hidden">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{{ url_for('admin.delete_offer_letter', letter_id=letter._id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('🗑️ Delete this offer letter?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="toggle-btn btn-trash"><i class="fas fa-trash"></i> Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p style="color: var(--text-dim); font-style: italic; margin-bottom: 25px;">No offer letters uploaded yet.</p>
+            {% endif %}
+
+            <!-- List Uploaded Pay Slips -->
+            <h3 class="dash-section-h3" style="margin-top: 25px;"><i class="fas fa-file-invoice-dollar"></i> Active Pay Slips</h3>
+            {% if pay_slips %}
+            <div class="table-container" style="margin-bottom: 25px;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>File Name</th>
+                            <th>Uploaded</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slip in pay_slips %}
+                        <tr>
+                            <td>
+                                {% if slip.company == 'integrace' %}
+                                <span class="badge badge-active" style="background: rgba(0, 97, 255, 0.1); color: #0061FF; border: 1px solid rgba(0, 97, 255, 0.2);">Integrace</span>
+                                {% else %}
+                                <span class="badge badge-active" style="background: rgba(160, 207, 255, 0.1); color: var(--accent); border: 1px solid rgba(160, 207, 255, 0.2);">Walter Bushnell</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ slip.original_name }}</td>
+                            <td>{{ slip.uploaded_at | safe_date }}</td>
+                            <td>
+                                {% if slip.is_active %}
+                                <span class="badge badge-active">Active</span>
+                                {% else %}
+                                <span class="badge badge-hidden">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{{ url_for('admin.delete_pay_slip', slip_id=slip._id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('🗑️ Delete this pay slip?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="toggle-btn btn-trash"><i class="fas fa-trash"></i> Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p style="color: var(--text-dim); font-style: italic; margin-bottom: 25px;">No pay slips uploaded yet.</p>
+            {% endif %}
+
+            <!-- List Uploaded Incentives -->
+            <h3 class="dash-section-h3"><i class="fas fa-award"></i> Uploaded Incentives Gallery (Slideshow Series)</h3>
+            {% if incentives %}
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Preview</th>
+                            <th>Company</th>
+                            <th>File Name</th>
+                            <th>Display Order</th>
+                            <th>Uploaded</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inc in incentives %}
+                        <tr>
+                            <td>
+                                <div class="table-preview-img-wrap" style="width: 50px; height: 50px; background: #000; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                    <img src="{{ url_for('downloads.preview_incentive', inc_id=inc._id) }}" alt="" class="table-preview-img" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                </div>
+                            </td>
+                            <td>
+                                {% if inc.company == 'integrace' %}
+                                <span class="badge badge-active" style="background: rgba(0, 97, 255, 0.1); color: #0061FF; border: 1px solid rgba(0, 97, 255, 0.2);">Integrace</span>
+                                {% else %}
+                                <span class="badge badge-active" style="background: rgba(160, 207, 255, 0.1); color: var(--accent); border: 1px solid rgba(160, 207, 255, 0.2);">Walter Bushnell</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ inc.original_name }}</td>
+                            <td>{{ inc.order }}</td>
+                            <td>{{ inc.uploaded_at | safe_date }}</td>
+                            <td>
+                                <form action="{{ url_for('admin.delete_incentive', inc_id=inc._id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('🗑️ Delete this incentive document?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="toggle-btn btn-trash"><i class="fas fa-trash"></i> Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p style="color: var(--text-dim); font-style: italic;">No incentives uploaded yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- ═══════════ EXPERIENCE TIMELINE & ANALYTICS SECTION ═══════════ -->
+        <div class="section">
+            <div class="section-header-wrap">
+                <h2><i class="fas fa-briefcase"></i> Professional Experience Timeline & Analytics</h2>
+                <button type="button" class="toggle-form-btn" data-target="company-form-container">
+                    <i class="fas fa-plus"></i> Add Company
+                </button>
+            </div>
+
+            <!-- Add Company Form -->
+            <div id="company-form-container" class="collapsible-form-container">
+                <form action="{{ url_for('admin.add_company_experience') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-row">
+                        <input type="text" name="name" placeholder="Company Name (e.g. Integrace Pharma) *" class="admin-input" required>
+                        <input type="text" name="slug" placeholder="Unique Slug (e.g. integrace) *" class="admin-input" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" name="role_title" placeholder="Role Title (e.g. Field Sales Officer) *" class="admin-input" required>
+                        <input type="text" name="duration" placeholder="Duration (e.g. May 2024 - June 2025) *" class="admin-input" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" name="location" placeholder="Location (e.g. Madurai, India) *" class="admin-input" required>
+                        <input type="number" name="sort_order" placeholder="Sort Order (e.g. 1, 2) *" class="admin-input" value="1" required>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label-blue" style="display: block; margin-bottom: 5px;">Metric Display Type</label>
+                        <select name="metric_type" class="admin-input" required style="width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 8px;">
+                            <option value="units">Units (Packs/Quantities)</option>
+                            <option value="currency">Currency (INR / Rupees)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn"><i class="fas fa-plus-circle"></i> Create Company</button>
+                </form>
+            </div>
+
+            <!-- List of Companies -->
+            {% if companies %}
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Slug</th>
+                            <th>Role</th>
+                            <th>Duration</th>
+                            <th>Metric Type</th>
+                            <th>Order</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comp in companies %}
+                        <tr>
+                            <td><strong>{{ comp.name }}</strong></td>
+                            <td><code>{{ comp.slug }}</code></td>
+                            <td>{{ comp.role_title }}</td>
+                            <td>{{ comp.duration }}</td>
+                            <td>
+                                {% if comp.metric_type == 'currency' %}
+                                <span class="badge badge-active" style="background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.2);">INR (₹)</span>
+                                {% else %}
+                                <span class="badge badge-active" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.2);">Units</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ comp.sort_order }}</td>
+                            <td>
+                                <a href="{{ url_for('admin.edit_company_experience', company_id=comp._id) }}" class="toggle-btn toggle-show" style="text-decoration: none; display: inline-block; padding: 6px 12px;"><i class="fas fa-edit"></i> Edit Analytics & Profile</a>
+                                <form action="{{ url_for('admin.delete_company_experience', company_id=comp._id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('🗑️ Delete {{ comp.name }}? This will delete all its months progression, products portfolio, and uploaded documents!');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="toggle-btn btn-trash"><i class="fas fa-trash"></i> Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p style="color: var(--text-dim); font-style: italic;">No company experience records added yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- ═══════════ PROJECTS SECTION ═══════════ -->
+        <div class="section">
+            <div class="section-header-wrap">
+                <h2><i class="fas fa-code"></i> Project Management</h2>
+                <button type="button" class="toggle-form-btn" data-target="project-form-container">
+                    <i class="fas fa-plus"></i> Add Project
+                </button>
+            </div>
+
+            <div id="project-form-container" class="collapsible-form-container">
+                <form action="{{ url_for('admin.add_project') }}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <h3 class="section-sub-header">1. Basic Info</h3>
+                    <div class="form-row">
+                        <input type="text" name="title" placeholder="Project Title (e.g. Enterprise Analytics) *"
+                            class="admin-input" required>
+                        <select name="category" class="admin-input" required>
+                            <option value="">Select Organization / Context *</option>
+                            <option value="elysium">Elysium Center</option>
+                            <option value="self">Self Learning</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <select name="project_type" id="add_project_type" class="admin-input" required>
+                            <option value="">Select Project Type *</option>
+                            <option value="fullstack">Full Stack Project</option>
+                            <option value="datascience">Data Science Project</option>
+                        </select>
+                        <input type="text" name="date_completed" placeholder="Date Completed (e.g. Jan 2024)"
+                            class="admin-input">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" name="tags" placeholder="Tech Stack (comma-separated: Python, React...)"
+                            class="admin-input">
+                        <input type="text" name="highlight_tag"
+                            placeholder="Highlight Tag (e.g. ML Supervised Algorithms)" class="admin-input">
+                    </div>
+
+                    <h3 class="section-sub-header">2. Links & Media</h3>
+                    <div class="form-row">
+                        <div class="flex-1-wrapper">
+                            <input type="text" name="source_code_link" id="add_source_code_link"
+                                placeholder="Source Code Link (Required for Full Stack) *" class="admin-input" required>
+                        </div>
+                        <div id="add_deployment_wrap" class="flex-1-wrapper">
+                            <input type="text" name="deployment_link" id="add_deployment_link"
+                                placeholder="Live Deployment Link (Triggers Auto-Preview)" class="admin-input">
+                        </div>
+                        <div id="add_colab_wrap" class="flex-1-wrapper d-none">
+                            <input type="text" name="colab_link" id="add_colab_link"
+                                placeholder="Google Colab Link (e.g. colab.research.google.com...)" class="admin-input">
+                        </div>
+                    </div>
+                    <div class="form-row grid-two-columns">
+                        <div>
+                            <label class="form-label-blue">Upload Preview Image</label>
+                            <input type="file" id="add_project_image_file" name="project_image_file"
+                                accept=".png,.jpg,.jpeg,.webp,.gif" class="admin-input">
+                        </div>
+                        <div>
+                            <label class="form-label-blue">Or Provide Image URL</label>
+                            <input type="text" name="image_url" id="project_image_url"
+                                placeholder="Image URL (Leave blank to auto-fetch from deployment)" class="admin-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div id="image_preview_box" class="project-image-box-preview">
+                            <span class="preview-placeholder-text">Image Preview</span>
+                        </div>
+                    </div>
+
+                    <h3 class="section-sub-header">3. Detailed Case Study Content</h3>
+                    <div class="form-row">
+                        <div class="full-width">
+                            <textarea name="description" placeholder="Short Overview (Used in cards)"
+                                class="admin-input brief-textarea-min-height"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="full-width">
+                            <label id="add_problem_label" class="form-label-blue">
+                                <i class="fas fa-exclamation-circle"></i> The Problem / Challenge
+                            </label>
+                            <textarea name="problem_statement" id="add_problem_statement"
+                                placeholder="The Problem / Challenge" class="admin-input"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="full-width">
+                            <label id="add_solution_label" class="form-label-blue">
+                                <i class="fas fa-check-circle"></i> The Solution & Approach
+                            </label>
+                            <textarea name="solution_approach" id="add_solution_approach"
+                                placeholder="The Solution & Approach (Use HTML or bullets)"
+                                class="admin-input"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- DATA SCIENCE METRICS SECTION -->
+                    <div id="add_ds_metrics_section" class="d-none">
+                        <h3 class="section-sub-header">
+                            <i class="fas fa-brain"></i> 4. Model Performance Metrics (Data Science)
+                        </h3>
+                        <div class="form-row">
+                            <div>
+                                <label class="form-label-blue">Accuracy</label>
+                                <input type="text" name="ds_accuracy" placeholder="e.g. 94.5%" class="admin-input">
+                            </div>
+                            <div>
+                                <label class="form-label-blue">F1 Score</label>
+                                <input type="text" name="ds_f1_score" placeholder="e.g. 0.92" class="admin-input">
+                            </div>
+                            <div>
+                                <label class="form-label-blue">Precision</label>
+                                <input type="text" name="ds_precision" placeholder="e.g. 0.95" class="admin-input">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                <label class="form-label-blue">Recall</label>
+                                <input type="text" name="ds_recall" placeholder="e.g. 0.91" class="admin-input">
+                            </div>
+                            <div>
+                                <label class="form-label-blue">RMSE</label>
+                                <input type="text" name="ds_rmse" placeholder="e.g. 0.034" class="admin-input">
+                            </div>
+                            <div>
+                                <label class="form-label-blue">AUC-ROC</label>
+                                <input type="text" name="ds_auc_roc" placeholder="e.g. 0.97" class="admin-input">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                <label class="form-label-blue">Custom Metric Name</label>
+                                <input type="text" name="ds_custom_name" placeholder="e.g. Training Time"
+                                    class="admin-input">
+                            </div>
+                            <div>
+                                <label class="form-label-blue">Custom Metric Value</label>
+                                <input type="text" name="ds_custom_value" placeholder="e.g. 12 min" class="admin-input">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="full-width">
+                                <label class="form-label-blue">
+                                    <i class="fas fa-book-open"></i> Notebook Preview URL (nbviewer / Colab share link)
+                                </label>
+                                <input type="text" name="notebook_url" id="add_notebook_url"
+                                    placeholder="https://nbviewer.org/github/... or https://colab.research.google.com/drive/..."
+                                    class="admin-input">
+                                <p class="notebook-info-hint">
+                                    <i class="fas fa-info-circle"></i> Use nbviewer.org for best embedding. Colab links open in a new tab.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FULL STACK KEY FEATURES SECTION -->
+                    <div id="add_fs_metrics_section">
+                        <h3 class="section-sub-header">
+                            <i class="fas fa-list-ul"></i> 4. Key Features & Impact
+                        </h3>
+                        <div class="form-row">
+                            <div class="full-width">
+                                <label id="add_metrics_label" class="form-label-blue">
+                                    <i class="fas fa-chart-line"></i> Key Metrics & Business Impact
+                                </label>
+                                <textarea name="key_metrics" id="add_key_metrics"
+                                    placeholder="Key Metrics (e.g. 94.5% Accuracy | 32% Reduction)" class="admin-input brief-textarea-min-height"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn"><i class="fas fa-plus-circle"></i> Add Project</button>
+                </form>
+            </div>
+
+            {% if projects %}
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Preview</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Type</th>
+                            <th>Tag</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in projects %}
+                        <tr>
+                            <td>
+                                <div class="project-table-thumbnail-wrap">
+                                    <img src="{{ p.image_url }}" alt="" class="table-preview-img">
+                                </div>
+                            </td>
+                            <td>{{ p.title }}</td>
+                            <td>{{ p.category }}</td>
+                            <td>
+                                {% if p.project_type == 'datascience' %}
+                                <span class="badge badge-purple-ds">Data Science</span>
+                                {% elif p.project_type == 'fullstack' %}
+                                <span class="badge badge-green-fs">Full Stack</span>
+                                {% else %}
+                                <span class="text-dim-fallback">—</span>
+                                {% endif %}
+                            </td>
+                            <td class="td-highlight-tag">{{ p.highlight_tag or '—' }}</td>
+                            <td>
+                                {% if p.visible %}
+                                <span class="badge badge-active">Visible</span>
+                                {% else %}
+                                <span class="badge badge-hidden">Hidden</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{{ url_for('admin.toggle_project', project_id=p._id) }}" method="POST" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    {% if p.visible %}
+                                    <button type="submit" class="toggle-btn toggle-hide">Hide</button>
+                                    {% else %}
+                                    <button type="submit" class="toggle-btn toggle-show">Show</button>
+                                    {% endif %}
+                                </form>
+                                <button type="button" class="toggle-btn edit-project-btn btn-edit"
+                                    data-id="{{ p._id }}" data-title="{{ p.title | e }}"
+                                    data-category="{{ p.category | e }}" data-project_type="{{ p.project_type | e }}"
+                                    data-date_completed="{{ p.date_completed or '' | e }}"
+                                    data-tags="{{ p.tags | join(', ') | e }}"
+                                    data-source_code_link="{{ p.source_code_link or '' | e }}"
+                                    data-deployment_link="{{ p.deployment_link or '' | e }}"
+                                    data-colab_link="{{ p.colab_link or '' | e }}"
+                                    data-notebook_url="{{ p.notebook_url or '' | e }}"
+                                    data-image_url="{{ p.image_url or '' | e }}"
+                                    data-description="{{ p.description or '' | e }}"
+                                    data-problem_statement="{{ p.problem_statement or '' | e }}"
+                                    data-solution_approach="{{ p.solution_approach or '' | e }}"
+                                    data-key_metrics="{{ p.key_metrics or '' | e }}"
+                                    data-ds_metrics='{{ p.ds_metrics | default({}) | tojson }}'
+                                    data-highlight_tag="{{ p.highlight_tag or '' | e }}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <form action="{{ url_for('admin.delete_project', project_id=p._id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('🗑️ Delete this project?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="toggle-btn btn-trash"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ═══════════ PLATFORMS SECTION ═══════════ -->
+        <div class="section">
+            <div class="section-header-wrap">
+                <h2><i class="fas fa-share-alt"></i> Platform Links</h2>
+                <button type="button" class="toggle-form-btn" data-target="platform-form-container">
+                    <i class="fas fa-plus"></i> Add Platform
+                </button>
+            </div>
+
+            <div id="platform-form-container" class="collapsible-form-container">
+                <form action="{{ url_for('admin.add_platform') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-row">
+                        <input type="text" name="name" placeholder="Platform Name (e.g. GitHub) *" class="admin-input"
+                            required>
+                        <input type="text" name="url" placeholder="URL *" class="admin-input" required>
+                    </div>
+                    <button type="submit" class="submit-btn"><i class="fas fa-plus-circle"></i> Add Platform</button>
+                </form>
+            </div>
+
+            {% if platforms %}
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>URL</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in platforms %}
+                        <tr>
+                            <td><i class="{{ p.icon_class }}"></i> {{ p.name }}</td>
+                            <td class="td-platform-url">{{ p.url }}</td>
+                            <td>
+                                {% if p.visible %}
+                                <span class="badge badge-active">Visible</span>
+                                {% else %}
+                                <span class="badge badge-hidden">Hidden</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{{ url_for('admin.toggle_platform', platform_id=p._id) }}" method="POST" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    {% if p.visible %}
+                                    <button type="submit" class="toggle-btn toggle-hide">Hide</button>
+                                    {% else %}
+                                    <button type="submit" class="toggle-btn toggle-show">Show</button>
+                                    {% endif %}
+                                </form>
+                                <form action="{{ url_for('admin.delete_platform', platform_id=p._id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('🗑️ Delete this platform link?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="toggle-btn btn-trash"><i class="fas fa-trash"></i></button>
+                                </form>
+                                <button type="button" class="toggle-btn edit-platform-btn btn-edit"
+                                    data-id="{{ p._id }}" data-name="{{ p.name | e }}" data-url="{{ p.url | e }}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Edit Certificate Modal -->
+        <div id="editCertificateModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-certificate"></i> Edit Certificate</h3>
+                    <button type="button" class="close-modal" id="closeEditCertModal">&times;</button>
+                </div>
+                <form id="editCertificateForm" action="" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <h3 class="dash-section-h3">Certificate Details</h3>
+                    <div class="form-row">
+                        <input type="text" name="title" id="ec_title" placeholder="Certificate Title *"
+                            class="admin-input" required>
+                        <input type="text" name="issuer" id="ec_issuer" placeholder="Issuer *" class="admin-input"
+                            required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" name="date_issued" id="ec_date_issued"
+                            placeholder="Issue Date (e.g. Oct 2023)" class="admin-input">
+                        <input type="text" name="link" id="ec_link" placeholder="Verification URL" class="admin-input">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" name="tags" id="ec_tags"
+                            placeholder="Tags (comma-separated: NumPy, Pandas...)" class="admin-input">
+                    </div>
+                    <div class="form-row">
+                        <textarea name="description" id="ec_description" placeholder="Short Description / Overview"
+                            class="admin-input brief-textarea-modal-height"></textarea>
+                    </div>
+
+                    <!-- File Upload Section -->
+                    <div class="form-row grid-two-columns margin-top-1">
+                        <div>
+                            <label class="form-label-blue">
+                                <i class="fas fa-paperclip"></i> Replace Certificate File (Image / PDF)
+                            </label>
+                            <!-- Current file info -->
+                            <div id="ec_current_file_info" class="cert-current-file-badge">
+                                <i class="fas fa-file"></i> Current: <span id="ec_current_filename"></span>
+                                <span id="ec_current_preview_badge" class="cert-current-preview-green"><i class="fas fa-image"></i> has preview</span>
+                            </div>
+                            <input type="file" id="ec_cert_file_input" name="cert_file"
+                                accept=".pdf,.png,.jpg,.jpeg,.webp" class="admin-input">
+                        </div>
+                        <div>
+                            <label class="form-label-blue">Or Provide Image URL</label>
+                            <input type="text" name="preview_image_url" id="ec_preview_image_url"
+                                placeholder="Paste image URL to replace current preview" class="admin-input">
+                        </div>
+                    </div>
+
+                    <!-- Preview area -->
+                    <div class="form-row">
+                        <div class="full-width">
+                            <!-- File preview box -->
+                            <div id="ec_cert_preview_box" class="cert-preview-wrapper-box">
+                                <div id="ec_cert_img_preview" class="cert-image-preview-sub-box">
+                                    <img id="ec_cert_img_el" src="" alt="Certificate Preview" class="cert-img-element-full">
+                                    <div class="cert-image-preview-label" id="ec_cert_img_name"></div>
+                                </div>
+                                <div id="ec_cert_pdf_preview" class="cert-pdf-preview-sub-box">
+                                    <div class="upload-preview-icon-box">
+                                        <i class="fas fa-file-pdf upload-preview-icon"></i>
+                                    </div>
+                                    <div class="upload-preview-details">
+                                        <div id="ec_cert_pdf_name" class="upload-preview-filename">—</div>
+                                        <div id="ec_cert_pdf_size" class="upload-preview-filesize">—</div>
+                                    </div>
+                                    <span class="upload-preview-ready"><i class="fas fa-check-circle"></i> Ready</span>
+                                </div>
+                            </div>
+
+                            <!-- PDF + no URL companion -->
+                            <div id="ec_cert_image_upload_wrap" class="cert-companion-image-wrapper">
+                                <label class="form-label-orange">
+                                    <i class="fas fa-exclamation-triangle"></i> PDF replaced — upload companion display image below:
+                                </label>
+                                <input type="file" id="ec_cert_image_input" name="cert_image_file"
+                                    accept=".png,.jpg,.jpeg,.webp" class="admin-input">
+                                <div id="ec_cert_image_preview_box" class="cert-companion-image-preview-box">
+                                    <img id="ec_cert_image_preview_el" src="" class="preview-img-element">
+                                </div>
+                            </div>
+
+                            <!-- URL live preview -->
+                            <div id="ec_cert_url_preview_box" class="cert-url-preview-wrapper-box">
+                                <img id="ec_cert_url_preview_el" src="" alt="URL Preview" class="preview-img-element">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn margin-top-1"><i class="fas fa-save"></i> Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Project Modal -->
+        <div id="editProjectModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-edit"></i> Edit Project</h3>
+                    <button type="button" class="close-modal" id="closeEditModal">&times;</button>
+                </div>
+                <form id="editProjectForm" action="" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <h3 class="dash-section-h3">1. Basic Info</h3>
+                    <div class="form-row">
+                        <input type="text" name="title" id="edit_title"
+                            placeholder="Project Title (e.g. Enterprise Analytics) *" class="admin-input" required>
+                        <select name="category" id="edit_category" class="admin-input" required>
+                            <option value="elysium">Elysium Center</option>
+                            <option value="self">Self Learning</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <select name="project_type" id="edit_project_type" class="admin-input" required>
+                            <option value="fullstack">Full Stack Project</option>
+                            <option value="datascience">Data Science Project</option>
+                        </select>
+                        <input type="text" name="date_completed" id="edit_date_completed"
+                            placeholder="Date Completed (e.g. Jan 2024)" class="admin-input">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" name="tags" id="edit_tags"
+                            placeholder="Tech Stack (comma-separated: Python, React...)" class="admin-input">
+                        <input type="text" name="highlight_tag" id="edit_highlight_tag"
+                            placeholder="Highlight Tag (e.g. ML Supervised Algorithms)" class="admin-input">
+                    </div>
+
+                    <h3 class="dash-section-h3">2. Links & Media</h3>
+                    <div class="form-row">
+                        <div class="flex-1-wrapper">
+                            <input type="text" name="source_code_link" id="edit_source_code_link"
+                                placeholder="Source Code Link (Required for Full Stack) *" class="admin-input" required>
+                        </div>
+                        <div id="edit_deployment_wrap" class="flex-1-wrapper">
+                            <input type="text" name="deployment_link" id="edit_deployment_link"
+                                placeholder="Live Deployment Link (Triggers Auto-Preview)" class="admin-input">
+                        </div>
+                        <div id="edit_colab_wrap" class="flex-1-wrapper d-none">
+                            <input type="text" name="colab_link" id="edit_colab_link"
+                                placeholder="Google Colab Link (e.g. colab.research.google.com...)" class="admin-input">
+                        </div>
+                    </div>
+                    <div class="form-row grid-two-columns">
+                        <div>
+                            <label class="form-label-blue">Upload Preview Image</label>
+                            <input type="file" id="edit_project_image_file" name="project_image_file"
+                                accept=".png,.jpg,.jpeg,.webp,.gif" class="admin-input">
+                        </div>
+                        <div>
+                            <label class="form-label-blue">Or Provide Image URL</label>
+                            <input type="text" name="image_url" id="edit_image_url"
+                                placeholder="Image URL (Leave blank to keep existing / auto-fetch)" class="admin-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div id="edit_image_preview_box" class="project-image-box-preview">
+                            <span class="preview-placeholder-text">Image Preview</span>
+                        </div>
+                    </div>
+
+                    <h3 class="dash-section-h3">3. Detailed Case Study Content</h3>
+                    <div class="form-row">
+                        <div class="full-width">
+                            <textarea name="description" id="edit_description"
+                                placeholder="Short Overview (Used in cards)" class="admin-input brief-textarea-min-height"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="full-width">
+                            <label id="edit_problem_label" class="form-label-blue">
+                                <i class="fas fa-exclamation-circle"></i> The Problem / Challenge
+                            </label>
+                            <textarea name="problem_statement" id="edit_problem_statement"
+                                placeholder="The Problem / Challenge" class="admin-input"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="full-width">
+                            <label id="edit_solution_label" class="form-label-blue">
+                                <i class="fas fa-check-circle"></i> The Solution & Approach
+                            </label>
+                            <textarea name="solution_approach" id="edit_solution_approach"
+                                placeholder="The Solution & Approach (Use HTML or bullets)"
+                                class="admin-input"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- DATA SCIENCE METRICS SECTION -->
+                    <div id="edit_ds_metrics_section" class="d-none">
+                        <h3 class="dash-section-h3">
+                            <i class="fas fa-brain"></i> 4. Model Performance Metrics (Data Science)
+                        </h3>
+                        <div class="form-row">
+                            <div>
+                                <label class="form-label-blue">Accuracy</label>
+                                <input type="text" name="ds_accuracy" id="edit_ds_accuracy" placeholder="e.g. 94.5%"
+                                    class="admin-input">
+                            </div>
+                            <div>
+                                <label class="form-label-blue">F1 Score</label>
+                                <input type="text" name="ds_f1_score" id="edit_ds_f1_score" placeholder="e.g. 0.92"
+                                    class="admin-input">
+                            </div>
+                            <div>
+                                <label class="form-label-blue">Precision</label>
+                                <input type="text" name="ds_precision" id="edit_ds_precision" placeholder="e.g. 0.95"
+                                    class="admin-input">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                <label class="form-label-blue">Recall</label>
+                                <input type="text" name="ds_recall" id="edit_ds_recall" placeholder="e.g. 0.91"
+                                    class="admin-input">
+                            </div>
+                            <div>
+                                <label class="form-label-blue">RMSE</label>
+                                <input type="text" name="ds_rmse" id="edit_ds_rmse" placeholder="e.g. 0.034"
+                                    class="admin-input">
+                            </div>
+                            <div>
+                                <label class="form-label-blue">AUC-ROC</label>
+                                <input type="text" name="ds_auc_roc" id="edit_ds_auc_roc" placeholder="e.g. 0.97"
+                                    class="admin-input">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                <label class="form-label-blue">Custom Metric Name</label>
+                                <input type="text" name="ds_custom_name" id="edit_ds_custom_name"
+                                    placeholder="e.g. Training Time" class="admin-input">
+                            </div>
+                            <div>
+                                <label class="form-label-blue">Custom Metric Value</label>
+                                <input type="text" name="ds_custom_value" id="edit_ds_custom_value"
+                                    placeholder="e.g. 12 min" class="admin-input">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="full-width">
+                                <label class="form-label-blue">
+                                    <i class="fas fa-book-open"></i> Notebook Preview URL (nbviewer / Colab share link)
+                                </label>
+                                <input type="text" name="notebook_url" id="edit_notebook_url"
+                                    placeholder="https://nbviewer.org/github/... or https://colab.research.google.com/drive/..."
+                                    class="admin-input">
+                                <p class="notebook-info-hint">
+                                    <i class="fas fa-info-circle"></i> Use nbviewer.org for best embedding. Colab links open in a new tab.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FULL STACK KEY FEATURES SECTION -->
+                    <div id="edit_fs_metrics_section">
+                        <h3 class="dash-section-h3">
+                            <i class="fas fa-list-ul"></i> 4. Key Features & Impact
+                        </h3>
+                        <div class="form-row">
+                            <div class="full-width">
+                                <label id="edit_metrics_label" class="form-label-blue">
+                                    <i class="fas fa-chart-line"></i> Key Metrics & Business Impact
+                                </label>
+                                <textarea name="key_metrics" id="edit_key_metrics"
+                                    placeholder="Key Metrics (e.g. 94.5% Accuracy | 32% Reduction)" class="admin-input brief-textarea-min-height"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn full-width-submit-margin"><i class="fas fa-save"></i> Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Platform Modal -->
+        <div id="editPlatformModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-share-alt"></i> Edit Platform</h3>
+                    <button type="button" class="close-modal" id="closeEditPlatformModal">&times;</button>
+                </div>
+                <form id="editPlatformForm" action="" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-row">
+                        <input type="text" name="name" id="ep_name" placeholder="Platform Name *" class="admin-input" required>
+                        <input type="text" name="url" id="ep_url" placeholder="URL *" class="admin-input" required>
+                    </div>
+                    <button type="submit" class="submit-btn"><i class="fas fa-save"></i> Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <script src="{{ url_for('admin.static', filename='js/admin_dashboard.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+/* ==========================================================================
+   BASE.CSS — Global Variables, Reset & Utilities
+   Loaded on every page via base.html
+   ========================================================================== */
+
+/* --- CSS Custom Properties (Design Tokens) --- */
+:root {
+    --bg: #0D0D0D;
+    --bg-card: #1A1A1A;
+    --bg-accent: #262626;
+    --text-primary: #FFFFFF;
+    --text-secondary: #A6A6A6;
+    --text-dim: #737373;
+    --accent: #A0CFFF;
+    --accent-vibrant: #7AB7FF;
+    --glass: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.1);
+    --border-bright: rgba(255, 255, 255, 0.2);
+    --font: 'Outfit', sans-serif;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+    --section-pad: clamp(40px, 8vw, 100px) clamp(5%, 6vw, 10%);
+    --h1-size: clamp(2.2rem, 8vw, 4.2rem);
+    --h2-size: clamp(1.8rem, 5vw, 2.8rem);
+    --body-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    --nav-height: clamp(60px, 8vh, 80px);
+}
+
+/* --- Global Reset --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font);
+}
+
+/* --- Base HTML & Body --- */
+html {
+    scroll-behavior: smooth;
+    background: var(--bg);
+    color: var(--text-primary);
+    scrollbar-width: thin;
+    scrollbar-color: var(--bg-accent) var(--bg);
+}
+
+body {
+    overflow-x: hidden;
+    line-height: 1.6;
+    background-color: var(--bg);
+}
+
+/* --- Global Utility Classes --- */
+.hidden {
+    display: none !important;
+}
+
+/* --- Global Image Defaults --- */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* --- Cross-Browser / Cross-OS Form Consistency --- */
+input,
+button,
+textarea,
+select {
+    font-family: var(--font);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* --- Text Selection --- */
+::selection {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+/* --- Custom Scrollbar (Webkit Browsers) --- */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bg-accent);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}

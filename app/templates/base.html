@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <!-- ═══ PRIMARY SEO META TAGS ═══ -->
+    <title>{% block title %}Vigneshwaran M — Pharmaceutical Sales | Field Sales Officer{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Portfolio of Vigneshwaran M, Field Sales Officer with proven pharmaceutical sales expertise at Walter Bushnell Pharma and Integrace Pharma, Madurai, India.{% endblock %}">
+    <meta name="keywords" content="Vigneshwaran M, pharmaceutical sales, field sales officer, Madurai, Walter Bushnell, Integrace Pharma, medical representative, pharma portfolio">
+    <meta name="author" content="Vigneshwaran M">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0a0a0a">
+
+    <!-- ═══ CANONICAL URL ═══ -->
+    <link rel="canonical" href="{% block canonical_url %}https://vigneshwaranm.onrender.com/{% endblock %}">
+
+    <!-- ═══ OPEN GRAPH (Google, Facebook, WhatsApp previews) ═══ -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Vigneshwaran M Portfolio">
+    <meta property="og:title" content="{% block og_title %}Vigneshwaran M — Pharmaceutical Field Sales Officer{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Track record of high-performance field sales operations across pharma territories in Madurai. Sales targets, analytics, and verified credentials.{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}https://vigneshwaranm.onrender.com/{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='img/my-photo.png', _external=true) }}{% endblock %}">
+    <meta property="og:locale" content="en_IN">
+
+    <!-- ═══ TWITTER / X CARD ═══ -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Vigneshwaran M — Pharmaceutical Sales Portfolio{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Pharmaceutical Field Sales Officer | Walter Bushnell & Integrace Pharma | Madurai, India{% endblock %}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='img/my-photo.png', _external=true) }}">
+
+    <!-- ═══ STRUCTURED DATA (JSON-LD for Google Rich Results) ═══ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Vigneshwaran M",
+        "jobTitle": "Field Sales Officer",
+        "description": "Pharmaceutical sales professional with expertise in territory management, product presentations, and revenue achievement.",
+        "url": "https://vigneshwaranm.onrender.com",
+        "sameAs": [],
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Madurai",
+            "addressRegion": "Tamil Nadu",
+            "addressCountry": "IN"
+        },
+        "worksFor": [
+            {
+                "@type": "Organization",
+                "name": "Integrace Pharma",
+                "startDate": "2024-05",
+                "endDate": "2025-06"
+            },
+            {
+                "@type": "Organization",
+                "name": "Walter Bushnell Pharma",
+                "startDate": "2023-02",
+                "endDate": "2024-04"
+            }
+        ]
+    }
+    </script>
+
+    <!-- ═══ FONTS & ICONS ═══ -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+
+    <!-- ═══ FAVICON ═══ -->
+    <link rel="icon" href="{{ url_for('static', filename='img/my-photo.png') }}" type="image/png">
+
+    <!-- ═══ BASE + PAGE CSS ═══ -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+    {% block scripts %}{% endblock %}
+</body>
+</html>

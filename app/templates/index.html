@@ -1,0 +1,620 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block content %}
+<nav class="navbar">
+    <div class="logo">VIGNESH<span>WARAN</span></div>
+
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <div id="navContainer">
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#skills">Expertise</a></li>
+            <li><a href="#certifications">Certifications</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#projects">Work</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section id="home" class="hero">
+    <div class="hero-grid">
+        <div class="hero-content">
+            <div class="system-online-badge">
+                <span class="pulse-dot"></span> AVAILABLE FOR NEW OPPORTUNITIES
+            </div>
+            <h1>VIGNESHWARAN M</h1>
+            <p class="hero-role-terminal">&gt; Data Scientist &amp; Python Full Stack Developer <span
+                    class="blink-cursor">_</span></p>
+
+            <div class="hero-objectives-card">
+                <h5></h5>
+                <p>A highly motivated and certified professional expertly bridging the disciplines of Data
+                    Science and Python Full Stack Development. Combining a strong analytical background (B.Sc. Physics)
+                    with extensive practical training to craft innovative web solutions and deploy insightful Machine
+                    Learning models. Driven to apply technical expertise to drive impactful results in a dynamic
+                    technical team.</p>
+            </div>
+
+            <div class="hero-actions">
+                <a href="#projects" class="btn btn-white">View My Projects</a>
+                <a href="#contact" class="btn btn-outline-dark">Get In Touch</a>
+                <a href="{{ url_for('public.experience') }}" class="btn btn-outline-dark"><i class="fas fa-briefcase btn-icon-spacing"></i>Prof. Exp.</a>
+                {% if has_resume %}
+                <a href="{{ url_for('downloads.download_resume') }}" class="btn btn-text">
+                    <i class="fas fa-download btn-icon-spacing"></i>Download Resume
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="hero-tech-pills">
+                <span class="tech-pill">Python</span>
+                <span class="tech-pill">TensorFlow</span>
+                <span class="tech-pill">Django</span>
+                <span class="tech-pill">AWS</span>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-photo-container">
+                <div class="hero-photo-wrapper">
+                    <!-- Added fallback image if profile.png isn't available yet -->
+                    <img src="{{ url_for('static', filename='img/my-photo.png') }}" alt="Vigneshwaran M"
+                        class="hero-img"
+                        onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=800&q=80'">
+                </div>
+                <div class="status-badge">
+                    <span class="status-label">STATUS</span>
+                    <span class="status-text"><span class="pulse-dot-light"></span> Learning New Things!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="skills" class="skills">
+    <h2 class="section-title">My Expertise</h2>
+
+    <div class="expertise-grid">
+        <!-- DATA SCIENCE CARD -->
+        <div class="expertise-card ds-card">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="expertise-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="expertise-title">Python for Data Science</h3>
+                    <ul class="expertise-summary">
+                        <li>Machine Learning & NLP <span class="dim">(Scikit-Learn, NLTK)</span></li>
+                        <li>Deep Learning <span class="dim">(TensorFlow, Keras)</span></li>
+                        <li>Data Visualization <span class="dim">(Matplotlib, Seaborn)</span></li>
+                    </ul>
+                    <div class="hover-hint">Hover to explore details <i class="fas fa-arrow-right"></i></div>
+                </div>
+                <div class="card-back">
+                    <div class="detailed-header">
+                        <i class="fas fa-brain"></i> Conceptual Mastery
+                    </div>
+                    <div class="detailed-scroll">
+                        <div class="detailed-section">
+                            <h4 class="expertise-accent-title">Machine Learning</h4>
+                            <ul class="detailed-list">
+                                <li><strong>Machine Learning with Scikit-Learn:</strong> Implementing supervised
+                                    learning algorithms (regression, classification), unsupervised learning (clustering)
+                                </li>
+                                <li><strong>Algorithms:</strong> K-mean, K-mean++, Naive Bayes, Simple Linear
+                                    Regression, SVM, Logistic Regression, Decision Trees, Random Forest, KNN.</li>
+                                <li><strong>Evaluation Metrics:</strong> Elbow method, Accuracy, confusion matrix, OLS,
+                                    R-Squared, RMSE, MSE, AUC ROC curves.</li>
+                                <li><strong>Advanced Concepts:</strong> Dimension reduction (PCA), Ridge/Lasso, managing
+                                    Overfitting vs Underfitting, cross-validation.</li>
+                                <li><strong>NLP:</strong> Tokenization, Stemming, TF-IDF, NLTK, spaCy.</li>
+                                <li><strong>Deep Learning:</strong> ANN, CNN, TensorFlow, Keras.</li>
+                            </ul>
+                        </div>
+                        <div class="detailed-section">
+                            <h4 class="expertise-accent-title">Python Scientific Libraries</h4>
+                            <ul class="detailed-list">
+                                <li><strong>NumPy:</strong> Creating arrays, array operations, and statistical
+                                    operations.</li>
+                                <li><strong>Pandas:</strong> Data manipulation using DataFrames, cleaning, aggregation
+                                    (pivoting, merging, joining).</li>
+                                <li><strong>SciPy:</strong> Scientific computing functions for optimization and
+                                    integration.</li>
+                                <li><strong>Libraries:</strong> Scikit-Learn, NLTK, Keras, TensorFlow, PyTorch.</li>
+                            </ul>
+                        </div>
+                        <div class="detailed-section">
+                            <h4 class="expertise-accent-title">Data Engineering & Visualization</h4>
+                            <ul class="detailed-list">
+                                <li><strong>Data Collection:</strong> Web Scraping, reading CSV, JSON, XLS, HTML.</li>
+                                <li><strong>Cleaning & Preprocessing:</strong> Label encoding, One-Hot encoding,
+                                    normalization (Standard/Min-Max Scalar).</li>
+                                <li><strong>Feature Engineering:</strong> Extraction, selection, EDA, handling outliers.
+                                </li>
+                                <li><strong>Visualization:</strong> Matplotlib & Seaborn (Bar, pie, scatter, box, heat
+                                    maps, pairplots).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FULL STACK CARD -->
+        <div class="expertise-card fs-card">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="expertise-icon">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <h3 class="expertise-title">Python Full Stack</h3>
+                    <ul class="expertise-summary">
+                        <li><strong>Frontend:</strong> HTML, CSS, JS</li>
+                        <li><strong>Backend:</strong> Django, Flask, Python</li>
+                        <li><strong>Data:</strong> MongoDB, MySQL, SQLite</li>
+                    </ul>
+                    <div class="hover-hint">Hover to explore details <i class="fas fa-arrow-right"></i></div>
+                </div>
+                <div class="card-back">
+                    <div class="detailed-header">
+                        <i class="fas fa-layer-group"></i> Deployment & Tools
+                    </div>
+                    <div class="detailed-scroll">
+                        <div class="detailed-section">
+                            <h4 class="expertise-accent-title">Development Stack</h4>
+                            <ul class="detailed-list">
+                                <li><strong>Front-End:</strong> HTML (structure), CSS (Box Model, Flexbox, Grid),
+                                    Bootstrap.</li>
+                                <li><strong>Interactivity:</strong> JavaScript (DOM, Events, AJAX) and jQuery.</li>
+                                <li><strong>Back-End:</strong> Python programming fundamentals (data types, operators).
+                                </li>
+                                <li><strong>Web Frameworks:</strong> Django and Flask for database-driven websites.</li>
+                            </ul>
+                        </div>
+                        <div class="detailed-section">
+                            <h4 class="expertise-accent-title">Database & Deployment</h4>
+                            <ul class="detailed-list">
+                                <li><strong>Database:</strong> Programming with MySQL, MongoDB, SQLite.</li>
+                                <li><strong>Hosting:</strong> Website hosting and server management.</li>
+                                <li><strong>Tools:</strong> Git, GitHub, Version Control.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TECH BAR MARQUEE -->
+    <div class="tech-marquee-wrapper">
+        <div class="tech-marquee-track">
+            <div class="tech-marquee-list">
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/html5-original.svg') }}"
+                        alt="HTML5"><span>HTML5</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/css3-original.svg') }}"
+                        alt="CSS3"><span>CSS3</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/bootstrap-original.svg') }}"
+                        alt="Bootstrap"><span>Bootstrap</span></div>
+                <div class="tech-item"><img
+                        src="{{ url_for('static', filename='images/tech/javascript-original.svg') }}"
+                        alt="JavaScript"><span>JavaScript</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/python-original.svg') }}"
+                        alt="Python"><span>Python</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/googlecolab.svg') }}"
+                        alt="Google Colab"><span>Google Colab</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/deeplearning.svg') }}"
+                        alt="Deep Learning"><span>Deep Learning</span></div>
+                <div class="tech-item"><img
+                        src="{{ url_for('static', filename='images/tech/scikitlearn-original.svg') }}"
+                        alt="Scikit-Learn"><span>Scikit-Learn</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/pycharm-original.svg') }}"
+                        alt="PyCharm"><span>PyCharm</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/jupyter-original.svg') }}"
+                        alt="Jupyter"><span>Jupyter</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/vscode-original.svg') }}"
+                        alt="VS Code"><span>VS Code</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/nlp.svg') }}"
+                        alt="NLP"><span>NLP</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/keras-original.svg') }}"
+                        alt="Keras"><span>Keras</span></div>
+                <div class="tech-item"><img
+                        src="{{ url_for('static', filename='images/tech/tensorflow-original.svg') }}"
+                        alt="TensorFlow"><span>TensorFlow</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/pytorch-original.svg') }}"
+                        alt="PyTorch"><span>PyTorch</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/numpy-original.svg') }}"
+                        alt="NumPy"><span>NumPy</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/pandas-original.svg') }}"
+                        alt="Pandas"><span>Pandas</span></div>
+                <div class="tech-item"><img
+                        src="{{ url_for('static', filename='images/tech/matplotlib-original.svg') }}"
+                        alt="Matplotlib"><span>Matplotlib</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/seaborn.svg') }}"
+                        alt="Seaborn"><span>Seaborn</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/flask-original.svg') }}"
+                        alt="Flask" class="tech-item-inverted"><span>Flask</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/django-plain.svg') }}"
+                        alt="Django" class="tech-item-inverted"><span>Django</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/mysql-original.svg') }}"
+                        alt="MySQL"><span>MySQL</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/mongodb-original.svg') }}"
+                        alt="MongoDB"><span>MongoDB</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/sqlite-original.svg') }}"
+                        alt="SQLite"><span>SQLite</span></div>
+                <div class="tech-item"><i class="fab fa-github tech-github-icon"></i><span>GitHub</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/git-original.svg') }}"
+                        alt="Git"><span>Git</span></div>
+            </div>
+            <div class="tech-marquee-list" aria-hidden="true">
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/html5-original.svg') }}"
+                        alt="HTML5"><span>HTML5</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/css3-original.svg') }}"
+                        alt="CSS3"><span>CSS3</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/bootstrap-original.svg') }}"
+                        alt="Bootstrap"><span>Bootstrap</span></div>
+                <div class="tech-item"><img
+                        src="{{ url_for('static', filename='images/tech/javascript-original.svg') }}"
+                        alt="JavaScript"><span>JavaScript</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/python-original.svg') }}"
+                        alt="Python"><span>Python</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/googlecolab.svg') }}"
+                        alt="Google Colab"><span>Google Colab</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/deeplearning.svg') }}"
+                        alt="Deep Learning"><span>Deep Learning</span></div>
+                <div class="tech-item"><img
+                        src="{{ url_for('static', filename='images/tech/scikitlearn-original.svg') }}"
+                        alt="Scikit-Learn"><span>Scikit-Learn</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/pycharm-original.svg') }}"
+                        alt="PyCharm"><span>PyCharm</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/jupyter-original.svg') }}"
+                        alt="Jupyter"><span>Jupyter</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/vscode-original.svg') }}"
+                        alt="VS Code"><span>VS Code</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/nlp.svg') }}"
+                        alt="NLP"><span>NLP</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/keras-original.svg') }}"
+                        alt="Keras"><span>Keras</span></div>
+                <div class="tech-item"><img
+                        src="{{ url_for('static', filename='images/tech/tensorflow-original.svg') }}"
+                        alt="TensorFlow"><span>TensorFlow</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/pytorch-original.svg') }}"
+                        alt="PyTorch"><span>PyTorch</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/numpy-original.svg') }}"
+                        alt="NumPy"><span>NumPy</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/pandas-original.svg') }}"
+                        alt="Pandas"><span>Pandas</span></div>
+                <div class="tech-item"><img
+                        src="{{ url_for('static', filename='images/tech/matplotlib-original.svg') }}"
+                        alt="Matplotlib"><span>Matplotlib</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/seaborn.svg') }}"
+                        alt="Seaborn"><span>Seaborn</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/flask-original.svg') }}"
+                        alt="Flask" class="tech-item-inverted"><span>Flask</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/django-plain.svg') }}"
+                        alt="Django" class="tech-item-inverted"><span>Django</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/mysql-original.svg') }}"
+                        alt="MySQL"><span>MySQL</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/mongodb-original.svg') }}"
+                        alt="MongoDB"><span>MongoDB</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/sqlite-original.svg') }}"
+                        alt="SQLite"><span>SQLite</span></div>
+                <div class="tech-item"><i class="fab fa-github tech-github-icon"></i><span>GitHub</span></div>
+                <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/git-original.svg') }}"
+                        alt="Git"><span>Git</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="certifications" class="skills">
+    <h2 class="section-title">Professional Certifications</h2>
+    <div class="cert-grid">
+        {% for cert in certificates %}
+        <div class="cert-card" data-cert-id="{{ cert._id }}" data-issuer="{{ cert.issuer }}"
+            data-title="{{ cert.title }}" data-date="{{ cert.date_issued }}" data-desc="{{ cert.description }}"
+            data-icon="{{ cert.icon_class }}" data-link="{{ cert.link }}" data-tags='{{ cert.tags | tojson | safe }}'
+            data-has-file="{{ 'true' if cert.filename else 'false' }}" data-filename="{{ cert.filename or '' }}"
+            data-preview-image="{{ cert.preview_image or '' }}">
+            <div class="cert-icon"><i class="{{ cert.icon_class }}"></i></div>
+            <span class="stitch-label">{{ cert.issuer }}</span>
+            <h3 class="stitch-title cert-title-size">{{ cert.title }}</h3>
+            <p class="cert-desc-text">{{ cert.description[:100] }}{% if cert.description|length > 100
+                %}...{% endif %}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section id="education" class="education-section-new">
+    <h2 class="edu-main-title">Education</h2>
+    <div class="edu-grid-new">
+        <!-- HSC Card -->
+        <div class="edu-card-new">
+            <div class="edu-logo-wrap">
+                <img src="{{ url_for('static', filename='img/school-logo.jpg') }}" alt="School Logo">
+            </div>
+            <div class="edu-info-wrap">
+                <h3 class="edu-degree">Higher Secondary Certificate</h3>
+                <p class="edu-field">Major: Biology / Bio-Maths</p>
+                <div class="edu-badge">Percentage: 84.6%</div>
+            </div>
+        </div>
+
+        <!-- BSC Card -->
+        <div class="edu-card-new">
+            <div class="edu-logo-wrap">
+                <img src="{{ url_for('static', filename='img/college-logo.jpg') }}" alt="College Logo">
+            </div>
+            <div class="edu-info-wrap">
+                <h3 class="edu-degree">Bachelor of Science</h3>
+                <p class="edu-field">Major: Physics</p>
+                <div class="edu-badge">GPA: 7.8 / 10</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section id="projects" class="projects">
+    <div class="projects-header">
+        <div>
+            <span class="stitch-label">Selected Works</span>
+            <h2 class="projects-title">Featured Projects</h2>
+        </div>
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">
+                <i class="fas fa-th-large"></i>All Projects
+            </button>
+            
+            <div class="filter-dropdown-container">
+                <button class="filter-tab dropdown-trigger" data-filter="elysium">
+                    <i class="fas fa-building"></i>
+                    <span class="trigger-label">Elysium Center</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="filter-dropdown-menu">
+                    <button class="filter-dropdown-item active" data-filter="elysium" data-domain="all">All Domains</button>
+                    <button class="filter-dropdown-item" data-filter="elysium" data-domain="datascience">
+                        <i class="fas fa-brain"></i>Data Science
+                    </button>
+                    <button class="filter-dropdown-item" data-filter="elysium" data-domain="fullstack">
+                        <i class="fas fa-layer-group"></i>Full Stack
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-dropdown-container">
+                <button class="filter-tab dropdown-trigger" data-filter="self">
+                    <i class="fas fa-user-graduate"></i>
+                    <span class="trigger-label">Self Learning</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="filter-dropdown-menu">
+                    <button class="filter-dropdown-item active" data-filter="self" data-domain="all">All Domains</button>
+                    <button class="filter-dropdown-item" data-filter="self" data-domain="datascience">
+                        <i class="fas fa-brain"></i>Data Science
+                    </button>
+                    <button class="filter-dropdown-item" data-filter="self" data-domain="fullstack">
+                        <i class="fas fa-layer-group"></i>Full Stack
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="project-grid">
+        {% for project in projects %}
+        {% set project_link = project.colab_link if (project.project_type == 'datascience' and project.colab_link) else (project.deployment_link or project.source_code_link or '#') %}
+        {% set hover_label = 'Run in Colab →' if (project.project_type == 'datascience' and project.colab_link) else 'View Project →' %}
+        <a href="{{ project_link }}" target="_blank" rel="noopener noreferrer" class="project-card-link">
+            <div class="project-card" data-category="{{ project.category }}" data-type="{{ project.project_type }}">
+                <div class="project-img" style="background-image: url('{{ project.image_url }}');">
+                    <div class="card-hover-overlay">
+                        <span>{{ hover_label }}</span>
+                    </div>
+                </div>
+                <div class="project-info">
+                    {% if project.highlight_tag %}
+                    <span class="project-highlight-tag">{{ project.highlight_tag }}</span>
+                    {% endif %}
+                    <h3 class="project-card-title">{{ project.title }}</h3>
+                    <p class="project-card-desc">
+                        {{ project.description[:120] }}{% if project.description|length > 120 %}...{% endif %}
+                    </p>
+                    {% if project.tags %}
+                    <div class="project-tech-stack">
+                        {% for tag in project.tags[:4] %}
+                        <span>{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section id="contact" class="contact">
+    <div class="contact-container">
+        <div class="contact-left">
+            <span class="stitch-label">Connect</span>
+            <h2>Let's engineer <span>something exceptional.</span></h2>
+            <p>Always open to discussions about data architecture, machine learning implementations, or full-stack
+                opportunities.</p>
+
+            <div class="contact-info-list">
+                <a href="mailto:1771vigneshwaran@gmail.com" class="contact-item">
+                    <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                    1771vigneshwaran@gmail.com
+                </a>
+                <div id="phonePlaceholder" class="contact-item contact-clickable">
+                    <div class="icon-box"><i class="fas fa-lock contact-lock-icon"></i></div>
+                    <span class="contact-placeholder-text"> +91 83*******09 (Click
+                        to Reveal)</span>
+                </div>
+                <div id="revealedPhone" class="contact-item hidden">
+                    <div class="icon-box"><i class="fas fa-phone"></i></div>
+                    +91 8300759609
+                </div>
+            </div>
+
+            <div class="contact-socials">
+                {% if platforms %}
+                {% for platform in platforms %}
+                <a href="{{ platform.url }}" target="_blank" class="social-circle"><i
+                        class="{{ platform.icon_class }}"></i></a>
+                {% endfor %}
+                {% else %}
+                <!-- Hardcoded fallbacks when no platforms in DB -->
+                <a href="https://github.com/1771-Vigneshwaran" target="_blank" class="social-circle"><i
+                        class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/vigneshwaran-m-profile" target="_blank" class="social-circle"><i
+                        class="fab fa-linkedin-in"></i></a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="contact-right">
+            <div class="project-brief-card">
+                <span class="form-label">Project Brief</span>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="briefName" placeholder="Full Name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="briefEmail" placeholder="Email Address" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="briefMessage" placeholder="Message" class="form-input brief-textarea" rows="4"></textarea>
+                    </div>
+                    <button type="button" id="sendBriefBtn" class="btn btn-primary btn-full-width">Send
+                        Message</button>
+                </form>
+                <div id="formStatus" class="hidden status-brief-success">
+                    <i class="fas fa-check-circle status-icon-spacing"></i> Protocol Synchronized. Message sent
+                    to Vigneshwaran.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- GENERAL MODAL (Certifications / Projects) -->
+<div id="generalModal" class="modal hidden">
+    <div class="modal-content-new">
+        <span class="close-btn-new" id="closeGeneralModal">&times;</span>
+
+        <div class="modal-layout-container">
+            <!-- Left Side: Visual Preview -->
+            <div class="modal-visual-side">
+                <div class="modal-preview-container" id="modalPreviewContainer">
+                    <!-- Loaded dynamically via JS -->
+                    <div class="cert-icon-box-new" id="modalDefaultIcon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Content -->
+            <div class="modal-content-side">
+                <div class="modal-header-info">
+                    <div class="modal-issuer">
+                        <i class="fas fa-check-circle" id="modalIssuerIcon"></i>
+                        <span id="modalIssuer">ISSUER</span>
+                    </div>
+                    <h2 id="modalTitle">Certificate Title</h2>
+                    <div class="modal-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span id="modalDate">Issued: Date</span>
+                    </div>
+                </div>
+
+                <div class="modal-scroll-area">
+                    <div class="modal-narrative">
+                        <p id="modalDesc">Detailed description goes here.</p>
+                    </div>
+
+                    <div class="modal-competencies">
+                        <p class="competencies-label">Core Competencies Covered:</p>
+                        <div id="modalMeta" class="tag-container-new">
+                            <!-- Tags injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer-actions">
+                    <a href="#" id="modalActionBtn" target="_blank" class="btn-cert-primary">View Certificate <i
+                            class="fas fa-external-link-alt"></i></a>
+                    <a href="#" id="modalCertUrlBtn" target="_blank" class="btn-cert-primary btn-cert-url">Certificate URL <i
+                            class="fas fa-link"></i></a>
+                    <a href="#" id="modalDownloadBtn" target="_blank" class="btn-cert-primary btn-cert-download" style="display: none;">Download <i
+                            class="fas fa-download"></i></a>
+                    <button class="btn-cert-secondary" id="closeGeneralModalBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- VERIFICATION MODAL -->
+<div id="verificationModal" class="modal hidden">
+    <div class="modal-content verify-modal-content">
+        <span class="close-btn" id="closeVerifyModal">&times;</span>
+        <div id="infoBox">
+            <h3 class="verify-modal-title">Identity Verification</h3>
+            <p class="verify-modal-subtitle">Enter your details to reveal private contact information.</p>
+            <div class="verify-input-group">
+                <input type="text" id="userName" placeholder="Your Name" class="verify-input">
+                <input type="email" id="userEmail" placeholder="Email Address" class="verify-input">
+                <input type="text" id="userMobile" placeholder="Purpose (e.g. Hiring)" class="verify-input">
+                <button id="sendOtpBtn" class="btn btn-primary btn-otp-margin">Request Secure OTP</button>
+            </div>
+        </div>
+
+        <div id="otpBox" class="hidden">
+            <h3 class="verify-modal-title">Verify OTP</h3>
+            <p class="verify-modal-subtitle">A 6-digit code has been sent to your email.</p>
+            <div class="verify-input-group">
+                <input type="text" id="otpInput" placeholder="000000" maxlength="6" class="verify-otp-input">
+                <button id="verifyOtpBtn" class="btn btn-primary btn-otp-margin">Confirm & Reveal</button>
+            </div>
+        </div>
+        <p id="otpMsg" class="verify-status-msg"></p>
+    </div>
+</div>
+
+<footer class="footer-container">
+    <div class="footer-content">
+        <div class="logo">VIGNESH<span>WARAN</span></div>
+        <div class="footer-socials">
+            {% if platforms %}
+            {% for platform in platforms %}
+            <a href="{{ platform.url }}" class="footer-social-link" target="_blank"><i class="{{ platform.icon_class }}"></i></a>
+            {% endfor %}
+            {% else %}
+            <a href="https://github.com/1771-Vigneshwaran" class="footer-social-link" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/vigneshwaran-m-profile" class="footer-social-link" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+            {% endif %}
+        </div>
+    </div>
+    <p class="footer-copyright">© 2024 VIGNESHWARAN M. Crafted with Stitch Design System.</p>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}
