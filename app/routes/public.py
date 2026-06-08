@@ -5,7 +5,7 @@ All data rendered server-side (backend-heavy).
 
 import json
 import os
-from flask import Blueprint, render_template, jsonify, make_response
+from flask import Blueprint, render_template, jsonify, make_response, request
 from app.extensions import cache
 from app.models import (
     Certificate, Platform, Project, Resume, AppointmentLetter,
@@ -80,9 +80,10 @@ def ping():
 @public_bp.route("/sitemap.xml")
 def sitemap():
     """Dynamic XML sitemap — consumed by Google Search Console."""
+    site_url = os.getenv("SITE_URL", request.url_root).rstrip("/")
     pages = [
-        (_SITE_URL + "/",           "1.0", "weekly"),
-        (_SITE_URL + "/experience", "0.9", "monthly"),
+        (site_url + "/",           "1.0", "weekly"),
+        (site_url + "/experience", "0.9", "monthly"),
     ]
     xml_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -105,12 +106,13 @@ def sitemap():
 @public_bp.route("/robots.txt")
 def robots_txt():
     """robots.txt — instructs search crawlers what to allow / disallow."""
+    site_url = os.getenv("SITE_URL", request.url_root).rstrip("/")
     content = (
         "User-agent: *\n"
         "Allow: /\n"
         "Disallow: /admin\n"
         "Disallow: /vignesh-secret-2025\n"
-        f"Sitemap: {_SITE_URL}/sitemap.xml\n"
+        f"Sitemap: {site_url}/sitemap.xml\n"
     )
     return content, 200, {"Content-Type": "text/plain; charset=utf-8"}
 
