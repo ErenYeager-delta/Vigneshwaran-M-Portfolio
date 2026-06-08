@@ -38,7 +38,7 @@ def send_otp():
         if not success:
             print(f"❌ EmailJS Error: {error_detail}")
             return jsonify({
-                "message": f"EmailJS Error: {error_detail[:100] if error_detail else 'Unknown error'}",
+                "message": "Failed to send verification email. Please try again later.",
                 "status": 500
             }), 500
 

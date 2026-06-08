@@ -193,3 +193,29 @@ def sanitize_url(url, max_length=500):
     if url.startswith(("http://", "https://", "/")):
         return bleach.clean(url, tags=[], strip=True)
     return "#"
+
+
+def get_safe_upload_path(folder_name, filename):
+    """
+    Safely joins UPLOAD_FOLDER with subfolder and filename.
+    Ensures that the filename matches the safe UUID/alpha-numeric format,
+    preventing any potential path traversal or directory escaping.
+    """
+    if not filename:
+        raise ValueError("Filename cannot be empty.")
+
+    # Only allow safe characters (letters, numbers, dashes, underscores) and a single dot for extension.
+    # This prevents directory traversal characters like '..' or path separators.
+    import re
+    if not re.match(r"^[a-zA-Z0-9_-]+\.[a-zA-Z0-9]+$", filename):
+        raise ValueError("Unsafe characters detected in filename.")
+
+    upload_base = current_app.config["UPLOAD_FOLDER"]
+    target_dir = os.path.abspath(os.path.join(upload_base, folder_name))
+    target_path = os.path.abspath(os.path.join(target_dir, filename))
+
+    # Verify that the path is strictly resolved within the upload directory
+    if not target_path.startswith(os.path.abspath(upload_base)):
+        raise ValueError("Path traversal attempt blocked.")
+
+    return target_path

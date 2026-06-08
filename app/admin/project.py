@@ -2,7 +2,7 @@ import os
 from flask import request, redirect, url_for, flash, current_app
 from app.extensions import cache
 from app.models import Project
-from app.security import admin_required, validate_upload, sanitize_input, sanitize_url
+from app.security import admin_required, validate_upload, sanitize_input, sanitize_url, get_safe_upload_path
 from app.admin import admin_bp
 
 
@@ -54,9 +54,7 @@ def add_project():
             flash("❌ Project Image must be PNG, JPG, JPEG, WEBP, or GIF.", "error")
             return redirect(url_for("admin.dashboard"))
             
-        upload_path = os.path.join(
-            current_app.config["UPLOAD_FOLDER"], "projects", safe_name
-        )
+        upload_path = get_safe_upload_path("projects", safe_name)
         project_image_file.save(upload_path)
         image_url = f"/static/uploads/projects/{safe_name}"
     elif deployment_link and not image_url:
@@ -106,7 +104,7 @@ def delete_project(project_id):
             image_url = project.get("image_url", "")
             if image_url.startswith("/static/uploads/projects/"):
                 filename = image_url.split("/")[-1]
-                file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "projects", filename)
+                file_path = get_safe_upload_path("projects", filename)
                 if os.path.exists(file_path): os.remove(file_path)
         except Exception as e:
             print(f"Error deleting project image file: {e}")
@@ -173,9 +171,7 @@ def edit_project(project_id):
             flash("❌ Project Image must be PNG, JPG, JPEG, WEBP, or GIF.", "error")
             return redirect(url_for("admin.dashboard"))
             
-        upload_path = os.path.join(
-            current_app.config["UPLOAD_FOLDER"], "projects", safe_name
-        )
+        upload_path = get_safe_upload_path("projects", safe_name)
         project_image_file.save(upload_path)
         image_url = f"/static/uploads/projects/{safe_name}"
     elif not image_url:

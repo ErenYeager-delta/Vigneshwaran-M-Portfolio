@@ -2,7 +2,7 @@ import os
 from flask import request, redirect, url_for, flash, current_app
 from app.extensions import limiter, cache
 from app.models import Resume
-from app.security import admin_required, validate_upload
+from app.security import admin_required, validate_upload, get_safe_upload_path
 from app.admin import admin_bp
 
 
@@ -33,7 +33,7 @@ def upload_resume():
         return redirect(url_for("admin.dashboard"))
 
     # Save file
-    upload_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "resumes", safe_name)
+    upload_path = get_safe_upload_path("resumes", safe_name)
     with open(upload_path, "wb") as f:
         f.write(file_data)
 
@@ -83,7 +83,7 @@ def delete_resume(resume_id):
     
     # Delete physical file
     try:
-        file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "resumes", resume["filename"])
+        file_path = get_safe_upload_path("resumes", resume["filename"])
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
