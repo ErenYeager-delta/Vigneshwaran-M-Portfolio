@@ -845,7 +845,7 @@ body {
 /* Right Column */
 .hero-visual {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: flex-start;
     position: relative;
     transform: translateY(-20px);
