@@ -4,7 +4,7 @@ Files served securely via send_from_directory.
 """
 
 import os
-from flask import Blueprint, send_from_directory, abort, redirect, current_app
+from flask import Blueprint, send_from_directory, abort, redirect, current_app, request
 from app.models import Resume, Certificate, AppointmentLetter, Incentive, OfferLetter, PaySlip
 
 downloads_bp = Blueprint("downloads", __name__)
@@ -13,7 +13,8 @@ downloads_bp = Blueprint("downloads", __name__)
 @downloads_bp.route("/resume/download")
 def download_resume():
     """Download the active resume as an attachment."""
-    resume = Resume.find_active()
+    resume_type = request.args.get("type")
+    resume = Resume.find_active(resume_type)
     if not resume:
         abort(404)
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "resumes")
@@ -28,7 +29,8 @@ def download_resume():
 @downloads_bp.route("/resume/preview")
 def preview_resume():
     """Preview the active resume in the browser."""
-    resume = Resume.find_active()
+    resume_type = request.args.get("type")
+    resume = Resume.find_active(resume_type)
     if not resume:
         abort(404)
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "resumes")

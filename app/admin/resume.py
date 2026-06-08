@@ -10,8 +10,12 @@ from app.admin import admin_bp
 @admin_required
 @limiter.limit("10 per hour")
 def upload_resume():
-    """Upload new resume — auto-deactivates old ones."""
+    """Upload new resume — auto-deactivates old ones of the same type."""
     file = request.files.get("resume_file")
+    resume_type = request.form.get("resume_type", "it")
+    if resume_type not in ("it", "sales"):
+        resume_type = "it"
+
     is_valid, safe_name, error = validate_upload(file, {"pdf"})
 
     if not is_valid:
@@ -33,11 +37,12 @@ def upload_resume():
     with open(upload_path, "wb") as f:
         f.write(file_data)
 
-    # Add to MongoDB (auto-deactivates others)
-    Resume.add(safe_name, file.filename, file_hash)
+    # Add to MongoDB (auto-deactivates others of same type)
+    Resume.add(safe_name, file.filename, file_hash, resume_type)
     cache.clear()
 
-    flash(f"✅ Resume '{file.filename}' uploaded and activated.", "success")
+    type_name = "IT Section" if resume_type == "it" else "Sales & Marketing"
+    flash(f"✅ {type_name} Resume '{file.filename}' uploaded and activated.", "success")
     return redirect(url_for("admin.dashboard"))
 
 
@@ -50,10 +55,10 @@ def toggle_resume(resume_id):
         flash("❌ Resume not found.", "error")
         return redirect(url_for("admin.dashboard"))
 
-    # If we're activating this one, deactivate all others first
+    # If we're activating this one, deactivate all others of the same type first
     is_active = resume.get("is_active", False)
     if not is_active:
-        Resume.deactivate_all()
+        Resume.deactivate_all(resume.get("resume_type", "it"))
     
     col = Resume.get_collection()
     if col is not None:

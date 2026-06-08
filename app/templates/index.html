@@ -49,9 +49,14 @@
                 <a href="#projects" class="btn btn-white">View My Projects</a>
                 <a href="#contact" class="btn btn-outline-dark">Get In Touch</a>
                 <a href="{{ url_for('public.experience') }}" class="btn btn-outline-dark"><i class="fas fa-briefcase btn-icon-spacing"></i>Prof. Exp.</a>
-                {% if has_resume %}
-                <a href="{{ url_for('downloads.download_resume') }}" class="btn btn-text">
-                    <i class="fas fa-download btn-icon-spacing"></i>Download Resume
+                {% if has_it_resume %}
+                <a href="{{ url_for('downloads.download_resume', type='it') }}" class="btn btn-text">
+                    <i class="fas fa-download btn-icon-spacing"></i>Download IT Resume
+                </a>
+                {% endif %}
+                {% if has_sales_resume %}
+                <a href="{{ url_for('downloads.download_resume', type='sales') }}" class="btn btn-text">
+                    <i class="fas fa-download btn-icon-spacing"></i>Download Sales Resume
                 </a>
                 {% endif %}
             </div>

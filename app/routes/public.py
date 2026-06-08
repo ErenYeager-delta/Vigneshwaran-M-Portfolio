@@ -25,14 +25,16 @@ def home():
     certificates = Certificate.find_active()
     projects = Project.find_visible()
     platforms = Platform.find_visible()
-    active_resume = Resume.find_active()
+    active_it_resume = Resume.find_active("it")
+    active_sales_resume = Resume.find_active("sales")
 
     return render_template(
         "index.html",
         certificates=certificates,
         projects=projects,
         platforms=platforms,
-        has_resume=active_resume is not None,
+        has_it_resume=active_it_resume is not None,
+        has_sales_resume=active_sales_resume is not None,
     )
 
 

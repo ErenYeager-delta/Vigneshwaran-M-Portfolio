@@ -41,25 +41,33 @@ class Resume(MongoModel):
     collection_name = "resumes"
 
     @classmethod
-    def find_active(cls):
+    def find_active(cls, resume_type=None):
         col = cls.get_collection()
         if col is None: return None
-        return col.find_one({"is_active": True})
+        query = {"is_active": True}
+        if resume_type:
+            query["resume_type"] = resume_type
+        return col.find_one(query)
 
     @classmethod
-    def deactivate_all(cls):
+    def deactivate_all(cls, resume_type=None):
         col = cls.get_collection()
-        if col is not None: col.update_many({}, {"$set": {"is_active": False}})
+        if col is not None:
+            query = {}
+            if resume_type:
+                query["resume_type"] = resume_type
+            col.update_many(query, {"$set": {"is_active": False}})
 
     @classmethod
-    def add(cls, filename, original_name, file_hash):
-        cls.deactivate_all()
+    def add(cls, filename, original_name, file_hash, resume_type="it"):
+        cls.deactivate_all(resume_type)
         col = cls.get_collection()
         if col is not None:
             col.insert_one({
                 "filename": filename,
                 "original_name": original_name,
                 "file_hash": file_hash,
+                "resume_type": resume_type,
                 "is_active": True,
                 "uploaded_at": datetime.now(timezone.utc)
             })
