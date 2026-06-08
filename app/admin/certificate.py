@@ -2,7 +2,7 @@ import os
 from flask import request, redirect, url_for, flash, current_app
 from app.extensions import limiter, cache
 from app.models import Certificate
-from app.security import admin_required, validate_upload, sanitize_input, sanitize_url
+from app.security import admin_required, validate_upload, sanitize_input, sanitize_url, get_safe_upload_path
 from app.admin import admin_bp
 
 
@@ -50,9 +50,7 @@ def add_certificate():
                 flash(f"❌ PDF: {error}", "error")
                 return redirect(url_for("admin.dashboard"))
 
-            upload_path = os.path.join(
-                current_app.config["UPLOAD_FOLDER"], "certificates", safe_name
-            )
+            upload_path = get_safe_upload_path("certificates", safe_name)
             cert_file.save(upload_path)
 
             if has_image_file:
@@ -67,9 +65,7 @@ def add_certificate():
                     flash("❌ The picture must be an image format (PNG, JPG, JPEG, WEBP).", "error")
                     return redirect(url_for("admin.dashboard"))
 
-                upload_img_path = os.path.join(
-                    current_app.config["UPLOAD_FOLDER"], "certificates", safe_img_name
-                )
+                upload_img_path = get_safe_upload_path("certificates", safe_img_name)
                 cert_image_file.save(upload_img_path)
                 preview_image = safe_img_name
             else:
@@ -82,9 +78,7 @@ def add_certificate():
                 flash(f"❌ {error}", "error")
                 return redirect(url_for("admin.dashboard"))
 
-            upload_path = os.path.join(
-                current_app.config["UPLOAD_FOLDER"], "certificates", safe_name
-            )
+            upload_path = get_safe_upload_path("certificates", safe_name)
             cert_file.save(upload_path)
             # Use URL as preview if provided, otherwise the image itself is the preview
             preview_image = preview_image_url if preview_image_url else safe_name
@@ -128,10 +122,10 @@ def delete_certificate(cert_id):
         # Delete associated physical files if any
         try:
             if cert.get("filename"):
-                file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "certificates", cert["filename"])
+                file_path = get_safe_upload_path("certificates", cert["filename"])
                 if os.path.exists(file_path): os.remove(file_path)
             if cert.get("preview_image") and not cert["preview_image"].startswith(("http://", "https://")):
-                img_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "certificates", cert["preview_image"])
+                img_path = get_safe_upload_path("certificates", cert["preview_image"])
                 if os.path.exists(img_path) and img_path != file_path: os.remove(img_path)
         except Exception as e:
             print(f"Error deleting cert files: {e}")
@@ -179,9 +173,7 @@ def edit_certificate(cert_id):
             return redirect(url_for("admin.dashboard"))
 
         ext = safe_name.rsplit(".", 1)[-1].lower()
-        upload_path = os.path.join(
-            current_app.config["UPLOAD_FOLDER"], "certificates", safe_name
-        )
+        upload_path = get_safe_upload_path("certificates", safe_name)
 
         if ext == "pdf":
             # PDF requires a companion image file OR a preview URL
@@ -207,9 +199,7 @@ def edit_certificate(cert_id):
                     flash("❌ The picture must be an image format (PNG, JPG, JPEG, WEBP).", "error")
                     return redirect(url_for("admin.dashboard"))
 
-                img_upload_path = os.path.join(
-                    current_app.config["UPLOAD_FOLDER"], "certificates", safe_img_name
-                )
+                img_upload_path = get_safe_upload_path("certificates", safe_img_name)
                 cert_image_file.save(img_upload_path)
                 new_preview_img = safe_img_name
             else:

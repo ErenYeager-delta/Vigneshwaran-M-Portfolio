@@ -3,7 +3,7 @@ import json
 from flask import request, redirect, url_for, flash, current_app, render_template
 from app.extensions import limiter, cache
 from app.models import AppointmentLetter, Incentive, OfferLetter, PaySlip, CompanyExperience
-from app.security import admin_required, validate_upload
+from app.security import admin_required, validate_upload, get_safe_upload_path
 from app.admin import admin_bp
 
 
@@ -26,7 +26,7 @@ def upload_appointment_letter():
         return redirect(url_for("admin.dashboard"))
 
     file_data = file.read()
-    upload_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "appointment_letters", safe_name)
+    upload_path = get_safe_upload_path("appointment_letters", safe_name)
     
     with open(upload_path, "wb") as f:
         f.write(file_data)
@@ -50,7 +50,7 @@ def delete_appointment_letter(letter_id):
 
     filename = letter["filename"]
     try:
-        file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "appointment_letters", filename)
+        file_path = get_safe_upload_path("appointment_letters", filename)
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
@@ -83,7 +83,7 @@ def upload_incentive():
         return redirect(url_for("admin.dashboard"))
 
     file_data = file.read()
-    upload_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "incentives", safe_name)
+    upload_path = get_safe_upload_path("incentives", safe_name)
     
     with open(upload_path, "wb") as f:
         f.write(file_data)
@@ -107,7 +107,7 @@ def delete_incentive(inc_id):
 
     filename = incentive["filename"]
     try:
-        file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "incentives", filename)
+        file_path = get_safe_upload_path("incentives", filename)
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
@@ -139,7 +139,7 @@ def upload_offer_letter():
         return redirect(url_for("admin.dashboard"))
 
     file_data = file.read()
-    upload_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "offer_letters", safe_name)
+    upload_path = get_safe_upload_path("offer_letters", safe_name)
     
     with open(upload_path, "wb") as f:
         f.write(file_data)
@@ -163,7 +163,7 @@ def delete_offer_letter(letter_id):
 
     filename = letter["filename"]
     try:
-        file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "offer_letters", filename)
+        file_path = get_safe_upload_path("offer_letters", filename)
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
@@ -195,7 +195,7 @@ def upload_pay_slip():
         return redirect(url_for("admin.dashboard"))
 
     file_data = file.read()
-    upload_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "pay_slips", safe_name)
+    upload_path = get_safe_upload_path("pay_slips", safe_name)
     
     with open(upload_path, "wb") as f:
         f.write(file_data)
@@ -219,7 +219,7 @@ def delete_pay_slip(slip_id):
 
     filename = slip["filename"]
     try:
-        file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "pay_slips", filename)
+        file_path = get_safe_upload_path("pay_slips", filename)
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
@@ -296,7 +296,7 @@ def delete_company_experience(company_id):
         letters = list(col_app.find({"company": slug}))
         for l in letters:
             try:
-                os.remove(os.path.join(current_app.config["UPLOAD_FOLDER"], "appointment_letters", l["filename"]))
+                os.remove(get_safe_upload_path("appointment_letters", l["filename"]))
             except Exception: pass
         col_app.delete_many({"company": slug})
 
@@ -305,7 +305,7 @@ def delete_company_experience(company_id):
         letters = list(col_off.find({"company": slug}))
         for l in letters:
             try:
-                os.remove(os.path.join(current_app.config["UPLOAD_FOLDER"], "offer_letters", l["filename"]))
+                os.remove(get_safe_upload_path("offer_letters", l["filename"]))
             except Exception: pass
         col_off.delete_many({"company": slug})
 
@@ -314,7 +314,7 @@ def delete_company_experience(company_id):
         slips = list(col_pay.find({"company": slug}))
         for s in slips:
             try:
-                os.remove(os.path.join(current_app.config["UPLOAD_FOLDER"], "pay_slips", s["filename"]))
+                os.remove(get_safe_upload_path("pay_slips", s["filename"]))
             except Exception: pass
         col_pay.delete_many({"company": slug})
 
@@ -323,7 +323,7 @@ def delete_company_experience(company_id):
         incs = list(col_inc.find({"company": slug}))
         for i in incs:
             try:
-                os.remove(os.path.join(current_app.config["UPLOAD_FOLDER"], "incentives", i["filename"]))
+                os.remove(get_safe_upload_path("incentives", i["filename"]))
             except Exception: pass
         col_inc.delete_many({"company": slug})
 
