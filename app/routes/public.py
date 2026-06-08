@@ -113,3 +113,9 @@ def robots_txt():
         f"Sitemap: {_SITE_URL}/sitemap.xml\n"
     )
     return content, 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@public_bp.route("/google1795f5f2a4eb8da8.html")
+def google_verification():
+    """Serve the Google Search Console verification file dynamically."""
+    return "google-site-verification: google1795f5f2a4eb8da8.html", 200, {"Content-Type": "text/html; charset=utf-8"}
