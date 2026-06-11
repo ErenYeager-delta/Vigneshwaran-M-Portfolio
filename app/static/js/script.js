@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ============================================
        1. SMOOTH NAVIGATION & SCROLLING
        ============================================ */
+    // Connection: index.html (L8), index.css (.navbar). Purpose: Observe navbar offset.
     const navbar = document.querySelector('.navbar');
 
     /* Navbar scroll logic removed to maintain curved pill design integrity */
@@ -63,8 +64,11 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ============================================
        2. HAMBURGER MENU TOGGLE
        ============================================ */
+    // Connection: index.html (L11), index.css (.hamburger). Purpose: Toggle mobile navigation menu.
     const hamburger = document.getElementById('hamburger');
+    // Connection: index.html (L17), index.css (#navContainer). Purpose: Container containing sliding nav links.
     const navContainer = document.getElementById('navContainer');
+    // Connection: index.html (L19), index.css (.nav-links a). Purpose: Highlight active menu item.
     const navLinks = document.querySelectorAll('.nav-links a');
 
     if (hamburger) {
@@ -122,7 +126,9 @@ document.addEventListener('DOMContentLoaded', function () {
        ============================================ */
     const projectCards = document.querySelectorAll('.project-card');
     const allProjectsBtn = document.querySelector('.filter-tab[data-filter="all"]');
+    // Connection: index.html (L446), index.css (.filter-dropdown-container). Purpose: Toggle hover/click open states.
     const dropdownContainers = document.querySelectorAll('.filter-dropdown-container');
+    // Connection: index.html (L453), index.css (.filter-dropdown-item). Purpose: Sort projects grid.
     const dropdownItems = document.querySelectorAll('.filter-dropdown-item');
 
     let activeCategory = 'all';
@@ -305,6 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
        Reads data from HTML data-* attributes
        (rendered server-side by Jinja — no secrets in JS)
        ============================================ */
+    // Connection: index.html (L581), index.css (.modal). Purpose: Certificate details modal.
     const generalModal = document.getElementById('generalModal');
     const closeGeneralModal = document.getElementById('closeGeneralModal');
     const closeGeneralModalBtn = document.getElementById('closeGeneralModalBtn');
@@ -478,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.style.overflow = 'hidden';
     }
 
-    // Event Delegation for Cert and Project Cards (Memory Efficiency)
+    // Connection: index.html (.cert-card L329), index.css (.cert-card). Purpose: Click delegate target to load certification details into modal.
     document.addEventListener('click', (e) => {
         const card = e.target.closest('.cert-card');
         if (card) {
@@ -505,11 +512,14 @@ document.addEventListener('DOMContentLoaded', function () {
        5. OTP & VERIFICATION LOGIC
        (All sensitive processing happens on the backend)
        ============================================ */
+    // Connection: index.html (L640), index.css (.modal). Purpose: OTP validation overlay.
     const verifyModal = document.getElementById("verificationModal");
     const viewNumberBtn = document.getElementById("viewNumberBtn");
     const closeVerifyModal = document.getElementById("closeVerifyModal");
     const phoneDisplay = document.getElementById("revealedPhone");
+    // Connection: index.html (L650), index.css (.btn-otp-margin). Purpose: Requesting secure OTPs.
     const sendOtpBtn = document.getElementById("sendOtpBtn");
+    // Connection: index.html (L659), index.css (.btn-otp-margin). Purpose: Confirming and verifying OTP inputs.
     const verifyOtpBtn = document.getElementById("verifyOtpBtn");
 
     let otpSendInProgress = false;
@@ -523,6 +533,7 @@ document.addEventListener('DOMContentLoaded', function () {
         resetForm();
     };
 
+    // Connection: index.html (L568), index.css (.btn-full-width). Purpose: Form submission trigger to /submit-brief.
     const sendBriefBtn = document.getElementById("sendBriefBtn");
     if (sendBriefBtn) {
         sendBriefBtn.addEventListener("click", async function() {
@@ -567,6 +578,7 @@ document.addEventListener('DOMContentLoaded', function () {
         viewNumberBtn.addEventListener("click", openVerifyModal);
     }
 
+    // Connection: index.html (L528), index.css (.contact-clickable). Purpose: Reveal lock click triggering verification modal.
     const phonePlaceholder = document.getElementById("phonePlaceholder");
     if (phonePlaceholder) {
         console.log("✅ Phone placeholder listener attached");
@@ -587,6 +599,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Connection: index.html (L650), index.css (.btn-otp-margin). Purpose: Submits credentials request post to /send-otp API.
     if (sendOtpBtn) {
         sendOtpBtn.addEventListener("click", async function () {
             if (otpSendInProgress) return;
@@ -641,6 +654,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Connection: index.html (L659), index.css (.btn-otp-margin). Purpose: Submits OTP post request to /verify-otp API.
     if (verifyOtpBtn) {
         verifyOtpBtn.addEventListener("click", function () {
             if (otpVerifyInProgress) return;

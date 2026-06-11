@@ -13,6 +13,8 @@ from app.security import sanitize_input
 api_bp = Blueprint("api", __name__)
 
 
+# Connection: Triggered by script.js sendOtpBtn (L576) via fetch('/send-otp').
+# Purpose: Dispatch secure 6-digit dynamic OTP to verify user's phone identity.
 @api_bp.route("/send-otp", methods=["POST"])
 @limiter.limit("3 per minute")
 def send_otp():
@@ -50,6 +52,8 @@ def send_otp():
         return jsonify({"message": "An internal error occurred"}), 500
 
 
+# Connection: Triggered by script.js verifyOtpBtn (L630) via fetch('/verify-otp').
+# Purpose: Authenticate dynamic OTP input, unlock masked contacts, and persist verified visitors.
 @api_bp.route("/verify-otp", methods=["POST"])
 @limiter.limit("5 per minute")
 def verify_otp():
@@ -85,6 +89,8 @@ def verify_otp():
         return jsonify({"success": False, "error": "An internal error occurred."}), 500
 
 
+# Connection: Triggered by script.js sendBriefBtn (L516) via fetch('/submit-brief').
+# Purpose: Save submitted user project details to DB and email alert notification to admin.
 @api_bp.route("/submit-brief", methods=["POST"])
 def submit_brief():
     """Submit Project Brief via EmailService notification and store details in database."""

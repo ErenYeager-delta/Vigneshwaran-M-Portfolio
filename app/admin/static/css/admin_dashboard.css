@@ -231,6 +231,7 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
 }
 
 /* ─── Modular Extracted Styles (Admin Dashboard Page Separation) ─── */
+/* Connection: dashboard.html (L18). Purpose: inline layouts for logout buttons. */
 .d-inline {
     display: inline;
 }
@@ -239,21 +240,25 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     display: none !important;
 }
 
+/* Connection: dashboard.html (L38). Purpose: typography headers in resume panel. */
 .dash-section-h3 {
     margin: 0 0 1rem;
     font-size: 1rem;
     color: #A0CFFF;
 }
 
+/* Connection: dashboard.html (L41). Purpose: stretch file inputs to occupy 100% space. */
 .full-width {
     width: 100%;
 }
 
+/* Connection: dashboard.html (L54). Purpose: Spans input box wrapper. */
 .col-span-2-wrapper {
     width: 100%;
     grid-column: span 2;
 }
 
+/* Connection: dashboard.html (L56), admin_dashboard.js (L28). Purpose: Selection box unhides on select. */
 .upload-preview-container {
     margin-top: 1rem;
     width: 100%;
@@ -266,6 +271,7 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     gap: 1rem;
 }
 
+/* Connection: dashboard.html (L57). Purpose: background wrapper box for preview file icon. */
 .upload-preview-icon-box {
     width: 48px;
     height: 48px;
@@ -277,16 +283,19 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     flex-shrink: 0;
 }
 
+/* Connection: dashboard.html (L58). Purpose: Red colors for file PDFs icon. */
 .upload-preview-icon {
     color: #ff4d4d;
     font-size: 1.4rem;
 }
 
+/* Connection: dashboard.html (L60). Purpose: detail wraps containing metadata. */
 .upload-preview-details {
     flex: 1;
     overflow: hidden;
 }
 
+/* Connection: dashboard.html (L61), admin_dashboard.js (L29). Purpose: shows white filename. */
 .upload-preview-filename {
     font-weight: 700;
     font-size: 0.95rem;
@@ -296,12 +305,14 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     text-overflow: ellipsis;
 }
 
+/* Connection: dashboard.html (L62), admin_dashboard.js (L30). Purpose: mutes subtitle file size. */
 .upload-preview-filesize {
     font-size: 0.8rem;
     color: #737373;
     margin-top: 2px;
 }
 
+/* Connection: dashboard.html (L64). Purpose: Green validation success badge. */
 .upload-preview-ready {
     color: #28a745;
     font-size: 0.8rem;
@@ -309,23 +320,27 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     flex-shrink: 0;
 }
 
+/* Connection: dashboard.html (L114). Purpose: Red background indicating destructive deletion. */
 .btn-trash {
     background: rgba(255,77,77,0.1);
     color: #ff4d4d;
     margin-left: 5px;
 }
 
+/* Connection: dashboard.html (L260), admin_dashboard.js (L393). Purpose: Click triggers edit modal. */
 .btn-edit {
     background: rgba(160,207,255,0.15);
     color: #A0CFFF;
     margin-left: 5px;
 }
 
+/* Connection: dashboard.html (L157). Purpose: side by side input fields grids. */
 .grid-two-columns {
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
+/* Connection: dashboard.html (L159). Purpose: Injects blue labels identifying input roles. */
 .form-label-blue {
     display: block;
     font-size: 0.8rem;
@@ -333,6 +348,7 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     margin-bottom: 5px;
 }
 
+/* Connection: dashboard.html (L193). Purpose: Orange warning alerts. */
 .form-label-orange {
     display: block;
     font-size: 0.8rem;
@@ -341,6 +357,7 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     font-weight: 700;
 }
 
+/* Connection: dashboard.html (L174), admin_dashboard.js (L54). Purpose: Holds certificate visual display. */
 .cert-preview-wrapper-box {
     margin-top: 0.5rem;
     width: 100%;
@@ -351,6 +368,7 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     display: none;
 }
 
+/* Connection: dashboard.html (L175), admin_dashboard.js (L55). Purpose: Toggles uploaded cert pictures. */
 .cert-image-preview-sub-box {
     display: none;
     width: 100%;
@@ -358,6 +376,7 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     position: relative;
 }
 
+/* Connection: dashboard.html (L176), admin_dashboard.js (L56). Purpose: Scales preview image. */
 .cert-img-element-full {
     width: 100%;
     height: 100%;
@@ -365,6 +384,7 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     background: #000;
 }
 
+/* Connection: dashboard.html (L177), admin_dashboard.js (L57). Purpose: Overlay bottom filenames. */
 .cert-image-preview-label {
     position: absolute;
     bottom: 0;
@@ -376,6 +396,7 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     color: #fff;
 }
 
+/* Connection: dashboard.html (L179), admin_dashboard.js (L58). Purpose: PDF cover confirmation layout box. */
 .cert-pdf-preview-sub-box {
     display: none;
     padding: 1.2rem 1.5rem;
@@ -383,11 +404,13 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     gap: 1rem;
 }
 
+/* Connection: dashboard.html (L192), admin_dashboard.js (L61). Purpose: Companion wrapper for PDF cover images. */
 .cert-companion-image-wrapper {
     display: none;
     margin-top: 1rem;
 }
 
+/* Connection: dashboard.html (L199), admin_dashboard.js (L63). Purpose: Companion visual wrap. */
 .cert-companion-image-preview-box {
     margin-top: 0.5rem;
     width: 100%;
@@ -401,6 +424,7 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     overflow: hidden;
 }
 
+/* Connection: dashboard.html (L205), admin_dashboard.js (L65). Purpose: Live preview container for URLs. */
 .cert-url-preview-wrapper-box {
     display: none;
     margin-top: 0.5rem;
@@ -412,12 +436,14 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     overflow: hidden;
 }
 
+/* Connection: dashboard.html (L206), admin_dashboard.js (L64). Purpose: Scale style. */
 .preview-img-element {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
+/* Connection: dashboard.html (L231). Purpose: Thumbnail size inside view tables. */
 .table-preview-img-wrap {
     width: 60px;
     height: 40px;
@@ -430,12 +456,14 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     justify-content: center;
 }
 
+/* Connection: dashboard.html (L233). Purpose: Cover style layout sizing inside table cells. */
 .table-preview-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
+/* Connection: dashboard.html (L235). Purpose: fallback background for fileless entries. */
 .table-preview-fallback {
     display: none;
     color: #555;
@@ -446,21 +474,25 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     justify-content: center;
 }
 
+/* Connection: dashboard.html (L237). Purpose: Mutes fallback certificate icon. */
 .table-preview-fallback-icon {
     color: #555;
     font-size: 0.7rem;
 }
 
+/* Connection: dashboard.html (L680). Purpose: formats administrative sub-headers. */
 .section-sub-header {
     margin: 1.5rem 0 1rem;
     font-size: 1rem;
     color: #A0CFFF;
 }
 
+/* Connection: dashboard.html (L708). Purpose: divides inputs grid equally. */
 .flex-1-wrapper {
     flex: 1;
 }
 
+/* Connection: dashboard.html (L734), admin_dashboard.js (L271). Purpose: rendering live thumbnail preview. */
 .project-image-box-preview {
     margin-top: 0.5rem;
     width: 100%;
@@ -474,21 +506,25 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     overflow: hidden;
 }
 
+/* Connection: dashboard.html (L735). Purpose: project box placeholder title. */
 .preview-placeholder-text {
     color: #555;
     font-size: 0.8rem;
 }
 
+/* Connection: dashboard.html (L743). Purpose: Minimizes overview text height. */
 .brief-textarea-min-height {
     min-height: 60px;
 }
 
+/* Connection: dashboard.html (L818). Purpose: Mutes notebook hint guides. */
 .notebook-info-hint {
     font-size: 0.75rem;
     color: #555;
     margin-top: 4px;
 }
 
+/* Connection: dashboard.html (L863). Purpose: Thumbnail box layout for list tables. */
 .project-table-thumbnail-wrap {
     width: 60px;
     height: 40px;
@@ -498,37 +534,44 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     border: 1px solid rgba(255,255,255,0.1);
 }
 
+/* Connection: dashboard.html (L871). Purpose: Purple theme indicating Data Science tag attributes. */
 .badge-purple-ds {
     background: rgba(168,85,247,0.15);
     color: #c084fc;
     border: 1px solid rgba(168,85,247,0.3);
 }
 
+/* Connection: dashboard.html (L873). Purpose: Green theme indicating Full Stack tag attributes. */
 .badge-green-fs {
     background: rgba(16,185,129,0.15);
     color: #34d399;
     border: 1px solid rgba(16,185,129,0.3);
 }
 
+/* Connection: dashboard.html (L875). Purpose: Muted dash line inside empty columns. */
 .text-dim-fallback {
     color: #555;
 }
 
+/* Connection: dashboard.html (L878). Purpose: Colors highlight tags cell. */
 .td-highlight-tag {
     font-size: 0.78rem;
     color: #A0CFFF;
 }
 
+/* Connection: dashboard.html (L963). Purpose: Prevents platform urls from overflowing. */
 .td-platform-url {
     max-width: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+/* Connection: dashboard.html (L1025). Purpose: Textarea heights layout inside modals. */
 .brief-textarea-modal-height {
     min-height: 80px;
 }
 
+/* Connection: dashboard.html (L1035), admin_dashboard.js (L409). Purpose: Badge showing uploaded certificate files. */
 .cert-current-file-badge {
     display: none;
     font-size: 0.8rem;
@@ -539,12 +582,14 @@ textarea.admin-input { resize: vertical; min-height: 80px; }
     border-radius: 8px;
 }
 
+/* Connection: dashboard.html (L1037), admin_dashboard.js (L411). Purpose: Green badge showing cover pictures exist. */
 .cert-current-preview-green {
     display: none;
     margin-left: 8px;
     color: #28a745;
 }
 
+/* Connection: dashboard.html (L1270). Purpose: Force modal buttons to stretch full width. */
 .full-width-submit-margin {
     width: 100%;
     margin-top: 1.5rem;

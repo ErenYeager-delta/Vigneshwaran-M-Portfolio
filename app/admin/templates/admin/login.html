@@ -8,17 +8,22 @@
     <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin_login.css') }}">
 </head>
 <body>
+    <!-- Connection: admin_login.css (.login-box L10). Purpose: Anchors the absolute center box layout containing input forms. -->
     <div class="login-box">
+        <!-- Connection: admin_login.css (.login-box h1 L18). Purpose: Styles the administration header (font size, margins, weights). -->
         <h1>🔐 Admin Access</h1>
         <p>Enter the admin password to continue.</p>
         
         {% if error %}
+        <!-- Connection: admin_login.css (.error L59). Purpose: Renders red background warning box when credential checking fails. -->
         <div class="error">{{ error }}</div>
         {% endif %}
         
         <form method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <!-- Connection: admin_login.css (.login-box input L28). Purpose: Formats password field with custom background colors, borders, and animations. -->
             <input type="password" name="password" placeholder="Enter Password" autofocus required>
+            <!-- Connection: admin_login.css (.login-box button L43). Purpose: Triggers form post request to /vignesh-secret-2025 handling login requests. -->
             <button type="submit">Authenticate</button>
         </form>
     </div>

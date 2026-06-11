@@ -15,6 +15,7 @@
         <!-- Header -->
         <div class="dash-header">
             <h1><span>⚡</span> Admin Dashboard</h1>
+            <!-- Connection: admin_dashboard.css (.d-inline L235). Purpose: inline layouts for logout buttons. -->
             <form action="{{ url_for('admin.admin_logout') }}" method="POST" class="d-inline">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -35,9 +36,11 @@
             <h2><i class="fas fa-file-pdf"></i> Resume Management</h2>
             <form action="{{ url_for('admin.upload_resume') }}" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <!-- Connection: admin_dashboard.css (.dash-section-h3 L243). Purpose: typography headers in resume panel. -->
                 <h3 class="dash-section-h3">Upload New Resume (PDF)</h3>
                 <div class="form-row" style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
                     <div style="flex: 1.2; min-width: 280px;">
+                        <!-- Connection: admin_dashboard.css (.full-width L249). Purpose: stretch file inputs to occupy 100% space. -->
                         <div class="file-input-wrap full-width">
                             <input type="file" id="resume_file_input" name="resume_file" accept=".pdf"
                                 class="admin-input" required>
@@ -51,16 +54,24 @@
                     </div>
                 </div>
                 <div class="form-row">
+                    <!-- Connection: admin_dashboard.css (.col-span-2-wrapper L254). Purpose: Spans input box wrapper. -->
                     <div class="col-span-2-wrapper">
                         <!-- PDF Selection Preview -->
+                        <!-- Connection: admin_dashboard.css (.upload-preview-container L259), admin_dashboard.js (L28). Purpose: Selection box unhides on select. -->
                         <div id="resume_preview_box" class="upload-preview-container">
+                            <!-- Connection: admin_dashboard.css (.upload-preview-icon-box L272). Purpose: background wrapper box for preview file icon. -->
                             <div class="upload-preview-icon-box">
+                                <!-- Connection: admin_dashboard.css (.upload-preview-icon L283). Purpose: Red colors for file PDFs icon. -->
                                 <i class="fas fa-file-pdf upload-preview-icon"></i>
                             </div>
+                            <!-- Connection: admin_dashboard.css (.upload-preview-details L288). Purpose: detail wraps containing metadata. -->
                             <div class="upload-preview-details">
+                                <!-- Connection: admin_dashboard.css (.upload-preview-filename L293), admin_dashboard.js (L29). Purpose: shows white filename. -->
                                 <div id="resume_file_name" class="upload-preview-filename">—</div>
+                                <!-- Connection: admin_dashboard.css (.upload-preview-filesize L303), admin_dashboard.js (L30). Purpose: mutes subtitle file size. -->
                                 <div id="resume_file_size" class="upload-preview-filesize">—</div>
                             </div>
+                            <!-- Connection: admin_dashboard.css (.upload-preview-ready L309). Purpose: Green validation success badge. -->
                             <span class="upload-preview-ready"><i class="fas fa-check-circle"></i> Ready</span>
                         </div>
                     </div>
@@ -111,6 +122,7 @@
                                 <form action="{{ url_for('admin.delete_resume', resume_id=r._id) }}" method="POST" class="d-inline"
                                     onsubmit="return confirm('🗑️ Delete this resume forever?');">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <!-- Connection: admin_dashboard.css (.btn-trash L316). Purpose: Red background indicating destructive deletion. -->
                                     <button type="submit" class="toggle-btn btn-trash"><i class="fas fa-trash"></i></button>
                                 </form>
                             </td>
@@ -154,13 +166,16 @@
                             class="admin-input"></textarea>
                     </div>
                     <!-- 2-column: Upload file  |  Or Provide URL -->
+                    <!-- Connection: admin_dashboard.css (.grid-two-columns L328). Purpose: side by side input fields grids. -->
                     <div class="form-row grid-two-columns">
                         <div>
+                            <!-- Connection: admin_dashboard.css (.form-label-blue L333). Purpose: Injects blue labels identifying input roles. -->
                             <label class="form-label-blue">Upload Certificate Image / PDF (Optional)</label>
                             <input type="file" id="cert_file_input" name="cert_file" accept=".pdf,.png,.jpg,.jpeg,.webp"
                                 class="admin-input">
                         </div>
                         <div>
+                            <!-- Connection: admin_dashboard.css (.form-label-blue L333). Purpose: Injects blue labels identifying input roles. -->
                             <label class="form-label-blue">Or Provide Image URL</label>
                             <input type="text" name="preview_image_url" id="cert_image_url"
                                 placeholder="Paste any image URL (e.g. from Coursera, AWS...)" class="admin-input">
@@ -171,11 +186,16 @@
                     <div class="form-row">
                         <div class="full-width">
                             <!-- File preview box -->
+                            <!-- Connection: admin_dashboard.css (.cert-preview-wrapper-box L348), admin_dashboard.js (L54). Purpose: Holds certificate visual display. -->
                             <div id="cert_preview_box" class="cert-preview-wrapper-box">
+                                <!-- Connection: admin_dashboard.css (.cert-image-preview-sub-box L359), admin_dashboard.js (L55). Purpose: Toggles uploaded cert pictures. -->
                                 <div id="cert_img_preview" class="cert-image-preview-sub-box">
+                                    <!-- Connection: admin_dashboard.css (.cert-img-element-full L366), admin_dashboard.js (L56). Purpose: Scales preview image. -->
                                     <img id="cert_img_el" src="" alt="Certificate Preview" class="cert-img-element-full">
+                                    <!-- Connection: admin_dashboard.css (.cert-image-preview-label L373), admin_dashboard.js (L57). Purpose: Overlay bottom filenames. -->
                                     <div class="cert-image-preview-label" id="cert_img_name"></div>
                                 </div>
+                                <!-- Connection: admin_dashboard.css (.cert-pdf-preview-sub-box L383), admin_dashboard.js (L58). Purpose: Layout for PDF cover confirmations. -->
                                 <div id="cert_pdf_preview" class="cert-pdf-preview-sub-box">
                                     <div class="upload-preview-icon-box">
                                         <i class="fas fa-file-pdf upload-preview-icon"></i>
@@ -189,19 +209,24 @@
                             </div>
 
                             <!-- PDF + no URL companion -->
+                            <!-- Connection: admin_dashboard.css (.cert-companion-image-wrapper L390), admin_dashboard.js (L61). Purpose: Companion wrapper for PDF cover images. -->
                             <div id="cert_image_upload_wrap" class="cert-companion-image-wrapper">
+                                <!-- Connection: admin_dashboard.css (.form-label-orange L340). Purpose: Orange warning alerts. -->
                                 <label class="form-label-orange">
                                     <i class="fas fa-exclamation-triangle"></i> PDF uploaded — add a picture below, or
                                     paste an Image URL in the field above:
                                 </label>
                                 <input type="file" id="cert_image_input" name="cert_image_file"
                                     accept=".png,.jpg,.jpeg,.webp" class="admin-input">
+                                <!-- Connection: admin_dashboard.css (.cert-companion-image-preview-box L395), admin_dashboard.js (L63). Purpose: Companion visual wrap. -->
                                 <div id="cert_image_preview_box" class="cert-companion-image-preview-box">
+                                    <!-- Connection: admin_dashboard.css (.preview-img-element L416), admin_dashboard.js (L64). Purpose: Scale styles. -->
                                     <img id="cert_image_preview_el" src="" class="preview-img-element">
                                 </div>
                             </div>
 
                             <!-- URL live preview -->
+                            <!-- Connection: admin_dashboard.css (.cert-url-preview-wrapper-box L407), admin_dashboard.js (L65). Purpose: Live preview container for URLs. -->
                             <div id="cert_url_preview_box" class="cert-url-preview-wrapper-box">
                                 <img id="cert_url_preview_el" src="" alt="URL Preview" class="preview-img-element">
                             </div>
@@ -228,12 +253,16 @@
                         {% for c in certificates %}
                         <tr>
                             <td>
+                                <!-- Connection: admin_dashboard.css (.table-preview-img-wrap L422). Purpose: Thumbnail size inside view tables. -->
                                 <div class="table-preview-img-wrap">
                                     {% if c.preview_image %}
+                                    <!-- Connection: admin_dashboard.css (.table-preview-img L434). Purpose: Cover style layout sizing inside table cells. -->
                                     <img src="/certificate/{{ c._id }}/preview-image" alt="" class="table-preview-img"
                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <!-- Connection: admin_dashboard.css (.table-preview-fallback L439). Purpose: fallback background for fileless entries. -->
                                     <span class="table-preview-fallback"><i class="fas fa-image"></i></span>
                                     {% else %}
+                                    <!-- Connection: admin_dashboard.css (.table-preview-fallback-icon L449). Purpose: Mutes fallback certificate icon. -->
                                     <span class="table-preview-fallback-icon"><i class="fas fa-certificate"></i></span>
                                     {% endif %}
                                 </div>
@@ -257,6 +286,7 @@
                                     <button type="submit" class="toggle-btn toggle-show">Show</button>
                                     {% endif %}
                                 </form>
+                                <!-- Connection: admin_dashboard.css (.btn-edit L322), admin_dashboard.js (L393). Purpose: Click triggers edit modal. -->
                                 <button type="button" class="toggle-btn edit-cert-btn btn-edit"
                                     data-id="{{ c._id }}" data-title="{{ c.title | e }}"
                                     data-issuer="{{ c.issuer | e }}" data-date_issued="{{ c.date_issued or '' | e }}"
@@ -677,6 +707,7 @@
                 <form action="{{ url_for('admin.add_project') }}" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
+                    <!-- Connection: admin_dashboard.css (.section-sub-header L454). Purpose: formats administrative sub-headers. -->
                     <h3 class="section-sub-header">1. Basic Info</h3>
                     <div class="form-row">
                         <input type="text" name="title" placeholder="Project Title (e.g. Enterprise Analytics) *"
@@ -705,6 +736,7 @@
 
                     <h3 class="section-sub-header">2. Links & Media</h3>
                     <div class="form-row">
+                        <!-- Connection: admin_dashboard.css (.flex-1-wrapper L460). Purpose: divides inputs grid equally. -->
                         <div class="flex-1-wrapper">
                             <input type="text" name="source_code_link" id="add_source_code_link"
                                 placeholder="Source Code Link (Required for Full Stack) *" class="admin-input" required>
@@ -713,6 +745,7 @@
                             <input type="text" name="deployment_link" id="add_deployment_link"
                                 placeholder="Live Deployment Link (Triggers Auto-Preview)" class="admin-input">
                         </div>
+                        <!-- Connection: admin_dashboard.css (.d-none L239), admin_dashboard.js (L162). Purpose: Toggles display of Colab inputs. -->
                         <div id="add_colab_wrap" class="flex-1-wrapper d-none">
                             <input type="text" name="colab_link" id="add_colab_link"
                                 placeholder="Google Colab Link (e.g. colab.research.google.com...)" class="admin-input">
@@ -731,7 +764,9 @@
                         </div>
                     </div>
                     <div class="form-row">
+                        <!-- Connection: admin_dashboard.css (.project-image-box-preview L464), admin_dashboard.js (L271). Purpose: rendering live thumbnail preview. -->
                         <div id="image_preview_box" class="project-image-box-preview">
+                            <!-- Connection: admin_dashboard.css (.preview-placeholder-text L477). Purpose: project box placeholder title. -->
                             <span class="preview-placeholder-text">Image Preview</span>
                         </div>
                     </div>
@@ -739,6 +774,7 @@
                     <h3 class="section-sub-header">3. Detailed Case Study Content</h3>
                     <div class="form-row">
                         <div class="full-width">
+                            <!-- Connection: admin_dashboard.css (.brief-textarea-min-height L482). Purpose: Minimizes overview text height. -->
                             <textarea name="description" placeholder="Short Overview (Used in cards)"
                                 class="admin-input brief-textarea-min-height"></textarea>
                         </div>
@@ -815,6 +851,7 @@
                                 <input type="text" name="notebook_url" id="add_notebook_url"
                                     placeholder="https://nbviewer.org/github/... or https://colab.research.google.com/drive/..."
                                     class="admin-input">
+                                <!-- Connection: admin_dashboard.css (.notebook-info-hint L486). Purpose: Mutes notebook hint guides. -->
                                 <p class="notebook-info-hint">
                                     <i class="fas fa-info-circle"></i> Use nbviewer.org for best embedding. Colab links open in a new tab.
                                 </p>
@@ -860,6 +897,7 @@
                         {% for p in projects %}
                         <tr>
                             <td>
+                                <!-- Connection: admin_dashboard.css (.project-table-thumbnail-wrap L492). Purpose: Thumbnail box layout for list tables. -->
                                 <div class="project-table-thumbnail-wrap">
                                     <img src="{{ p.image_url }}" alt="" class="table-preview-img">
                                 </div>
@@ -868,13 +906,17 @@
                             <td>{{ p.category }}</td>
                             <td>
                                 {% if p.project_type == 'datascience' %}
+                                <!-- Connection: admin_dashboard.css (.badge-purple-ds L501). Purpose: Purple theme indicating Data Science tag attributes. -->
                                 <span class="badge badge-purple-ds">Data Science</span>
                                 {% elif p.project_type == 'fullstack' %}
+                                <!-- Connection: admin_dashboard.css (.badge-green-fs L507). Purpose: Green theme indicating Full Stack tag attributes. -->
                                 <span class="badge badge-green-fs">Full Stack</span>
                                 {% else %}
+                                <!-- Connection: admin_dashboard.css (.text-dim-fallback L513). Purpose: Muted dash line inside empty columns. -->
                                 <span class="text-dim-fallback">—</span>
                                 {% endif %}
                             </td>
+                            <!-- Connection: admin_dashboard.css (.td-highlight-tag L517). Purpose: Colors highlight tags cell. -->
                             <td class="td-highlight-tag">{{ p.highlight_tag or '—' }}</td>
                             <td>
                                 {% if p.visible %}
@@ -960,6 +1002,7 @@
                         {% for p in platforms %}
                         <tr>
                             <td><i class="{{ p.icon_class }}"></i> {{ p.name }}</td>
+                            <!-- Connection: admin_dashboard.css (.td-platform-url L522). Purpose: Prevents platform urls from overflowing. -->
                             <td class="td-platform-url">{{ p.url }}</td>
                             <td>
                                 {% if p.visible %}
@@ -1021,6 +1064,7 @@
                             placeholder="Tags (comma-separated: NumPy, Pandas...)" class="admin-input">
                     </div>
                     <div class="form-row">
+                        <!-- Connection: admin_dashboard.css (.brief-textarea-modal-height L528). Purpose: Textarea heights layout inside modals. -->
                         <textarea name="description" id="ec_description" placeholder="Short Description / Overview"
                             class="admin-input brief-textarea-modal-height"></textarea>
                     </div>
@@ -1032,8 +1076,10 @@
                                 <i class="fas fa-paperclip"></i> Replace Certificate File (Image / PDF)
                             </label>
                             <!-- Current file info -->
+                            <!-- Connection: admin_dashboard.css (.cert-current-file-badge L532), admin_dashboard.js (L409). Purpose: Badge showing uploaded certificate files. -->
                             <div id="ec_current_file_info" class="cert-current-file-badge">
                                 <i class="fas fa-file"></i> Current: <span id="ec_current_filename"></span>
+                                <!-- Connection: admin_dashboard.css (.cert-current-preview-green L543), admin_dashboard.js (L411). Purpose: Green badge showing cover pictures exist. -->
                                 <span id="ec_current_preview_badge" class="cert-current-preview-green"><i class="fas fa-image"></i> has preview</span>
                             </div>
                             <input type="file" id="ec_cert_file_input" name="cert_file"
@@ -1267,6 +1313,7 @@
                         </div>
                     </div>
 
+                    <!-- Connection: admin_dashboard.css (.full-width-submit-margin L549). Purpose: Force modal buttons to stretch full width. -->
                     <button type="submit" class="submit-btn full-width-submit-margin"><i class="fas fa-save"></i> Save Changes</button>
                 </form>
             </div>

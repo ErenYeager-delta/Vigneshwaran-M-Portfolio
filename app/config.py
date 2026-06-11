@@ -29,19 +29,39 @@ class BaseConfig:
     CACHE_DEFAULT_TIMEOUT = 300
 
     # --- Admin ---
+    # Connection: Verified against bcrypt hashes during admin authentication requests.
+    # Key Source: Configured in the local .env file or host environment variables.
     ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+    
+    # Connection: Injected dynamically in app/__init__.py (L60) to register the admin login route rule.
+    # Key Source: Configured in the local .env file to obscure the admin path from scanners.
     ADMIN_SECRET_PATH = os.getenv("ADMIN_SECRET_PATH", "/vignesh-secret-2025")
 
     # --- EmailJS (preserved from original) ---
+    # Connection: Used in app/services.py (EmailService) to dispatch verification OTP and brief notifications.
+    # Key Source: Retrieve from EmailJS Dashboard -> Email Services -> Service ID.
     EMAILJS_SERVICE_ID = os.getenv("EMAILJS_SERVICE_ID")
+    
+    # Connection: Used in app/services.py (EmailService) to set email templates for notifications.
+    # Key Source: Retrieve from EmailJS Dashboard -> Email Templates -> Template ID.
     EMAILJS_TEMPLATE_ID = os.getenv("EMAILJS_TEMPLATE_ID")
+    
+    # Connection: Used in app/services.py (EmailService) to authorize basic public requests.
+    # Key Source: Retrieve from EmailJS Dashboard -> Account -> API Keys -> Public Key.
     EMAILJS_PUBLIC_KEY = os.getenv("EMAILJS_PUBLIC_KEY")
+    
+    # Connection: Used in app/services.py (EmailService) to authorize server-to-server email dispatches.
+    # Key Source: Retrieve from EmailJS Dashboard -> Account -> API Keys -> Private Key.
     EMAILJS_PRIVATE_KEY = os.getenv("EMAILJS_PRIVATE_KEY")
 
     # --- MongoDB (preserved from original) ---
+    # Connection: Used across app/models.py to connect to PyMongo collections (Projects, CertifiedUser, Resumes, etc.).
+    # Key Source: Retrieve from MongoDB Atlas console -> Connect -> Drivers -> Connection String.
     MONGO_URI = os.getenv("MONGO_URI")
 
     # --- Rate Limiting ---
+    # Connection: Used by Flask-Limiter in app/__init__.py and app/routes/api.py routes.
+    # Key Source: Hardcoded defaults, storage fallback to in-memory store.
     RATELIMIT_DEFAULT = "200/hour"
     RATELIMIT_STORAGE_URI = "memory://"
 

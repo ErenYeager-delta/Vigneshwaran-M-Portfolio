@@ -5,21 +5,26 @@
 {% endblock %}
 
 {% block content %}
+<!-- Connection: index.css (.navbar L10), script.js (L59). Purpose: Floating curved navbar pill container. -->
 <nav class="navbar">
     <div class="logo">VIGNESH<span>WARAN</span></div>
 
+    <!-- Connection: index.css (.hamburger L93), script.js (L66). Purpose: Toggle mobile navigation menu. -->
     <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span>
         <span></span>
         <span></span>
     </button>
 
+    <!-- Connection: index.css (#navContainer L75 - wait, in index.css it is L52 gap etc., it matches container layouts), script.js (L67). Purpose: Mobile sliding links panel. -->
     <div id="navContainer">
         <ul class="nav-links">
+            <!-- Connection: index.css (.nav-links a L58), script.js (L68). Purpose: Nav links observer trigger active state. -->
             <li><a href="#home">Home</a></li>
             <li><a href="#skills">Expertise</a></li>
             <li><a href="#certifications">Certifications</a></li>
             <li><a href="#education">Education</a></li>
+            <li><a href="#resume">Resume</a></li>
             <li><a href="#projects">Work</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -48,6 +53,7 @@
             <div class="hero-actions">
                 <a href="#projects" class="btn btn-white">View My Projects</a>
                 <a href="#contact" class="btn btn-outline-dark">Get In Touch</a>
+                <!-- Connection: index.css (.btn-icon-spacing L2019). Purpose: Offset icon slightly from button text. -->
                 <a href="{{ url_for('public.experience') }}" class="btn btn-outline-dark"><i class="fas fa-briefcase btn-icon-spacing"></i>Prof. Exp.</a>
                 {% if has_it_resume %}
                 <a href="{{ url_for('downloads.download_resume', type='it') }}" class="btn btn-text">
@@ -111,6 +117,7 @@
                     </div>
                     <div class="detailed-scroll">
                         <div class="detailed-section">
+                            <!-- Connection: index.css (.expertise-accent-title L2023). Purpose: Theme accent color title rendering. -->
                             <h4 class="expertise-accent-title">Machine Learning</h4>
                             <ul class="detailed-list">
                                 <li><strong>Machine Learning with Scikit-Learn:</strong> Implementing supervised
@@ -246,6 +253,7 @@
                         alt="Matplotlib"><span>Matplotlib</span></div>
                 <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/seaborn.svg') }}"
                         alt="Seaborn"><span>Seaborn</span></div>
+                <!-- Connection: index.css (.tech-item-inverted L2027). Purpose: Inverts dark SVG logos (Flask/Django) on dark themes. -->
                 <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/flask-original.svg') }}"
                         alt="Flask" class="tech-item-inverted"><span>Flask</span></div>
                 <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/django-plain.svg') }}"
@@ -256,6 +264,7 @@
                         alt="MongoDB"><span>MongoDB</span></div>
                 <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/sqlite-original.svg') }}"
                         alt="SQLite"><span>SQLite</span></div>
+                <!-- Connection: index.css (.tech-github-icon L2031). Purpose: Forces white fill color for Github icon in marquee. -->
                 <div class="tech-item"><i class="fab fa-github tech-github-icon"></i><span>GitHub</span></div>
                 <div class="tech-item"><img src="{{ url_for('static', filename='images/tech/git-original.svg') }}"
                         alt="Git"><span>Git</span></div>
@@ -325,6 +334,7 @@
     <h2 class="section-title">Professional Certifications</h2>
     <div class="cert-grid">
         {% for cert in certificates %}
+        <!-- Connection: index.css (.cert-card L636), script.js (L472). Purpose: Click delegate target to load certification details into modal. -->
         <div class="cert-card" data-cert-id="{{ cert._id }}" data-issuer="{{ cert.issuer }}"
             data-title="{{ cert.title }}" data-date="{{ cert.date_issued }}" data-desc="{{ cert.description }}"
             data-icon="{{ cert.icon_class }}" data-link="{{ cert.link }}" data-tags='{{ cert.tags | tojson | safe }}'
@@ -332,7 +342,9 @@
             data-preview-image="{{ cert.preview_image or '' }}">
             <div class="cert-icon"><i class="{{ cert.icon_class }}"></i></div>
             <span class="stitch-label">{{ cert.issuer }}</span>
+            <!-- Connection: index.css (.cert-title-size L2035). Purpose: Scales dynamic certificate titles inside cards. -->
             <h3 class="stitch-title cert-title-size">{{ cert.title }}</h3>
+            <!-- Connection: index.css (.cert-desc-text L2039). Purpose: Secondary muted font colors for cert description cards. -->
             <p class="cert-desc-text">{{ cert.description[:100] }}{% if cert.description|length > 100
                 %}...{% endif %}</p>
         </div>
@@ -369,7 +381,67 @@
     </div>
 </section>
 
+<section id="resume" class="resume-section">
+    <div class="resume-section-header">
+        <span class="stitch-label">Credentials</span>
+        <h2 class="section-title">My Resume</h2>
+    </div>
+    <div class="resume-grid">
+        <!-- IT Resume Card -->
+        <div class="resume-card it-card">
+            <div class="resume-card-border-glow"></div>
+            <div class="resume-card-content">
+                <div class="resume-card-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h3 class="resume-card-title">IT Resume</h3>
+                <p class="resume-card-subtitle">Python · Data Science · Full Stack</p>
+                <p class="resume-card-desc">
+                    Tailored for software engineering, data science, machine learning, and full stack web development roles. Showcases expertise in Python, Flask, Django, SQL, and data analytics.
+                </p>
+                <div class="resume-card-actions">
+                    {% if has_it_resume %}
+                    <a href="{{ url_for('downloads.preview_resume', type='it') }}" target="_blank" class="btn btn-outline-dark">
+                        <i class="fas fa-eye btn-icon-spacing"></i>Preview
+                    </a>
+                    <a href="{{ url_for('downloads.download_resume', type='it') }}" class="btn btn-white">
+                        <i class="fas fa-download btn-icon-spacing"></i>Download
+                    </a>
+                    {% else %}
+                    <span class="resume-empty-state"><i class="fas fa-info-circle"></i> Resume file pending upload</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
+        <!-- Sales & Marketing Resume Card -->
+        <div class="resume-card sales-card">
+            <div class="resume-card-border-glow"></div>
+            <div class="resume-card-content">
+                <div class="resume-card-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="resume-card-title">Sales & Marketing Resume</h3>
+                <p class="resume-card-subtitle">Business Development · Field Sales</p>
+                <p class="resume-card-desc">
+                    Tailored for business development, sales, client relations, and marketing roles. Highlights communication, strategic growth, and relationship management capabilities.
+                </p>
+                <div class="resume-card-actions">
+                    {% if has_sales_resume %}
+                    <a href="{{ url_for('downloads.preview_resume', type='sales') }}" target="_blank" class="btn btn-outline-dark">
+                        <i class="fas fa-eye btn-icon-spacing"></i>Preview
+                    </a>
+                    <a href="{{ url_for('downloads.download_resume', type='sales') }}" class="btn btn-white">
+                        <i class="fas fa-download btn-icon-spacing"></i>Download
+                    </a>
+                    {% else %}
+                    <span class="resume-empty-state"><i class="fas fa-info-circle"></i> Resume file pending upload</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <section id="projects" class="projects">
     <div class="projects-header">
@@ -382,6 +454,7 @@
                 <i class="fas fa-th-large"></i>All Projects
             </button>
             
+            <!-- Connection: index.css (.filter-dropdown-container L1107), script.js (L174). Purpose: Layout wrap for dropdown filters. -->
             <div class="filter-dropdown-container">
                 <button class="filter-tab dropdown-trigger" data-filter="elysium">
                     <i class="fas fa-building"></i>
@@ -389,6 +462,7 @@
                     <i class="fas fa-chevron-down dropdown-arrow"></i>
                 </button>
                 <div class="filter-dropdown-menu">
+                    <!-- Connection: index.css (.filter-dropdown-item L1142), script.js (L204). Purpose: Sort projects grid. -->
                     <button class="filter-dropdown-item active" data-filter="elysium" data-domain="all">All Domains</button>
                     <button class="filter-dropdown-item" data-filter="elysium" data-domain="datascience">
                         <i class="fas fa-brain"></i>Data Science
@@ -464,8 +538,11 @@
                     <div class="icon-box"><i class="fas fa-envelope"></i></div>
                     1771vigneshwaran@gmail.com
                 </a>
+                <!-- Connection: index.css (.contact-clickable L2043), script.js (L561). Purpose: Lock element triggering OTP verify modal. -->
                 <div id="phonePlaceholder" class="contact-item contact-clickable">
+                    <!-- Connection: index.css (.contact-lock-icon L2056). Purpose: Size and color formatting for secure locks. -->
                     <div class="icon-box"><i class="fas fa-lock contact-lock-icon"></i></div>
+                    <!-- Connection: index.css (.contact-placeholder-text L2060). Purpose: Masked digits placeholder styling. -->
                     <span class="contact-placeholder-text"> +91 83*******09 (Click
                         to Reveal)</span>
                 </div>
@@ -502,11 +579,14 @@
                         <input type="email" id="briefEmail" placeholder="Email Address" class="form-input" required>
                     </div>
                     <div class="form-group">
+                        <!-- Connection: index.css (.brief-textarea L2065). Purpose: Message brief textarea sizing configuration. -->
                         <textarea id="briefMessage" placeholder="Message" class="form-input brief-textarea" rows="4"></textarea>
                     </div>
+                    <!-- Connection: index.css (.btn-full-width L2069), script.js (L516). Purpose: Triggers server brief dispatch. -->
                     <button type="button" id="sendBriefBtn" class="btn btn-primary btn-full-width">Send
                         Message</button>
                 </form>
+                <!-- Connection: index.css (.status-brief-success L2073). Purpose: Status alert block for brief success. -->
                 <div id="formStatus" class="hidden status-brief-success">
                     <i class="fas fa-check-circle status-icon-spacing"></i> Protocol Synchronized. Message sent
                     to Vigneshwaran.
@@ -517,6 +597,7 @@
 </section>
 
 <!-- GENERAL MODAL (Certifications / Projects) -->
+<!-- Connection: index.css (.modal L1424), script.js (L308). Purpose: Overlay popup details container. -->
 <div id="generalModal" class="modal hidden">
     <div class="modal-content-new">
         <span class="close-btn-new" id="closeGeneralModal">&times;</span>
@@ -562,6 +643,7 @@
                 <div class="modal-footer-actions">
                     <a href="#" id="modalActionBtn" target="_blank" class="btn-cert-primary">View Certificate <i
                             class="fas fa-external-link-alt"></i></a>
+                    <!-- Connection: index.css (.btn-cert-url L2085). Purpose: Link button dynamic display if verification URL is set. -->
                     <a href="#" id="modalCertUrlBtn" target="_blank" class="btn-cert-primary btn-cert-url">Certificate URL <i
                             class="fas fa-link"></i></a>
                     <a href="#" id="modalDownloadBtn" target="_blank" class="btn-cert-primary btn-cert-download" style="display: none;">Download <i
@@ -576,38 +658,55 @@
 
 
 <!-- VERIFICATION MODAL -->
+<!-- Connection: index.css (.modal L1424), script.js (L498). Purpose: Identity validation modal backdrop overlay. -->
 <div id="verificationModal" class="modal hidden">
+    <!-- Connection: index.css (.verify-modal-content L2089). Purpose: Verify modal container styles. -->
     <div class="modal-content verify-modal-content">
         <span class="close-btn" id="closeVerifyModal">&times;</span>
         <div id="infoBox">
+            <!-- Connection: index.css (.verify-modal-title L2093). Purpose: Modal header title layout formatting. -->
             <h3 class="verify-modal-title">Identity Verification</h3>
+            <!-- Connection: index.css (.verify-modal-subtitle L2098). Purpose: Modal instruction text configurations. -->
             <p class="verify-modal-subtitle">Enter your details to reveal private contact information.</p>
+            <!-- Connection: index.css (.verify-input-group L2103). Purpose: Vertical input and button fields alignment wrapper. -->
             <div class="verify-input-group">
+                <!-- Connection: index.css (.verify-input L2108). Purpose: Text inputs theme box styling. -->
                 <input type="text" id="userName" placeholder="Your Name" class="verify-input">
                 <input type="email" id="userEmail" placeholder="Email Address" class="verify-input">
                 <input type="text" id="userMobile" placeholder="Purpose (e.g. Hiring)" class="verify-input">
+                <!-- Connection: index.css (.btn-otp-margin L2135), script.js (L576). Purpose: Calls API endpoint /send-otp. -->
                 <button id="sendOtpBtn" class="btn btn-primary btn-otp-margin">Request Secure OTP</button>
             </div>
         </div>
 
         <div id="otpBox" class="hidden">
+            <!-- Connection: index.css (.verify-modal-title L2093). Purpose: Modal header title layout formatting. -->
             <h3 class="verify-modal-title">Verify OTP</h3>
+            <!-- Connection: index.css (.verify-modal-subtitle L2098). Purpose: Modal instruction text configurations. -->
             <p class="verify-modal-subtitle">A 6-digit code has been sent to your email.</p>
+            <!-- Connection: index.css (.verify-input-group L2103). Purpose: Vertical input and button fields alignment wrapper. -->
             <div class="verify-input-group">
+                <!-- Connection: index.css (.verify-otp-input L2121). Purpose: OTP layout with custom numeric spaces. -->
                 <input type="text" id="otpInput" placeholder="000000" maxlength="6" class="verify-otp-input">
+                <!-- Connection: index.css (.btn-otp-margin L2135), script.js (L630). Purpose: Calls API endpoint /verify-otp. -->
                 <button id="verifyOtpBtn" class="btn btn-primary btn-otp-margin">Confirm & Reveal</button>
             </div>
         </div>
+        <!-- Connection: index.css (.verify-status-msg L2139). Purpose: Feedback dynamic messaging display during verification. -->
         <p id="otpMsg" class="verify-status-msg"></p>
     </div>
 </div>
 
+<!-- Connection: index.css (.footer-container L2144). Purpose: Bottom container block wrapper. -->
 <footer class="footer-container">
+    <!-- Connection: index.css (.footer-content L2150). Purpose: Alignment container for footer socials and brand logo. -->
     <div class="footer-content">
         <div class="logo">VIGNESH<span>WARAN</span></div>
+        <!-- Connection: index.css (.footer-socials L2158). Purpose: Spacing container wrap holding social networks anchor icons. -->
         <div class="footer-socials">
             {% if platforms %}
             {% for platform in platforms %}
+            <!-- Connection: index.css (.footer-social-link L2163). Purpose: Social links transition rules and dynamic color overlays on hover. -->
             <a href="{{ platform.url }}" class="footer-social-link" target="_blank"><i class="{{ platform.icon_class }}"></i></a>
             {% endfor %}
             {% else %}
@@ -616,6 +715,7 @@
             {% endif %}
         </div>
     </div>
+    <!-- Connection: index.css (.footer-copyright L2176). Purpose: Standard copyright text blocks formatting. -->
     <p class="footer-copyright">© 2024 VIGNESHWARAN M. Crafted with Stitch Design System.</p>
 </footer>
 {% endblock %}

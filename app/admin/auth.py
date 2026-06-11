@@ -7,6 +7,8 @@ from app.services import EmailService
 from app.admin import admin_bp
 
 
+# Connection: Registered dynamically on application load in app/__init__.py (L60) under the configured ADMIN_SECRET_PATH.
+# Purpose: Authenticates admin credentials sent from login.html (L22) against ADMIN_PASSWORD, clearing cache on login.
 @limiter.limit("5 per minute")
 def admin_login():
     """Secret admin login handler — mapped dynamically on application factory load."""

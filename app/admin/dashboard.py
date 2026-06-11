@@ -5,6 +5,8 @@ from app.security import admin_required
 from app.admin import admin_bp
 
 
+# Connection: Invoked on admin authentication success in app/admin/auth.py (L53) or via URL navigation.
+# Purpose: Renders admin/dashboard.html and fetches all database objects (resumes, projects, certifications, etc.) to list inside panels.
 @admin_bp.route("/admin/dashboard")
 @admin_required
 def dashboard():

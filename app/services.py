@@ -6,7 +6,11 @@ from datetime import datetime
 from flask import current_app
 
 class OTPService:
-    """Manages OTP generation, in-memory caching, validation, and security blocks."""
+    """
+    Manages OTP generation, in-memory caching, validation, and security blocks.
+    Connection: Invoked by api routes (app/routes/api.py L34 and L72) to secure phone/email lock fields.
+    Key Source: Caches temporary 6-digit codes in class variable memory store (_store).
+    """
     _store = {}
 
     @classmethod
@@ -51,11 +55,17 @@ class OTPService:
 
 
 class EmailService:
-    """Dispatches Server-to-Server email requests via EmailJS REST API."""
+    """
+    Dispatches Server-to-Server email requests via EmailJS REST API.
+    Connection: Relies on app/config.py keys (EMAILJS_SERVICE_ID, etc.) to compile payloads, posting to https://api.emailjs.com/api/v1.0/email/send.
+    """
 
     @staticmethod
     def send_otp_email(email: str, name: str, otp: str) -> tuple[bool, str | None]:
-        """Sends verification OTP email to a user."""
+        """
+        Sends verification OTP email to a user.
+        Connection: Triggered by /send-otp (app/routes/api.py L37) when user clicks phone/email mask lock.
+        """
         try:
             email_data = {
                 "service_id": current_app.config["EMAILJS_SERVICE_ID"],
@@ -90,7 +100,10 @@ class EmailService:
 
     @staticmethod
     def send_brief_email(name: str, email: str, message: str) -> tuple[bool, str | None]:
-        """Sends a notification to the admin regarding a new project brief submission."""
+        """
+        Sends a notification to the admin regarding a new project brief submission.
+        Connection: Triggered by /submit-brief (app/routes/api.py L108) when visitor submits project brief form.
+        """
         try:
             payload = {
                 "service_id": current_app.config["EMAILJS_SERVICE_ID"],
@@ -123,7 +136,10 @@ class EmailService:
 
     @staticmethod
     def send_security_alert(ip: str, status: str, user_agent: str) -> tuple[bool, str | None]:
-        """Sends a security notification to the admin regarding an admin login attempt."""
+        """
+        Sends a security notification to the admin regarding an admin login attempt.
+        Connection: Triggered by admin login authentication routes (app/admin/routes.py) on login attempt events.
+        """
         try:
             payload = {
                 "service_id": current_app.config["EMAILJS_SERVICE_ID"],

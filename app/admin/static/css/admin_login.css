@@ -7,6 +7,7 @@ body {
     background: #0D0D0D;
     color: #fff;
 }
+/* Connection: login.html (L11). Purpose: Anchors the absolute center box layout containing input forms. */
 .login-box {
     background: #1A1A1A;
     padding: 4rem;
@@ -15,6 +16,7 @@ body {
     width: 100%;
     max-width: 420px;
 }
+/* Connection: login.html (L12). Purpose: Styles the administration header (font size, margins, weights). */
 .login-box h1 {
     font-size: 2rem;
     font-weight: 900;
@@ -25,6 +27,7 @@ body {
     margin-bottom: 2.5rem;
     font-size: 0.9rem;
 }
+/* Connection: login.html (L21). Purpose: Formats password field with custom background colors, borders, and animations. */
 .login-box input {
     width: 100%;
     padding: 1.2rem;
@@ -40,6 +43,7 @@ body {
     outline: none;
     border-color: #A0CFFF;
 }
+/* Connection: login.html (L22). Purpose: Formats authentication submit button. */
 .login-box button {
     width: 100%;
     padding: 1.2rem;
@@ -56,6 +60,7 @@ body {
     background: #fff;
     transform: translateY(-2px);
 }
+/* Connection: login.html (L16). Purpose: Renders red background warning box when credential checking fails. */
 .error {
     background: rgba(255, 77, 77, 0.1);
     color: #ff4d4d;

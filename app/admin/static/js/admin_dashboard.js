@@ -25,8 +25,11 @@ document.querySelectorAll('.toggle-form-btn').forEach(btn => {
 // 2. RESUME FILE UPLOAD PREVIEW
 // ══════════════════════════════════════════════
 const resumeFileInput = document.getElementById('resume_file_input');
+// Connection: dashboard.html (L56), admin_dashboard.css (.upload-preview-container). Purpose: PDF file selection container toggling.
 const resumePreviewBox = document.getElementById('resume_preview_box');
+// Connection: dashboard.html (L61), admin_dashboard.css (.upload-preview-filename). Purpose: shows white filename.
 const resumeFileName = document.getElementById('resume_file_name');
+// Connection: dashboard.html (L62), admin_dashboard.css (.upload-preview-filesize). Purpose: sets file dimensions.
 const resumeFileSize = document.getElementById('resume_file_size');
 
 if (resumeFileInput && resumePreviewBox) {
@@ -51,17 +54,26 @@ if (resumeFileInput && resumePreviewBox) {
 // ══════════════════════════════════════════════
 const certFileInput        = document.getElementById('cert_file_input');
 const certImageUrlInput    = document.getElementById('cert_image_url');
+// Connection: dashboard.html (L174), admin_dashboard.css (.cert-preview-wrapper-box). Purpose: Holds certificate visual display.
 const certPreviewBox       = document.getElementById('cert_preview_box');
+// Connection: dashboard.html (L175), admin_dashboard.css (.cert-image-preview-sub-box). Purpose: Toggles uploaded cert pictures.
 const certImgPreview       = document.getElementById('cert_img_preview');
+// Connection: dashboard.html (L176), admin_dashboard.css (.cert-img-element-full). Purpose: Scales preview image.
 const certImgEl            = document.getElementById('cert_img_el');
+// Connection: dashboard.html (L177), admin_dashboard.css (.cert-image-preview-label). Purpose: Overlay bottom filenames.
 const certImgName          = document.getElementById('cert_img_name');
+// Connection: dashboard.html (L179), admin_dashboard.css (.cert-pdf-preview-sub-box). Purpose: PDF cover confirmation layout box.
 const certPdfPreview       = document.getElementById('cert_pdf_preview');
 const certPdfName          = document.getElementById('cert_pdf_name');
 const certPdfSize          = document.getElementById('cert_pdf_size');
+// Connection: dashboard.html (L192), admin_dashboard.css (.cert-companion-image-wrapper). Purpose: Companion wrapper for PDF cover images.
 const certImageUploadWrap  = document.getElementById('cert_image_upload_wrap');
 const certImageInput       = document.getElementById('cert_image_input');
+// Connection: dashboard.html (L199), admin_dashboard.css (.cert-companion-image-preview-box). Purpose: Companion visual wrap.
 const certImagePreviewBox  = document.getElementById('cert_image_preview_box');
+// Connection: dashboard.html (L200), admin_dashboard.css (.preview-img-element). Purpose: Scale styles.
 const certImagePreviewEl   = document.getElementById('cert_image_preview_el');
+// Connection: dashboard.html (L205), admin_dashboard.css (.cert-url-preview-wrapper-box). Purpose: Live preview container for URLs.
 const certUrlPreviewBox    = document.getElementById('cert_url_preview_box');
 const certUrlPreviewEl     = document.getElementById('cert_url_preview_el');
 
@@ -159,6 +171,7 @@ function updateProjectFields(formType, projectType) {
     
     const sourceCodeEl = document.getElementById(prefix + 'source_code_link');
     const deploymentWrap = document.getElementById(prefix + 'deployment_wrap');
+    // Connection: dashboard.html (L716), admin_dashboard.css (.d-none). Purpose: Toggles display of Colab inputs.
     const colabWrap = document.getElementById(prefix + 'colab_wrap');
     
     const problemLabel = document.getElementById(prefix + 'problem_label');
@@ -268,6 +281,7 @@ if (editProjectTypeEl) {
 // Image file upload listeners
 const addProjectImgFile = document.getElementById('add_project_image_file');
 const addProjectImgUrl = document.getElementById('project_image_url');
+// Connection: dashboard.html (L734), admin_dashboard.css (.project-image-box-preview). Purpose: rendering live thumbnail preview.
 const addPreviewBox = document.getElementById('image_preview_box');
 if (addProjectImgFile) {
     addProjectImgFile.addEventListener('change', function() {
@@ -390,6 +404,7 @@ const editCertModal = document.getElementById('editCertificateModal');
 const closeEditCertBtn = document.getElementById('closeEditCertModal');
 const editCertForm = document.getElementById('editCertificateForm');
 
+// Connection: dashboard.html (L260), admin_dashboard.css (.btn-edit). Purpose: Click triggers edit modal.
 document.querySelectorAll('.edit-cert-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const id           = this.getAttribute('data-id');
@@ -406,8 +421,10 @@ document.querySelectorAll('.edit-cert-btn').forEach(btn => {
         document.getElementById('ec_description').value  = this.getAttribute('data-description') || '';
 
         // Show current file info
+        // Connection: dashboard.html (L1035), admin_dashboard.css (.cert-current-file-badge). Purpose: Badge showing uploaded certificate files.
         const currentFileInfo = document.getElementById('ec_current_file_info');
         const currentFilename = document.getElementById('ec_current_filename');
+        // Connection: dashboard.html (L1037), admin_dashboard.css (.cert-current-preview-green). Purpose: Green badge showing cover pictures exist.
         const currentPreviewBadge = document.getElementById('ec_current_preview_badge');
         if (filename) {
             currentFilename.textContent = filename;
