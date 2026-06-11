@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '*/14 * * * *'
 
+permissions: {}
+
 jobs:
   ping:
     runs-on: ubuntu-latest
