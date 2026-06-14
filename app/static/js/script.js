@@ -150,8 +150,8 @@ document.addEventListener('DOMContentLoaded', function () {
         projectCards.forEach(card => {
             const cardCategory = card.getAttribute('data-category'); // 'elysium' or 'self'
             const cardType = card.getAttribute('data-type');         // 'datascience' or 'fullstack'
-            // The card may be wrapped in a <a class="project-card-link"> — show/hide that
-            const cardWrapper = card.closest('.project-card-link') || card;
+            // Show/hide the project card directly
+            const cardWrapper = card;
 
             let isMatch = false;
             if (activeCategory === 'all') {

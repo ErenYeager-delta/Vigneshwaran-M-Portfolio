@@ -735,22 +735,39 @@
                     </div>
 
                     <h3 class="section-sub-header">2. Links & Media</h3>
-                    <div class="form-row">
-                        <!-- Connection: admin_dashboard.css (.flex-1-wrapper L460). Purpose: divides inputs grid equally. -->
-                        <div class="flex-1-wrapper">
-                            <input type="text" name="source_code_link" id="add_source_code_link"
-                                placeholder="Source Code Link (Required for Full Stack) *" class="admin-input" required>
-                        </div>
-                        <div id="add_deployment_wrap" class="flex-1-wrapper">
-                            <input type="text" name="deployment_link" id="add_deployment_link"
-                                placeholder="Live Deployment Link (Triggers Auto-Preview)" class="admin-input">
-                        </div>
-                        <!-- Connection: admin_dashboard.css (.d-none L239), admin_dashboard.js (L162). Purpose: Toggles display of Colab inputs. -->
-                        <div id="add_colab_wrap" class="flex-1-wrapper d-none">
-                            <input type="text" name="colab_link" id="add_colab_link"
-                                placeholder="Google Colab Link (e.g. colab.research.google.com...)" class="admin-input">
+
+                    <!-- ── FULL STACK LINKS (shown when project_type == fullstack) ── -->
+                    <div id="add_fs_links_section">
+                        <div class="form-row">
+                            <div class="flex-1-wrapper">
+                                <label class="form-label-blue"><i class="fab fa-github"></i> GitHub Repository Link</label>
+                                <input type="text" name="source_code_link" id="add_source_code_link"
+                                    placeholder="https://github.com/username/repo *" class="admin-input" required>
+                            </div>
+                            <div class="flex-1-wrapper">
+                                <label class="form-label-blue"><i class="fas fa-rocket"></i> Live Demo / Run Link</label>
+                                <input type="text" name="deployment_link" id="add_deployment_link"
+                                    placeholder="https://your-app.onrender.com (Triggers Auto-Preview)" class="admin-input">
+                            </div>
                         </div>
                     </div>
+
+                    <!-- ── DATA SCIENCE LINKS (shown when project_type == datascience) ── -->
+                    <div id="add_ds_links_section" class="d-none">
+                        <div class="form-row">
+                            <div class="flex-1-wrapper">
+                                <label class="form-label-blue"><i class="fab fa-github"></i> GitHub Repository Link <span style="color: var(--text-dim); font-weight: 400;">(Optional)</span></label>
+                                <input type="text" name="ds_source_code_link" id="add_ds_source_code_link"
+                                    placeholder="https://github.com/username/repo" class="admin-input">
+                            </div>
+                            <div class="flex-1-wrapper">
+                                <label class="form-label-blue"><i class="fas fa-play-circle"></i> Run the Code Link (Colab / Notebook)</label>
+                                <input type="text" name="colab_link" id="add_colab_link"
+                                    placeholder="https://colab.research.google.com/drive/..." class="admin-input">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-row grid-two-columns">
                         <div>
                             <label class="form-label-blue">Upload Preview Image</label>
@@ -1172,20 +1189,39 @@
                     </div>
 
                     <h3 class="dash-section-h3">2. Links & Media</h3>
-                    <div class="form-row">
-                        <div class="flex-1-wrapper">
-                            <input type="text" name="source_code_link" id="edit_source_code_link"
-                                placeholder="Source Code Link (Required for Full Stack) *" class="admin-input" required>
-                        </div>
-                        <div id="edit_deployment_wrap" class="flex-1-wrapper">
-                            <input type="text" name="deployment_link" id="edit_deployment_link"
-                                placeholder="Live Deployment Link (Triggers Auto-Preview)" class="admin-input">
-                        </div>
-                        <div id="edit_colab_wrap" class="flex-1-wrapper d-none">
-                            <input type="text" name="colab_link" id="edit_colab_link"
-                                placeholder="Google Colab Link (e.g. colab.research.google.com...)" class="admin-input">
+
+                    <!-- ── FULL STACK LINKS (Edit) ── -->
+                    <div id="edit_fs_links_section">
+                        <div class="form-row">
+                            <div class="flex-1-wrapper">
+                                <label class="form-label-blue"><i class="fab fa-github"></i> GitHub Repository Link</label>
+                                <input type="text" name="source_code_link" id="edit_source_code_link"
+                                    placeholder="https://github.com/username/repo *" class="admin-input" required>
+                            </div>
+                            <div class="flex-1-wrapper">
+                                <label class="form-label-blue"><i class="fas fa-rocket"></i> Live Demo / Run Link</label>
+                                <input type="text" name="deployment_link" id="edit_deployment_link"
+                                    placeholder="https://your-app.onrender.com" class="admin-input">
+                            </div>
                         </div>
                     </div>
+
+                    <!-- ── DATA SCIENCE LINKS (Edit) ── -->
+                    <div id="edit_ds_links_section" class="d-none">
+                        <div class="form-row">
+                            <div class="flex-1-wrapper">
+                                <label class="form-label-blue"><i class="fab fa-github"></i> GitHub Repository Link <span style="color: var(--text-dim); font-weight: 400;">(Optional)</span></label>
+                                <input type="text" name="ds_source_code_link" id="edit_ds_source_code_link"
+                                    placeholder="https://github.com/username/repo" class="admin-input">
+                            </div>
+                            <div class="flex-1-wrapper">
+                                <label class="form-label-blue"><i class="fas fa-play-circle"></i> Run the Code Link (Colab / Notebook)</label>
+                                <input type="text" name="colab_link" id="edit_colab_link"
+                                    placeholder="https://colab.research.google.com/drive/..." class="admin-input">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-row grid-two-columns">
                         <div>
                             <label class="form-label-blue">Upload Preview Image</label>

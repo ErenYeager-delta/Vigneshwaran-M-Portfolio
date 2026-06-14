@@ -1118,14 +1118,6 @@
     gap: 40px;
 }
 
-/* Anchor wrapper — no underline, inherits color */
-.project-card-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    transition: opacity 0.3s ease;
-}
-
 .project-card {
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(24px);
@@ -1135,13 +1127,12 @@
     overflow: hidden;
     padding: 24px;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    cursor: pointer;
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-.project-card-link:hover .project-card {
+.project-card:hover {
     transform: translateY(-10px) scale(1.02);
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.2);
@@ -1172,7 +1163,7 @@
     background: rgba(255, 255, 255, 0.08);
 }
 
-.project-card-link:hover .card-hover-overlay {
+.project-img:hover .card-hover-overlay {
     opacity: 1;
 }
 
@@ -1261,7 +1252,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: auto;
     padding-top: 1rem;
 }
 
@@ -1273,6 +1263,84 @@
     font-size: 0.75rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.65);
+}
+
+/* ── Project Action Buttons (GitHub / Run / Colab) ── */
+.project-action-btns {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 1.2rem;
+    flex-wrap: wrap;
+}
+
+.project-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.project-btn i {
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+}
+
+.project-btn:hover i {
+    transform: scale(1.15);
+}
+
+/* GitHub Button — subtle dark outline */
+.project-btn-github {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.project-btn-github:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Run / Live Demo Button — accent gradient */
+.project-btn-run {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(59, 130, 246, 0.2));
+    border: 1px solid rgba(96, 165, 250, 0.35);
+    color: #93c5fd;
+}
+
+.project-btn-run:hover {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.35), rgba(59, 130, 246, 0.35));
+    border-color: rgba(96, 165, 250, 0.6);
+    color: #bfdbfe;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
+}
+
+/* Colab Button — warm orange-yellow (Colab branding) */
+.project-btn-colab {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.15));
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    color: #fcd34d;
+}
+
+.project-btn-colab:hover {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.3));
+    border-color: rgba(251, 191, 36, 0.6);
+    color: #fde68a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
 }
 
 .project-card-footer {

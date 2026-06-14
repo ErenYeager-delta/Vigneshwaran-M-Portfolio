@@ -169,10 +169,12 @@ function updateProjectFields(formType, projectType) {
     const isAdd = formType === 'add';
     const prefix = isAdd ? 'add_' : 'edit_';
     
+    // New separate link sections
+    const fsLinksSection = document.getElementById(prefix + 'fs_links_section');
+    const dsLinksSection = document.getElementById(prefix + 'ds_links_section');
+    
     const sourceCodeEl = document.getElementById(prefix + 'source_code_link');
-    const deploymentWrap = document.getElementById(prefix + 'deployment_wrap');
-    // Connection: dashboard.html (L716), admin_dashboard.css (.d-none). Purpose: Toggles display of Colab inputs.
-    const colabWrap = document.getElementById(prefix + 'colab_wrap');
+    const dsSourceCodeEl = document.getElementById(prefix + 'ds_source_code_link');
     
     const problemLabel = document.getElementById(prefix + 'problem_label');
     const problemTextarea = document.getElementById(prefix + 'problem_statement');
@@ -182,12 +184,12 @@ function updateProjectFields(formType, projectType) {
     const metricsTextarea = document.getElementById(prefix + 'key_metrics');
 
     if (projectType === 'datascience') {
-        if (deploymentWrap) deploymentWrap.style.display = 'none';
-        if (colabWrap) colabWrap.style.display = 'block';
-        if (sourceCodeEl) {
-            sourceCodeEl.required = false;
-            sourceCodeEl.placeholder = "Source Code Link (Optional for Data Science)";
-        }
+        // Show DS links, hide FS links
+        if (fsLinksSection) fsLinksSection.style.display = 'none';
+        if (dsLinksSection) dsLinksSection.style.display = 'block';
+        // FS source_code_link not required when DS is selected
+        if (sourceCodeEl) sourceCodeEl.required = false;
+        
         if (problemLabel) problemLabel.innerHTML = '<i class="fas fa-exclamation-circle"></i> What is the goal of this data project?';
         if (problemTextarea) problemTextarea.placeholder = 'What are you trying to predict or analyze? What is the main goal? (e.g. Predict house prices based on size and location).';
         if (solutionLabel) solutionLabel.innerHTML = '<i class="fas fa-check-circle"></i> What data and models did you use?';
@@ -195,16 +197,18 @@ function updateProjectFields(formType, projectType) {
         if (metricsLabel) metricsLabel.innerHTML = '<i class="fas fa-chart-line"></i> How did the model perform?';
         if (metricsTextarea) metricsTextarea.placeholder = 'What were your final model results? (e.g. 92% prediction accuracy | 0.90 F1-Score | Fast prediction response).';
         
-        // Show DS metrics section
+        // Show DS metrics section, hide FS metrics section
         const dsMetricsSec = document.getElementById(prefix + 'ds_metrics_section');
         if (dsMetricsSec) dsMetricsSec.style.display = 'block';
+        const fsMetricsSec = document.getElementById(prefix + 'fs_metrics_section');
+        if (fsMetricsSec) fsMetricsSec.style.display = 'none';
     } else {
-        if (deploymentWrap) deploymentWrap.style.display = 'block';
-        if (colabWrap) colabWrap.style.display = 'none';
-        if (sourceCodeEl) {
-            sourceCodeEl.required = true;
-            sourceCodeEl.placeholder = "Source Code Link (Required for Full Stack) *";
-        }
+        // Show FS links, hide DS links
+        if (fsLinksSection) fsLinksSection.style.display = 'block';
+        if (dsLinksSection) dsLinksSection.style.display = 'none';
+        // FS source_code_link required when FS is selected
+        if (sourceCodeEl) sourceCodeEl.required = true;
+        
         if (problemLabel) problemLabel.innerHTML = '<i class="fas fa-exclamation-circle"></i> What problem does this project solve?';
         if (problemTextarea) problemTextarea.placeholder = 'What is this app for? What problem does it solve for users? (e.g. A website to order food online easily).';
         if (solutionLabel) solutionLabel.innerHTML = '<i class="fas fa-check-circle"></i> How did you build it?';
@@ -212,9 +216,11 @@ function updateProjectFields(formType, projectType) {
         if (metricsLabel) metricsLabel.innerHTML = '<i class="fas fa-list-ul"></i> Key Features of the App';
         if (metricsTextarea) metricsTextarea.placeholder = 'What are the main features of your app? (e.g. User Login | Product Search | Shopping Cart | Payment System).';
         
-        // Hide DS metrics section
+        // Hide DS metrics section, show FS metrics section
         const dsMetricsSec = document.getElementById(prefix + 'ds_metrics_section');
         if (dsMetricsSec) dsMetricsSec.style.display = 'none';
+        const fsMetricsSec = document.getElementById(prefix + 'fs_metrics_section');
+        if (fsMetricsSec) fsMetricsSec.style.display = 'block';
     }
 }
 
@@ -352,6 +358,7 @@ document.querySelectorAll('.edit-project-btn').forEach(btn => {
         document.getElementById('edit_tags').value = this.getAttribute('data-tags') || '';
         document.getElementById('edit_highlight_tag').value = this.getAttribute('data-highlight_tag') || '';
         document.getElementById('edit_source_code_link').value = this.getAttribute('data-source_code_link') || '';
+        document.getElementById('edit_ds_source_code_link').value = this.getAttribute('data-source_code_link') || '';
         document.getElementById('edit_deployment_link').value = this.getAttribute('data-deployment_link') || '';
         document.getElementById('edit_colab_link').value = this.getAttribute('data-colab_link') || '';
 

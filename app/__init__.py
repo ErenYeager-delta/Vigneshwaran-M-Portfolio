@@ -24,6 +24,10 @@ def create_app(config_name=None):
         template_folder="templates",
     )
 
+    # ── Proxy Configuration for Render / HTTPS ───────────────────────────
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
     # ── Load Config ──────────────────────────────────────────────────────
     app.config.from_object(config_map.get(config_name, config_map["default"]))
 

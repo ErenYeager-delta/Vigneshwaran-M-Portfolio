@@ -6,16 +6,19 @@ from app.security import admin_required, validate_upload, sanitize_input, saniti
 from app.admin import admin_bp
 
 
-@admin_bp.route("/admin/add-project", methods=["POST"])
+@admin_bp.route("/admin/add-project", methods=["GET", "POST"])
 @admin_required
 def add_project():
     """Add a new project to the portfolio."""
+    if request.method == "GET":
+        return redirect(url_for("admin.dashboard"))
     title = sanitize_input(request.form.get("title", ""), 200)
     category = sanitize_input(request.form.get("category", ""), 100)
     project_type = sanitize_input(request.form.get("project_type", ""), 100)
     date_completed = sanitize_input(request.form.get("date_completed", ""), 50)
     image_url = sanitize_url(request.form.get("image_url", ""))
     source_code_link = sanitize_url(request.form.get("source_code_link", ""))
+    ds_source_code_link = sanitize_url(request.form.get("ds_source_code_link", ""))
     deployment_link = sanitize_url(request.form.get("deployment_link", ""))
     colab_link = sanitize_url(request.form.get("colab_link", ""))
     notebook_url = sanitize_url(request.form.get("notebook_url", ""))
@@ -25,6 +28,10 @@ def add_project():
     key_metrics = sanitize_input(request.form.get("key_metrics", ""), 2000)
     tags_raw = sanitize_input(request.form.get("tags", ""), 500)
     highlight_tag = sanitize_input(request.form.get("highlight_tag", ""), 100)
+
+    # For Data Science projects, use ds_source_code_link if provided
+    if project_type == "datascience" and ds_source_code_link:
+        source_code_link = ds_source_code_link
     
     # Build structured DS metrics dict
     ds_metrics = {}
@@ -115,10 +122,12 @@ def delete_project(project_id):
     return redirect(url_for("admin.dashboard"))
 
 
-@admin_bp.route("/admin/edit-project/<string:project_id>", methods=["POST"])
+@admin_bp.route("/admin/edit-project/<string:project_id>", methods=["GET", "POST"])
 @admin_required
 def edit_project(project_id):
     """Edit an existing project."""
+    if request.method == "GET":
+        return redirect(url_for("admin.dashboard"))
     project = Project.find_by_id(project_id)
     if not project:
         flash("❌ Project not found.", "error")
@@ -130,6 +139,7 @@ def edit_project(project_id):
     date_completed = sanitize_input(request.form.get("date_completed", ""), 50)
     image_url = sanitize_url(request.form.get("image_url", ""))
     source_code_link = sanitize_url(request.form.get("source_code_link", ""))
+    ds_source_code_link = sanitize_url(request.form.get("ds_source_code_link", ""))
     deployment_link = sanitize_url(request.form.get("deployment_link", ""))
     colab_link = sanitize_url(request.form.get("colab_link", ""))
     notebook_url = sanitize_url(request.form.get("notebook_url", ""))
@@ -139,6 +149,10 @@ def edit_project(project_id):
     key_metrics = sanitize_input(request.form.get("key_metrics", ""), 2000)
     tags_raw = sanitize_input(request.form.get("tags", ""), 500)
     highlight_tag = sanitize_input(request.form.get("highlight_tag", ""), 100)
+
+    # For Data Science projects, use ds_source_code_link if provided
+    if project_type == "datascience" and ds_source_code_link:
+        source_code_link = ds_source_code_link
     
     # Build structured DS metrics dict
     ds_metrics = {}

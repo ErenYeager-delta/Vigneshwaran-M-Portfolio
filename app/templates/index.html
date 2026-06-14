@@ -494,13 +494,21 @@
 
     <div class="project-grid">
         {% for project in projects %}
-        {% set project_link = project.colab_link if (project.project_type == 'datascience' and project.colab_link) else (project.deployment_link or project.source_code_link or '#') %}
-        {% set hover_label = 'Run in Colab →' if (project.project_type == 'datascience' and project.colab_link) else 'View Project →' %}
-        <a href="{{ project_link }}" target="_blank" rel="noopener noreferrer" class="project-card-link">
+        {% set run_link = project.colab_link if (project.project_type == 'datascience' and project.colab_link) else (project.deployment_link or '') %}
+        {% set github_link = project.source_code_link or '' %}
             <div class="project-card" data-category="{{ project.category }}" data-type="{{ project.project_type }}">
-                <div class="project-img" style="background-image: url('{{ project.image_url }}');">
+                <div class="project-img" style="cursor: pointer; background-image: url('{{ project.image_url }}');"
+                    {% if run_link %}onclick="window.open('{{ run_link }}', '_blank')"{% elif github_link %}onclick="window.open('{{ github_link }}', '_blank')"{% endif %}>
                     <div class="card-hover-overlay">
-                        <span>{{ hover_label }}</span>
+                        {% if project.project_type == 'datascience' and project.colab_link %}
+                        <span>Run in Colab →</span>
+                        {% elif run_link %}
+                        <span>View Live Demo →</span>
+                        {% elif github_link %}
+                        <span>View Source →</span>
+                        {% else %}
+                        <span>View Project →</span>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="project-info">
@@ -518,9 +526,24 @@
                         {% endfor %}
                     </div>
                     {% endif %}
+                    <div class="project-action-btns">
+                        {% if github_link %}
+                        <a href="{{ github_link }}" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-github" title="View Source Code on GitHub">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        {% endif %}
+                        {% if project.project_type == 'datascience' and project.colab_link %}
+                        <a href="{{ project.colab_link }}" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-run project-btn-colab" title="Run in Google Colab">
+                            <i class="fas fa-play-circle"></i> Run in Colab
+                        </a>
+                        {% elif project.deployment_link %}
+                        <a href="{{ project.deployment_link }}" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-run" title="View Live Demo">
+                            <i class="fas fa-rocket"></i> Live Demo
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </a>
         {% endfor %}
     </div>
 </section>
