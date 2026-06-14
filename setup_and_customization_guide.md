@@ -13,7 +13,7 @@ Isolate python dependencies by spinning up a local virtual environment:
 * **Windows (PowerShell)**:
   ```powershell
   python -m venv .venv
-  .venv\Scripts\activate
+  ./venv/scripts/activate
   ```
 * **macOS / Linux**:
   ```bash

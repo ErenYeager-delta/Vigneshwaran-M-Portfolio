@@ -496,7 +496,22 @@
         {% for project in projects %}
         {% set run_link = project.colab_link if (project.project_type == 'datascience' and project.colab_link) else (project.deployment_link or '') %}
         {% set github_link = project.source_code_link or '' %}
-            <div class="project-card" data-category="{{ project.category }}" data-type="{{ project.project_type }}">
+            <div class="project-card" 
+                 data-category="{{ project.category }}" 
+                 data-project_type="{{ project.project_type }}"
+                 data-project-id="{{ project._id }}"
+                 data-title="{{ project.title | e }}"
+                 data-issuer="{% if project.category == 'elysium' %}Elysium Center{% else %}Self Learning{% endif %}"
+                 data-date="{{ project.date_completed or '' | e }}"
+                 data-desc="{{ project.description or '' | e }}"
+                 data-problem="{{ project.problem_statement or '' | e }}"
+                 data-solution="{{ project.solution_approach or '' | e }}"
+                 data-key_metrics="{{ project.key_metrics or '' | e }}"
+                 data-ds_metrics='{{ project.ds_metrics | default({}) | tojson }}'
+                 data-tags='{{ project.tags | tojson | safe }}'
+                 data-image="{{ project.image_url }}"
+                 data-link="{{ run_link }}"
+                 data-github="{{ github_link }}">
                 <div class="project-img" style="cursor: pointer; background-image: url('{{ project.image_url }}');"
                     {% if run_link %}onclick="window.open('{{ run_link }}', '_blank')"{% elif github_link %}onclick="window.open('{{ github_link }}', '_blank')"{% endif %}>
                     <div class="card-hover-overlay">
@@ -655,8 +670,30 @@
                         <p id="modalDesc">Detailed description goes here.</p>
                     </div>
 
+                    <!-- Project Case Study Details (shown dynamically for project cards) -->
+                    <div class="modal-project-details" id="modalProjectDetails" style="display: none; margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+                        <div class="project-detail-section" id="modalProblemSection" style="margin-bottom: 1.2rem;">
+                            <h4 style="color: #A0CFFF; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-exclamation-circle"></i> The Challenge
+                            </h4>
+                            <p id="modalProblemText" style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; white-space: pre-line;"></p>
+                        </div>
+                        <div class="project-detail-section" id="modalSolutionSection" style="margin-bottom: 1.2rem;">
+                            <h4 style="color: #A0CFFF; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle"></i> The Solution & Approach
+                            </h4>
+                            <p id="modalSolutionText" style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; white-space: pre-line;"></p>
+                        </div>
+                        <div class="project-detail-section" id="modalMetricsSection" style="margin-bottom: 1.2rem;">
+                            <h4 style="color: #A0CFFF; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-chart-line"></i> Performance & Impact
+                            </h4>
+                            <p id="modalMetricsText" style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; white-space: pre-line;"></p>
+                        </div>
+                    </div>
+
                     <div class="modal-competencies">
-                        <p class="competencies-label">Core Competencies Covered:</p>
+                        <p class="competencies-label" id="modalTagsLabel">Core Competencies Covered:</p>
                         <div id="modalMeta" class="tag-container-new">
                             <!-- Tags injected by JS -->
                         </div>

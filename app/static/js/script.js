@@ -322,8 +322,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function openModalFromElement(el) {
         if (!el) return;
 
+        const isProject = el.classList.contains('project-card');
+
         const data = {
-            id: el.dataset.certId || '',
+            id: el.dataset.certId || el.dataset.projectId || '',
             issuer: el.dataset.issuer || '',
             title: el.dataset.title || '',
             date: el.dataset.date || '',
@@ -351,46 +353,133 @@ document.addEventListener('DOMContentLoaded', function () {
 
         setSafe('modalIssuer', data.issuer);
         setSafe('modalTitle', data.title);
-        setSafe('modalDate', data.date.includes('Issued') ? data.date : `Issued: ${data.date}`);
+        setSafe('modalDate', isProject ? (data.date ? `Completed: ${data.date}` : '') : (data.date.includes('Issued') ? data.date : `Issued: ${data.date}`));
         setSafe('modalDesc', data.desc);
+
+        // Project specific content logic
+        const projectDetailsSec = document.getElementById('modalProjectDetails');
+        if (isProject) {
+            if (projectDetailsSec) projectDetailsSec.style.display = 'block';
+            
+            const problemSec = document.getElementById('modalProblemSection');
+            const problemText = document.getElementById('modalProblemText');
+            if (problemSec && problemText) {
+                const problemVal = el.dataset.problem || '';
+                if (problemVal) {
+                    problemText.textContent = problemVal;
+                    problemSec.style.display = 'block';
+                } else {
+                    problemSec.style.display = 'none';
+                }
+            }
+            
+            const solutionSec = document.getElementById('modalSolutionSection');
+            const solutionText = document.getElementById('modalSolutionText');
+            if (solutionSec && solutionText) {
+                const solutionVal = el.dataset.solution || '';
+                if (solutionVal) {
+                    solutionText.textContent = solutionVal;
+                    solutionSec.style.display = 'block';
+                } else {
+                    solutionSec.style.display = 'none';
+                }
+            }
+            
+            const metricsSec = document.getElementById('modalMetricsSection');
+            const metricsText = document.getElementById('modalMetricsText');
+            if (metricsSec && metricsText) {
+                let metricsContent = '';
+                if (el.dataset.project_type === 'datascience') {
+                    let dsMetrics = {};
+                    try { dsMetrics = JSON.parse(el.dataset.ds_metrics || '{}'); } catch(e) {}
+                    
+                    const metricsList = [];
+                    if (dsMetrics.accuracy) metricsList.push(`Accuracy: ${dsMetrics.accuracy}`);
+                    if (dsMetrics.f1_score) metricsList.push(`F1 Score: ${dsMetrics.f1_score}`);
+                    if (dsMetrics.precision) metricsList.push(`Precision: ${dsMetrics.precision}`);
+                    if (dsMetrics.recall) metricsList.push(`Recall: ${dsMetrics.recall}`);
+                    if (dsMetrics.rmse) metricsList.push(`RMSE: ${dsMetrics.rmse}`);
+                    if (dsMetrics.auc_roc) metricsList.push(`AUC-ROC: ${dsMetrics.auc_roc}`);
+                    
+                    const standardKeys = ["accuracy", "f1_score", "precision", "recall", "rmse", "auc_roc"];
+                    for (const [key, val] of Object.entries(dsMetrics)) {
+                        if (!standardKeys.includes(key) && key && val) {
+                            const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
+                            metricsList.push(`${displayKey}: ${val}`);
+                        }
+                    }
+                    metricsContent = metricsList.join('\n');
+                } else {
+                    metricsContent = el.dataset.key_metrics || '';
+                }
+                
+                if (metricsContent) {
+                    metricsText.textContent = metricsContent;
+                    metricsSec.style.display = 'block';
+                } else {
+                    metricsSec.style.display = 'none';
+                }
+            }
+
+            const tagsLabel = document.getElementById('modalTagsLabel');
+            if (tagsLabel) tagsLabel.textContent = 'Technologies Used:';
+        } else {
+            if (projectDetailsSec) projectDetailsSec.style.display = 'none';
+            const tagsLabel = document.getElementById('modalTagsLabel');
+            if (tagsLabel) tagsLabel.textContent = 'Core Competencies Covered:';
+        }
 
         const actionBtn = document.getElementById('modalActionBtn');
         const certUrlBtn = document.getElementById('modalCertUrlBtn');
         const downloadBtn = document.getElementById('modalDownloadBtn');
         
         if (actionBtn) {
-            if (data.hasFile && !el.classList.contains('project-card')) {
-                actionBtn.href = `/certificate/` + data.id + `/preview#toolbar=0`;
-                actionBtn.textContent = 'View Certificate';
+            actionBtn.href = data.link;
+            if (isProject) {
+                actionBtn.textContent = el.dataset.project_type === 'datascience' ? 'Run in Colab' : 'Live Demo';
             } else {
-                actionBtn.href = data.link;
-                actionBtn.textContent = el.classList.contains('project-card') ? 'View Project' : 'View Certificate';
+                if (data.hasFile) {
+                    actionBtn.href = `/certificate/` + data.id + `/preview#toolbar=0`;
+                    actionBtn.textContent = 'View Certificate';
+                } else {
+                    actionBtn.textContent = 'View Certificate';
+                }
             }
             
-            // If it's a project card, or if it doesn't have a file, the actionBtn acts as the main link.
-            // If we have a file AND a link (for certs), we show the certUrlBtn as well.
             if (actionBtn.href === '#' || !actionBtn.href || actionBtn.href.endsWith('#')) {
                 actionBtn.style.display = 'none';
             } else {
                 actionBtn.style.display = 'inline-block';
             }
             const icon = document.createElement('i');
-            icon.className = 'fas fa-external-link-alt';
+            icon.className = isProject ? (el.dataset.project_type === 'datascience' ? 'fas fa-play-circle' : 'fas fa-rocket') : 'fas fa-external-link-alt';
             icon.style.marginLeft = '8px';
             actionBtn.appendChild(icon);
         }
 
         if (certUrlBtn) {
-            if (data.link && data.link !== '#' && data.hasFile && !el.classList.contains('project-card')) {
-                certUrlBtn.href = data.link;
-                certUrlBtn.style.display = 'inline-block';
+            if (isProject) {
+                const githubLink = el.dataset.github || '';
+                if (githubLink && githubLink !== '#' && !githubLink.endsWith('#')) {
+                    certUrlBtn.href = githubLink;
+                    certUrlBtn.style.display = 'inline-block';
+                    certUrlBtn.innerHTML = `GitHub Repository <i class="fab fa-github" style="margin-left: 8px;"></i>`;
+                } else {
+                    certUrlBtn.style.display = 'none';
+                }
             } else {
-                certUrlBtn.style.display = 'none';
+                if (data.link && data.link !== '#' && data.hasFile) {
+                    certUrlBtn.href = data.link;
+                    certUrlBtn.style.display = 'inline-block';
+                    certUrlBtn.innerHTML = `Certificate URL <i class="fas fa-link" style="margin-left: 8px;"></i>`;
+                } else {
+                    certUrlBtn.style.display = 'none';
+                }
             }
         }
 
         if (downloadBtn) {
-            if (data.hasFile && !el.classList.contains('project-card')) {
+            if (data.hasFile && !isProject) {
                 downloadBtn.href = `/certificate/` + data.id + `/download`;
                 downloadBtn.style.display = 'inline-block';
             } else {
@@ -401,7 +490,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // --- Brand Icon Logic ---
         const issuerIcon = document.getElementById('modalIssuerIcon');
         if (issuerIcon) {
-            issuerIcon.className = window.getBrandIcon(data.title, data.issuer);
+            if (isProject) {
+                issuerIcon.className = el.dataset.project_type === 'datascience' ? 'fas fa-chart-line' : 'fas fa-layer-group';
+            } else {
+                issuerIcon.className = window.getBrandIcon(data.title, data.issuer);
+            }
         }
 
         // --- Visual Side Logic ---
@@ -424,7 +517,7 @@ document.addEventListener('DOMContentLoaded', function () {
             img.style.objectFit = 'cover';
             img.style.borderRadius = '15px';
             previewContainer.appendChild(img);
-        } else if (!el.classList.contains('project-card')) {
+        } else if (!isProject) {
             const ext = data.filename ? data.filename.split('.').pop().toLowerCase() : '';
             defaultIcon.style.display = 'none';
             
@@ -485,13 +578,25 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.style.overflow = 'hidden';
     }
 
-    // Connection: index.html (.cert-card L329), index.css (.cert-card). Purpose: Click delegate target to load certification details into modal.
+    // Connection: index.html (.cert-card L329), index.css (.cert-card). Purpose: Click delegate target to load certification/project details into modal.
     document.addEventListener('click', (e) => {
-        const card = e.target.closest('.cert-card');
-        if (card) {
-            openModalFromElement(card);
+        const certCard = e.target.closest('.cert-card');
+        if (certCard) {
+            openModalFromElement(certCard);
+            return;
         }
-    }, { passive: true });
+
+        const projectCard = e.target.closest('.project-card');
+        if (projectCard) {
+            // Check if they clicked an interactive element (image or buttons)
+            const clickedImg = e.target.closest('.project-img');
+            const clickedBtn = e.target.closest('.project-btn');
+            
+            if (!clickedImg && !clickedBtn) {
+                openModalFromElement(projectCard);
+            }
+        }
+    });
 
     function closeModal() {
         generalModal.classList.remove('active');
@@ -506,6 +611,66 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.addEventListener('click', (e) => {
         if (e.target === generalModal) closeModal();
+    });
+
+    // Keyboard navigation and scrolling support for General Modal
+    window.addEventListener('keydown', (e) => {
+        if (!generalModal || !generalModal.classList.contains('active')) return;
+
+        // Ignore if focus is in input fields to preserve standard browser behaviors
+        const activeEl = document.activeElement;
+        if (activeEl && ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeEl.tagName)) {
+            return;
+        }
+
+        const modalContent = generalModal.querySelector('.modal-content-new');
+        if (!modalContent) return;
+
+        const scrollAmount = 60; // Pixels per arrow key click
+        const pageScrollAmount = modalContent.clientHeight * 0.8; // Page scroll step
+
+        switch (e.key) {
+            case 'ArrowUp':
+            case 'Up':
+                modalContent.scrollTop -= scrollAmount;
+                e.preventDefault();
+                break;
+            case 'ArrowDown':
+            case 'Down':
+                modalContent.scrollTop += scrollAmount;
+                e.preventDefault();
+                break;
+            case 'PageUp':
+                modalContent.scrollTop -= pageScrollAmount;
+                e.preventDefault();
+                break;
+            case 'PageDown':
+                modalContent.scrollTop += pageScrollAmount;
+                e.preventDefault();
+                break;
+            case ' ': // Space bar
+                if (e.shiftKey) {
+                    modalContent.scrollTop -= pageScrollAmount;
+                } else {
+                    modalContent.scrollTop += pageScrollAmount;
+                }
+                e.preventDefault();
+                break;
+            case 'Home':
+                modalContent.scrollTop = 0;
+                e.preventDefault();
+                break;
+            case 'End':
+                modalContent.scrollTop = modalContent.scrollHeight;
+                e.preventDefault();
+                break;
+            case 'Escape':
+                closeModal();
+                e.preventDefault();
+                break;
+            default:
+                break;
+        }
     });
 
     /* ============================================
