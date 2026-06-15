@@ -72,7 +72,14 @@ def admin_required(f):
         bound_ip = session.get("admin_ip")
         bound_ua = session.get("admin_user_agent")
         
-        if bound_ip != request.remote_addr or bound_ua != request.user_agent.string:
+        # Behind reverse proxies (like Render), request.remote_addr can fluctuate.
+        # This toggle allows disabling IP binding checks while retaining User-Agent verification.
+        disable_ip_check = os.getenv("DISABLE_IP_BINDING", "false").lower() == "true"
+        
+        ip_mismatch = not disable_ip_check and (bound_ip != request.remote_addr)
+        ua_mismatch = bound_ua != request.user_agent.string
+        
+        if ip_mismatch or ua_mismatch:
             session.clear()
             return redirect("/")
             
