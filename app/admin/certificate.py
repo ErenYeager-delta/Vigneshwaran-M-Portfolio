@@ -33,7 +33,17 @@ def add_certificate():
     preview_image = None
     cert_file = request.files.get("cert_file")
     if cert_file and cert_file.filename:
-        ext = cert_file.filename.split('.')[-1].lower()
+        is_valid, safe_name, error = validate_upload(cert_file)
+        if not is_valid:
+            flash(f"❌ {error}", "error")
+            return redirect(url_for("admin.dashboard"))
+
+        # Save file data to GridFS & disk
+        from app.storage import save_file
+        cert_data = cert_file.read()
+        save_file(cert_data, safe_name, content_type=cert_file.content_type)
+
+        ext = safe_name.rsplit(".", 1)[-1].lower()
         if ext == 'pdf':
             # PDF requires either a companion image file or a preview URL
             cert_image_file = request.files.get("cert_image_file")
@@ -44,10 +54,6 @@ def add_certificate():
                 flash("❌ A PDF certificate needs a display image. Upload one or paste an Image URL.", "error")
                 return redirect(url_for("admin.dashboard"))
 
-            # Save PDF file to GridFS & disk
-            from app.storage import save_file
-            cert_data = cert_file.read()
-            save_file(cert_data, safe_name, content_type=cert_file.content_type)
             try:
                 upload_path = get_safe_upload_path("certificates", safe_name)
                 with open(upload_path, "wb") as f:
@@ -62,7 +68,7 @@ def add_certificate():
                     flash(f"❌ Certificate Picture: {error_img}", "error")
                     return redirect(url_for("admin.dashboard"))
 
-                img_ext = safe_img_name.split('.')[-1].lower()
+                img_ext = safe_img_name.rsplit(".", 1)[-1].lower()
                 if img_ext not in {'png', 'jpg', 'jpeg', 'webp'}:
                     flash("❌ The picture must be an image format (PNG, JPG, JPEG, WEBP).", "error")
                     return redirect(url_for("admin.dashboard"))
@@ -80,16 +86,6 @@ def add_certificate():
                 # Use the external URL as the preview image
                 preview_image = preview_image_url
         else:
-            # Direct image file upload
-            is_valid, safe_name, error = validate_upload(cert_file)
-            if not is_valid:
-                flash(f"❌ {error}", "error")
-                return redirect(url_for("admin.dashboard"))
-
-            # Save direct image certificate to GridFS & disk
-            from app.storage import save_file
-            cert_data = cert_file.read()
-            save_file(cert_data, safe_name, content_type=cert_file.content_type)
             try:
                 upload_path = get_safe_upload_path("certificates", safe_name)
                 with open(upload_path, "wb") as f:

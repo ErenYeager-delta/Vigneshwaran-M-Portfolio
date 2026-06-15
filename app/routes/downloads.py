@@ -5,6 +5,7 @@ Files served securely from GridFS or local directory fallback.
 
 import os
 from flask import Blueprint, send_from_directory, abort, redirect, current_app, request, Response
+from app.models import Resume, Certificate, AppointmentLetter, Incentive, OfferLetter, PaySlip
 
 downloads_bp = Blueprint("downloads", __name__)
 
