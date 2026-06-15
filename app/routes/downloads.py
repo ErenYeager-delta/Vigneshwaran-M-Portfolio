@@ -1,13 +1,35 @@
 """
 Download / Preview routes for resumes and certificates.
-Files served securely via send_from_directory.
+Files served securely from GridFS or local directory fallback.
 """
 
 import os
-from flask import Blueprint, send_from_directory, abort, redirect, current_app, request
-from app.models import Resume, Certificate, AppointmentLetter, Incentive, OfferLetter, PaySlip
+from flask import Blueprint, send_from_directory, abort, redirect, current_app, request, Response
 
 downloads_bp = Blueprint("downloads", __name__)
+
+def serve_gridfs_file_response(filename, as_attachment=False, download_name=None):
+    """
+    Helper to fetch a file from GridFS and compile a Flask Response.
+    Returns None if the file is not in GridFS.
+    """
+    from app.storage import get_file
+    grid_out = get_file(filename)
+    if not grid_out:
+        return None
+        
+    response = Response(grid_out.read(), mimetype=grid_out.content_type)
+    
+    # Configure Content-Disposition header
+    disposition = "attachment" if as_attachment else "inline"
+    if download_name:
+        # Wrap filename in quotes to handle spaces/special characters safely
+        response.headers["Content-Disposition"] = f'{disposition}; filename="{download_name}"'
+    else:
+        response.headers["Content-Disposition"] = f'{disposition}; filename="{filename}"'
+        
+    response.headers["Content-Length"] = grid_out.length
+    return response
 
 
 @downloads_bp.route("/resume/download")
@@ -17,6 +39,13 @@ def download_resume():
     resume = Resume.find_active(resume_type)
     if not resume:
         abort(404)
+        
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(resume["filename"], as_attachment=True, download_name=resume["original_name"])
+    if response:
+        return response
+        
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "resumes")
     return send_from_directory(
         directory,
@@ -33,6 +62,13 @@ def preview_resume():
     resume = Resume.find_active(resume_type)
     if not resume:
         abort(404)
+        
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(resume["filename"], as_attachment=False, download_name=resume["original_name"])
+    if response:
+        return response
+        
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "resumes")
     return send_from_directory(
         directory,
@@ -48,6 +84,12 @@ def preview_certificate(cert_id):
     if not cert or not cert.get("filename"):
         abort(404)
 
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(cert["filename"], as_attachment=False)
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "certificates")
     return send_from_directory(
         directory,
@@ -69,6 +111,12 @@ def preview_certificate_image(cert_id):
     if preview.startswith(("http://", "https://")):
         return redirect(preview)
 
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(preview, as_attachment=False)
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "certificates")
     return send_from_directory(
         directory,
@@ -84,12 +132,20 @@ def download_certificate(cert_id):
     if not cert or not cert.get("filename"):
         abort(404)
 
+    download_name = f"{cert['title']}.{cert['filename'].rsplit('.', 1)[-1]}"
+
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(cert["filename"], as_attachment=True, download_name=download_name)
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "certificates")
     return send_from_directory(
         directory,
         cert["filename"],
         as_attachment=True,
-        download_name=f"{cert['title']}.{cert['filename'].rsplit('.', 1)[-1]}",
+        download_name=download_name,
     )
 
 
@@ -99,6 +155,13 @@ def preview_appointment_letter(letter_id):
     letter = AppointmentLetter.find_by_id(letter_id)
     if not letter:
         abort(404)
+        
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(letter["filename"], as_attachment=False, download_name=letter["original_name"])
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "appointment_letters")
     return send_from_directory(
         directory,
@@ -113,6 +176,13 @@ def download_appointment_letter(letter_id):
     letter = AppointmentLetter.find_by_id(letter_id)
     if not letter:
         abort(404)
+        
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(letter["filename"], as_attachment=True, download_name=letter["original_name"])
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "appointment_letters")
     return send_from_directory(
         directory,
@@ -128,6 +198,13 @@ def preview_incentive(inc_id):
     incentive = Incentive.find_by_id(inc_id)
     if not incentive:
         abort(404)
+        
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(incentive["filename"], as_attachment=False, download_name=incentive["original_name"])
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "incentives")
     return send_from_directory(
         directory,
@@ -142,6 +219,13 @@ def download_incentive(inc_id):
     incentive = Incentive.find_by_id(inc_id)
     if not incentive:
         abort(404)
+        
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(incentive["filename"], as_attachment=True, download_name=incentive["original_name"])
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "incentives")
     return send_from_directory(
         directory,
@@ -157,6 +241,13 @@ def preview_offer_letter(letter_id):
     letter = OfferLetter.find_by_id(letter_id)
     if not letter:
         abort(404)
+        
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(letter["filename"], as_attachment=False, download_name=letter["original_name"])
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "offer_letters")
     return send_from_directory(
         directory,
@@ -171,6 +262,13 @@ def download_offer_letter(letter_id):
     letter = OfferLetter.find_by_id(letter_id)
     if not letter:
         abort(404)
+        
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(letter["filename"], as_attachment=True, download_name=letter["original_name"])
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "offer_letters")
     return send_from_directory(
         directory,
@@ -186,6 +284,13 @@ def preview_pay_slip(slip_id):
     slip = PaySlip.find_by_id(slip_id)
     if not slip:
         abort(404)
+        
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(slip["filename"], as_attachment=False, download_name=slip["original_name"])
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "pay_slips")
     return send_from_directory(
         directory,
@@ -200,6 +305,13 @@ def download_pay_slip(slip_id):
     slip = PaySlip.find_by_id(slip_id)
     if not slip:
         abort(404)
+        
+    # 1. Try GridFS
+    response = serve_gridfs_file_response(slip["filename"], as_attachment=True, download_name=slip["original_name"])
+    if response:
+        return response
+
+    # 2. Fallback to Disk
     directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "pay_slips")
     return send_from_directory(
         directory,

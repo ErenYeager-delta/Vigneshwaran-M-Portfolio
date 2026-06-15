@@ -44,14 +44,16 @@ def add_certificate():
                 flash("❌ A PDF certificate needs a display image. Upload one or paste an Image URL.", "error")
                 return redirect(url_for("admin.dashboard"))
 
-            # Validate and save PDF
-            is_valid, safe_name, error = validate_upload(cert_file)
-            if not is_valid:
-                flash(f"❌ PDF: {error}", "error")
-                return redirect(url_for("admin.dashboard"))
-
-            upload_path = get_safe_upload_path("certificates", safe_name)
-            cert_file.save(upload_path)
+            # Save PDF file to GridFS & disk
+            from app.storage import save_file
+            cert_data = cert_file.read()
+            save_file(cert_data, safe_name, content_type=cert_file.content_type)
+            try:
+                upload_path = get_safe_upload_path("certificates", safe_name)
+                with open(upload_path, "wb") as f:
+                    f.write(cert_data)
+            except Exception as e:
+                print(f"Local backup PDF save skipped: {e}")
 
             if has_image_file:
                 # Validate and save companion image
@@ -65,8 +67,14 @@ def add_certificate():
                     flash("❌ The picture must be an image format (PNG, JPG, JPEG, WEBP).", "error")
                     return redirect(url_for("admin.dashboard"))
 
-                upload_img_path = get_safe_upload_path("certificates", safe_img_name)
-                cert_image_file.save(upload_img_path)
+                img_data = cert_image_file.read()
+                save_file(img_data, safe_img_name, content_type=cert_image_file.content_type)
+                try:
+                    upload_img_path = get_safe_upload_path("certificates", safe_img_name)
+                    with open(upload_img_path, "wb") as f:
+                        f.write(img_data)
+                except Exception as e:
+                    print(f"Local backup image save skipped: {e}")
                 preview_image = safe_img_name
             else:
                 # Use the external URL as the preview image
@@ -78,8 +86,16 @@ def add_certificate():
                 flash(f"❌ {error}", "error")
                 return redirect(url_for("admin.dashboard"))
 
-            upload_path = get_safe_upload_path("certificates", safe_name)
-            cert_file.save(upload_path)
+            # Save direct image certificate to GridFS & disk
+            from app.storage import save_file
+            cert_data = cert_file.read()
+            save_file(cert_data, safe_name, content_type=cert_file.content_type)
+            try:
+                upload_path = get_safe_upload_path("certificates", safe_name)
+                with open(upload_path, "wb") as f:
+                    f.write(cert_data)
+            except Exception as e:
+                print(f"Local backup image certificate save skipped: {e}")
             # Use URL as preview if provided, otherwise the image itself is the preview
             preview_image = preview_image_url if preview_image_url else safe_name
     else:
@@ -119,12 +135,15 @@ def delete_certificate(cert_id):
     cert = Certificate.find_by_id(cert_id)
     if cert:
         title = cert["title"]
-        # Delete associated physical files if any
+        # Delete associated GridFS and physical files
+        from app.storage import delete_file
         try:
             if cert.get("filename"):
+                delete_file(cert["filename"])
                 file_path = get_safe_upload_path("certificates", cert["filename"])
                 if os.path.exists(file_path): os.remove(file_path)
             if cert.get("preview_image") and not cert["preview_image"].startswith(("http://", "https://")):
+                delete_file(cert["preview_image"])
                 img_path = get_safe_upload_path("certificates", cert["preview_image"])
                 if os.path.exists(img_path) and img_path != file_path: os.remove(img_path)
         except Exception as e:
@@ -185,7 +204,16 @@ def edit_certificate(cert_id):
                 flash("❌ A PDF certificate needs a display image. Upload one or paste an Image URL.", "error")
                 return redirect(url_for("admin.dashboard"))
 
-            cert_file.save(upload_path)
+            # Save PDF file to GridFS & disk
+            from app.storage import save_file
+            cert_data = cert_file.read()
+            save_file(cert_data, safe_name, content_type=cert_file.content_type)
+            try:
+                cert_file_path = get_safe_upload_path("certificates", safe_name)
+                with open(cert_file_path, "wb") as f:
+                    f.write(cert_data)
+            except Exception as e:
+                print(f"Local backup PDF edit save skipped: {e}")
             new_filename = safe_name
 
             if has_image_file:
@@ -199,15 +227,29 @@ def edit_certificate(cert_id):
                     flash("❌ The picture must be an image format (PNG, JPG, JPEG, WEBP).", "error")
                     return redirect(url_for("admin.dashboard"))
 
-                img_upload_path = get_safe_upload_path("certificates", safe_img_name)
-                cert_image_file.save(img_upload_path)
+                img_data = cert_image_file.read()
+                save_file(img_data, safe_img_name, content_type=cert_image_file.content_type)
+                try:
+                    img_upload_path = get_safe_upload_path("certificates", safe_img_name)
+                    with open(img_upload_path, "wb") as f:
+                        f.write(img_data)
+                except Exception as e:
+                    print(f"Local backup companion image edit save skipped: {e}")
                 new_preview_img = safe_img_name
             else:
                 # Use external URL as preview
                 new_preview_img = preview_image_url
         else:
             # Direct image file — it IS the preview
-            cert_file.save(upload_path)
+            from app.storage import save_file
+            cert_data = cert_file.read()
+            save_file(cert_data, safe_name, content_type=cert_file.content_type)
+            try:
+                upload_path = get_safe_upload_path("certificates", safe_name)
+                with open(upload_path, "wb") as f:
+                    f.write(cert_data)
+            except Exception as e:
+                print(f"Local backup direct image certificate edit save skipped: {e}")
             new_filename    = safe_name
             new_preview_img = preview_image_url if preview_image_url else safe_name
     elif preview_image_url:

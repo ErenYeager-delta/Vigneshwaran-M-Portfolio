@@ -68,6 +68,25 @@ def create_app(config_name=None):
         methods=["GET", "POST"]
     )
 
+    # ── Serve Uploaded Files from GridFS with local fallback ────────────────
+    @app.route("/static/uploads/<string:folder>/<string:filename>")
+    def serve_uploaded_file(folder, filename):
+        from flask import abort, send_from_directory
+        from app.routes.downloads import serve_gridfs_file_response
+        
+        # 1. Try serving from GridFS
+        response = serve_gridfs_file_response(filename, as_attachment=False)
+        if response:
+            return response
+            
+        # 2. Fallback to local disk if exists
+        upload_base = app.config["UPLOAD_FOLDER"]
+        file_path = os.path.join(upload_base, folder, filename)
+        if os.path.exists(file_path):
+            return send_from_directory(os.path.join(upload_base, folder), filename)
+            
+        abort(404)
+
     # ── Create Upload Directories ────────────────────────────────────────
     upload_base = app.config["UPLOAD_FOLDER"]
     for subdir in ("resumes", "certificates", "projects", "appointment_letters", "incentives", "offer_letters", "pay_slips"):

@@ -61,8 +61,15 @@ def add_project():
             flash("❌ Project Image must be PNG, JPG, JPEG, WEBP, or GIF.", "error")
             return redirect(url_for("admin.dashboard"))
             
-        upload_path = get_safe_upload_path("projects", safe_name)
-        project_image_file.save(upload_path)
+        from app.storage import save_file
+        img_data = project_image_file.read()
+        save_file(img_data, safe_name, content_type=project_image_file.content_type)
+        try:
+            upload_path = get_safe_upload_path("projects", safe_name)
+            with open(upload_path, "wb") as f:
+                f.write(img_data)
+        except Exception as e:
+            print(f"Local backup project image save skipped: {e}")
         image_url = f"/static/uploads/projects/{safe_name}"
     elif deployment_link and not image_url:
         # Automatic Image Preview via Deployment Link if no image or file is provided
@@ -107,10 +114,12 @@ def delete_project(project_id):
     if project:
         title = project["title"]
         # Delete associated physical image if any
+        from app.storage import delete_file
         try:
             image_url = project.get("image_url", "")
             if image_url.startswith("/static/uploads/projects/"):
                 filename = image_url.split("/")[-1]
+                delete_file(filename)
                 file_path = get_safe_upload_path("projects", filename)
                 if os.path.exists(file_path): os.remove(file_path)
         except Exception as e:
@@ -185,8 +194,15 @@ def edit_project(project_id):
             flash("❌ Project Image must be PNG, JPG, JPEG, WEBP, or GIF.", "error")
             return redirect(url_for("admin.dashboard"))
             
-        upload_path = get_safe_upload_path("projects", safe_name)
-        project_image_file.save(upload_path)
+        from app.storage import save_file
+        img_data = project_image_file.read()
+        save_file(img_data, safe_name, content_type=project_image_file.content_type)
+        try:
+            upload_path = get_safe_upload_path("projects", safe_name)
+            with open(upload_path, "wb") as f:
+                f.write(img_data)
+        except Exception as e:
+            print(f"Local backup project image edit save skipped: {e}")
         image_url = f"/static/uploads/projects/{safe_name}"
     elif not image_url:
         # Keep the existing image if no upload and no URL is provided

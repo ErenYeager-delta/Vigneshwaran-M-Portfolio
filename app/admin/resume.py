@@ -33,9 +33,14 @@ def upload_resume():
         return redirect(url_for("admin.dashboard"))
 
     # Save file
-    upload_path = get_safe_upload_path("resumes", safe_name)
-    with open(upload_path, "wb") as f:
-        f.write(file_data)
+    from app.storage import save_file
+    save_file(file_data, safe_name, content_type=file.content_type)
+    try:
+        upload_path = get_safe_upload_path("resumes", safe_name)
+        with open(upload_path, "wb") as f:
+            f.write(file_data)
+    except Exception as e:
+        print(f"Local backup save skipped: {e}")
 
     # Add to MongoDB (auto-deactivates others of same type)
     Resume.add(safe_name, file.filename, file_hash, resume_type)
@@ -81,13 +86,15 @@ def delete_resume(resume_id):
     
     name = resume["original_name"]
     
-    # Delete physical file
+    # Delete physical file & GridFS file
+    from app.storage import delete_file
+    delete_file(resume["filename"])
     try:
         file_path = get_safe_upload_path("resumes", resume["filename"])
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
-        print(f"Error deleting file: {e}")
+        print(f"Error deleting physical file: {e}")
 
     Resume.delete_by_id(resume_id)
     cache.clear()

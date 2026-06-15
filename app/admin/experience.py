@@ -26,10 +26,14 @@ def upload_appointment_letter():
         return redirect(url_for("admin.dashboard"))
 
     file_data = file.read()
-    upload_path = get_safe_upload_path("appointment_letters", safe_name)
-    
-    with open(upload_path, "wb") as f:
-        f.write(file_data)
+    from app.storage import save_file
+    save_file(file_data, safe_name, content_type=file.content_type)
+    try:
+        upload_path = get_safe_upload_path("appointment_letters", safe_name)
+        with open(upload_path, "wb") as f:
+            f.write(file_data)
+    except Exception as e:
+        print(f"Local backup appointment letter save skipped: {e}")
 
     AppointmentLetter.add(safe_name, file.filename, company)
     cache.clear()
@@ -49,12 +53,14 @@ def delete_appointment_letter(letter_id):
         return redirect(url_for("admin.dashboard"))
 
     filename = letter["filename"]
+    from app.storage import delete_file
+    delete_file(filename)
     try:
         file_path = get_safe_upload_path("appointment_letters", filename)
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
-        print(f"Error deleting file: {e}")
+        print(f"Error deleting physical file: {e}")
 
     AppointmentLetter.delete_by_id(letter_id)
     cache.clear()
@@ -83,10 +89,14 @@ def upload_incentive():
         return redirect(url_for("admin.dashboard"))
 
     file_data = file.read()
-    upload_path = get_safe_upload_path("incentives", safe_name)
-    
-    with open(upload_path, "wb") as f:
-        f.write(file_data)
+    from app.storage import save_file
+    save_file(file_data, safe_name, content_type=file.content_type)
+    try:
+        upload_path = get_safe_upload_path("incentives", safe_name)
+        with open(upload_path, "wb") as f:
+            f.write(file_data)
+    except Exception as e:
+        print(f"Local backup incentive save skipped: {e}")
 
     Incentive.add(safe_name, file.filename, company, order)
     cache.clear()
@@ -106,12 +116,14 @@ def delete_incentive(inc_id):
         return redirect(url_for("admin.dashboard"))
 
     filename = incentive["filename"]
+    from app.storage import delete_file
+    delete_file(filename)
     try:
         file_path = get_safe_upload_path("incentives", filename)
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
-        print(f"Error deleting file: {e}")
+        print(f"Error deleting physical file: {e}")
 
     Incentive.delete_by_id(inc_id)
     cache.clear()
@@ -139,10 +151,14 @@ def upload_offer_letter():
         return redirect(url_for("admin.dashboard"))
 
     file_data = file.read()
-    upload_path = get_safe_upload_path("offer_letters", safe_name)
-    
-    with open(upload_path, "wb") as f:
-        f.write(file_data)
+    from app.storage import save_file
+    save_file(file_data, safe_name, content_type=file.content_type)
+    try:
+        upload_path = get_safe_upload_path("offer_letters", safe_name)
+        with open(upload_path, "wb") as f:
+            f.write(file_data)
+    except Exception as e:
+        print(f"Local backup offer letter save skipped: {e}")
 
     OfferLetter.add(safe_name, file.filename, company)
     cache.clear()
@@ -162,12 +178,14 @@ def delete_offer_letter(letter_id):
         return redirect(url_for("admin.dashboard"))
 
     filename = letter["filename"]
+    from app.storage import delete_file
+    delete_file(filename)
     try:
         file_path = get_safe_upload_path("offer_letters", filename)
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
-        print(f"Error deleting file: {e}")
+        print(f"Error deleting physical file: {e}")
 
     OfferLetter.delete_by_id(letter_id)
     cache.clear()
@@ -195,10 +213,14 @@ def upload_pay_slip():
         return redirect(url_for("admin.dashboard"))
 
     file_data = file.read()
-    upload_path = get_safe_upload_path("pay_slips", safe_name)
-    
-    with open(upload_path, "wb") as f:
-        f.write(file_data)
+    from app.storage import save_file
+    save_file(file_data, safe_name, content_type=file.content_type)
+    try:
+        upload_path = get_safe_upload_path("pay_slips", safe_name)
+        with open(upload_path, "wb") as f:
+            f.write(file_data)
+    except Exception as e:
+        print(f"Local backup pay slip save skipped: {e}")
 
     PaySlip.add(safe_name, file.filename, company)
     cache.clear()
@@ -218,12 +240,14 @@ def delete_pay_slip(slip_id):
         return redirect(url_for("admin.dashboard"))
 
     filename = slip["filename"]
+    from app.storage import delete_file
+    delete_file(filename)
     try:
         file_path = get_safe_upload_path("pay_slips", filename)
         if os.path.exists(file_path):
             os.remove(file_path)
     except Exception as e:
-        print(f"Error deleting file: {e}")
+        print(f"Error deleting physical file: {e}")
 
     PaySlip.delete_by_id(slip_id)
     cache.clear()
@@ -291,11 +315,13 @@ def delete_company_experience(company_id):
     slug = comp["slug"]
 
     # Delete associated files
+    from app.storage import delete_file
     col_app = AppointmentLetter.get_collection()
     if col_app is not None:
         letters = list(col_app.find({"company": slug}))
         for l in letters:
             try:
+                delete_file(l["filename"])
                 os.remove(get_safe_upload_path("appointment_letters", l["filename"]))
             except Exception: pass
         col_app.delete_many({"company": slug})
@@ -305,6 +331,7 @@ def delete_company_experience(company_id):
         letters = list(col_off.find({"company": slug}))
         for l in letters:
             try:
+                delete_file(l["filename"])
                 os.remove(get_safe_upload_path("offer_letters", l["filename"]))
             except Exception: pass
         col_off.delete_many({"company": slug})
@@ -314,6 +341,7 @@ def delete_company_experience(company_id):
         slips = list(col_pay.find({"company": slug}))
         for s in slips:
             try:
+                delete_file(s["filename"])
                 os.remove(get_safe_upload_path("pay_slips", s["filename"]))
             except Exception: pass
         col_pay.delete_many({"company": slug})
@@ -323,6 +351,7 @@ def delete_company_experience(company_id):
         incs = list(col_inc.find({"company": slug}))
         for i in incs:
             try:
+                delete_file(i["filename"])
                 os.remove(get_safe_upload_path("incentives", i["filename"]))
             except Exception: pass
         col_inc.delete_many({"company": slug})
