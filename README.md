@@ -55,4 +55,7 @@ Vigneshwaran-M-Portfolio/
 ## 🛠️ Quick Start
 
 To install dependencies, set up environment secrets, connect your database, and run this application on any system, please refer to the detailed guide:
-👉 **[setup_and_customization_guide.md](file:///c:/Users/1771v/Downloads/Vigneshwaran-M-Portfolio-main/Vigneshwaran-M-Portfolio-main/setup_and_customization_guide.md)**
+👉 **[setup_and_customization_guide.md](setup_and_customization_guide.md)**
+
+For issues related to production hosting, Gunicorn multi-workers, CSRF errors, reverse proxies, and ephemeral storage on Render.com, see:
+👉 **[production_troubleshooting_guide.md](production_troubleshooting_guide.md)**

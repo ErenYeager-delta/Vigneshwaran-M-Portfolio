@@ -173,3 +173,10 @@ The experience metrics route renders an interactive charts layout.
   📄 [experience.html:L330-L440](file:///c:/Users/1771v/Downloads/Vigneshwaran-M-Portfolio-main/Vigneshwaran-M-Portfolio-main/app/templates/experience.html#L330-L440)
 * **Document Vault Downloads**: Restricts access to company payload attachments (incentives, offer letter, payslips):
   📄 [downloads.py:L26-L135](file:///c:/Users/1771v/Downloads/Vigneshwaran-M-Portfolio-main/Vigneshwaran-M-Portfolio-main/app/routes/downloads.py#L26-L135)
+
+---
+
+## 🛠️ 4. Production Hosting & Troubleshooting
+
+For a detailed walkthrough of hosting issues (such as CSRF validation failures under Gunicorn workers, reverse proxy sessions checking, and database GridFS migrations), please consult the dedicated guide:
+👉 **[production_troubleshooting_guide.md](production_troubleshooting_guide.md)**
