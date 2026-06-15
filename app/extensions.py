@@ -1,3 +1,13 @@
+"""
+🔌 Extensions Module — Flask Extensions and Database Client
+Purpose:
+  Initializes core Flask extensions (Flask-Caching, CSRFProtect, and Flask-Limiter) 
+  and maintains a shared, thread-safe connection to the MongoDB Atlas database instance.
+Connections:
+  - app/__init__.py: Loads and registers extensions during create_app() application factory initialization.
+  - app/models.py: Provides get_mongo_db() helper to all data models for database queries.
+  - app/storage.py: Provides get_mongo_db() for GridFS binary file uploads/retrievals.
+"""
 import os
 import certifi
 from pymongo import MongoClient

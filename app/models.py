@@ -1,3 +1,14 @@
+"""
+🗄️ Database Models Module — Data Access Layer (ORM/abstractions)
+Purpose:
+  Abstrates all database operations, providing simple query methods for dynamic collections:
+  Resumes, Certificates, Platforms, Projects, AdminLoginAttempts, VerifiedUsers, ProjectBriefs,
+  AppointmentLetters, Incentives, OfferLetters, PaySlips, and CompanyExperiences.
+Connections:
+  - app/extensions.py: Imports get_mongo_db() to target collections dynamically in portfolioDB or otpDB.
+  - app/routes/*.py: Fetches active resume files, visible certificates, and projects to show on the public homepage.
+  - app/admin/*.py: Updates or deletes models during dashboard management actions.
+"""
 import json
 import hashlib
 from datetime import datetime, timezone

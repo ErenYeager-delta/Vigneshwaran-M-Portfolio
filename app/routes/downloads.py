@@ -1,8 +1,13 @@
 """
-Download / Preview routes for resumes and certificates.
-Files served securely from GridFS or local directory fallback.
+📥 Downloads Blueprint — Secure Document Retrieval
+Purpose:
+  Provides routes to preview or download sensitive documents (resumes, certificates, offer letters, 
+  appointment letters, pay slips, and incentives) from GridFS database or local disk.
+Connections:
+  - app/models.py: Resolves object records to load original file details.
+  - app/storage.py: Uses get_file() helper to fetch binary file streams from GridFS.
+  - app/templates/{index.html, experience.html}: Provides targets for document downloads and preview modals.
 """
-
 import os
 from flask import Blueprint, send_from_directory, abort, redirect, current_app, request, Response
 from app.models import Resume, Certificate, AppointmentLetter, Incentive, OfferLetter, PaySlip

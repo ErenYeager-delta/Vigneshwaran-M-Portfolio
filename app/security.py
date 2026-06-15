@@ -1,6 +1,12 @@
 """
-🛡️ Security middleware & helpers.
-Centralizes all anti-hacking defenses in one module.
+🛡️ Security Middleware & Defensive Helpers
+Purpose:
+  Consolidates all security operations, including HTTP headers hardening (CSP/HSTS), session hijacking checks,
+  brute-force rate detection, file upload checks (MIME & UUID validation), and script-injections sanitization.
+Connections:
+  - app/__init__.py: Registers response security headers hook and runs directory safety controls.
+  - app/admin/*.py: Imposes session-binding decorators (@admin_required) and checks upload configurations.
+  - app/routes/api.py: Sanitizes contact parameters before database insert.
 """
 
 import os

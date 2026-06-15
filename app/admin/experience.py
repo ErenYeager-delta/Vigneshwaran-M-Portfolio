@@ -1,3 +1,15 @@
+"""
+💼 Experience & Employment Document Controller
+Purpose:
+  Manages corporate experience entries and associated document uploads (PDF/Image formats).
+  Covers appointment letters, incentives, offer letters, and pay slips, utilizing GridFS file saves
+  with optional fallback to the local host's disk. Handles complex spreadsheet JSON metrics updates.
+Connections:
+  - app/models.py: Interfaces with `AppointmentLetter`, `Incentive`, `OfferLetter`, `PaySlip`, and `CompanyExperience`.
+  - app/security.py: Invokes `@admin_required`, `validate_upload`, and `get_safe_upload_path` helpers.
+  - app/storage.py: Leverages `save_file` and `delete_file` methods for files mapping in GridFS.
+  - app/templates/admin/edit_experience.html: Spreadsheet editor UI for granular monthly and product sales metrics.
+"""
 import os
 import json
 from flask import request, redirect, url_for, flash, current_app, render_template

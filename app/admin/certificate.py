@@ -1,3 +1,14 @@
+"""
+🎓 Certificate Administration Controller
+Purpose:
+  Provides CRUD operations for certification entities, supporting file uploads (PDF & images),
+  automated GridFS migration, local filesystem backups, tag parsing, and visibility toggling.
+Connections:
+  - app/models.py: Interfaces with `Certificate` class schema logic for database operations.
+  - app/security.py: Invokes `@admin_required`, `validate_upload`, `sanitize_input`, `sanitize_url`, and `get_safe_upload_path`.
+  - app/storage.py: Utilizes `save_file` and `delete_file` helper methods for GridFS management.
+  - app/templates/admin/dashboard.html: Renders lists of certifications and provides operational forms.
+"""
 import os
 from flask import request, redirect, url_for, flash, current_app
 from app.extensions import limiter, cache

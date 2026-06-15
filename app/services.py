@@ -1,3 +1,13 @@
+"""
+⚙️ Service Layer Module — OTP Operations & EmailJS REST Client
+Purpose:
+  Manages business logic for generating/verifying temporary OTP codes (stored in memory), 
+  and compiling HTTP requests to the EmailJS REST API for sending admin alerts and contact mail.
+Connections:
+  - app/routes/api.py: Invokes services to send/verify user access codes and notify admin of new briefs.
+  - app/admin/auth.py: Dispatches EmailService alerts warning the admin of successful or failed login attempts.
+  - app/config.py: Extracts API keys and Template/Service IDs from app.config.
+"""
 import os
 import secrets
 import time

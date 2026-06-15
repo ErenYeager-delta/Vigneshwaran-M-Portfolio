@@ -1,5 +1,10 @@
 """
-Development entry point — run with: python run.py
+🚀 Development Server Entry Point
+Purpose:
+  Launches the portfolio web server locally. Reads optional PORT from environment variables.
+Connections:
+  - app/__init__.py: Imports create_app() application factory to spin up the Flask context.
+  - app/config.py: Inspects development configuration options.
 """
 
 from app import create_app

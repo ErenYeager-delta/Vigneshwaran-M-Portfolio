@@ -1,15 +1,45 @@
+# Core web framework for the portfolio application (app/__init__.py, run.py)
 Flask>=3.1.2
+
+# Cross-Origin Resource Sharing for public API endpoints (app/__init__.py)
 flask-cors>=6.0.2
+
+# MongoDB driver for database and GridFS file operations (app/extensions.py, app/storage.py)
 pymongo>=4.7.3
+
+# Server-side caching for optimization of public routes (app/__init__.py, app/routes/public.py)
 Flask-Caching>=2.3.1
+
+# CSRF protection and form validation for admin forms (app/__init__.py, app/admin/*)
 Flask-WTF>=1.2.2
+
+# Rate limiting to block OTP and direct brief submission spam (app/__init__.py, app/routes/api.py)
 Flask-Limiter>=3.8.0
+
+# Cryptographic algorithms for secure admin password hashing (app/admin/auth.py)
 cryptography>=44.0.3
+
+# Loads environment configurations from local .env files (app/config.py, run.py)
 python-dotenv>=1.0.1
+
+# Template rendering engine for dynamic HTML layout serving (app/templates/*)
 Jinja2>=3.1.6
+
+# Production WSGI HTTP server for Render cloud deployment (Procfile, render.yaml)
 gunicorn>=22.0.0
+
+# DNS resolver toolkit needed to connect to MongoDB Atlas SRV URIs (app/extensions.py)
 dnspython>=2.6.1
+
+# Valid SSL certificates authority bundle for secure Atlas connection (app/extensions.py)
 certifi>=2024.7.4
+
+# Outbound HTTP request handler used to contact the EmailJS API (app/services.py)
 requests>=2.32.3
+
+# Image verification library to validate uploaded image attachments (app/security.py)
 Pillow>=10.4.0
+
+# Input sanitization engine to block XSS and malicious HTML injections (app/security.py)
 bleach>=6.2.0
+

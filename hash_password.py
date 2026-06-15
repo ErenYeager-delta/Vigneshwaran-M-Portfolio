@@ -1,3 +1,11 @@
+"""
+🔑 Admin Password Hashing CLI Tool
+Purpose:
+  Command-line utility to generate a secure scrypt hash of a password.
+Connections:
+  - .env: The generated hash is copied and pasted as ADMIN_PASSWORD configuration.
+  - app/admin/auth.py: Compares submitted administrator password inputs against this secure hash string.
+"""
 import sys
 from werkzeug.security import generate_password_hash
 

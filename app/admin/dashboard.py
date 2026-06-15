@@ -1,3 +1,14 @@
+"""
+📊 Administrative Dashboard Controller
+Purpose:
+  Renders the administrative dashboard control panel, querying all database entries
+  (resumes, certifications, projects, social links, employment documentation, and experience logs)
+  to feed lists to the admin templates.
+Connections:
+  - app/models.py: Queries all structural collection models (Resume, Certificate, Platform, etc.).
+  - app/security.py: Guards access via `@admin_required` and generates a secure session CSRF token.
+  - app/templates/admin/dashboard.html: Renders the unified admin administration interface.
+"""
 from flask import render_template
 from flask_wtf.csrf import generate_csrf
 from app.models import Resume, Certificate, Platform, Project, AppointmentLetter, Incentive, OfferLetter, PaySlip, CompanyExperience

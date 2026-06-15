@@ -1,3 +1,15 @@
+"""
+🔐 Admin Authentication Controller
+Purpose:
+  Manages administrative login and logout flows, including secure password hashing verification,
+  brute-force defense audits (IP tracking + global thresholds), session creation (IP + User-Agent binding),
+  clearing page caches on authentication state change, and launching security alert emails.
+Connections:
+  - app/__init__.py: Mapped dynamically using configuration-defined secret endpoint paths.
+  - app/security.py: Relies on `check_brute_force`, `check_global_brute_force`, and `record_login_attempt` middleware.
+  - app/services.py: Employs `EmailService` to dispatch real-time warning alerts to the administrator's mailbox.
+  - app/templates/admin/login.html: Renders the credentials form.
+"""
 from flask import request, session, redirect, url_for, render_template, current_app
 from werkzeug.security import check_password_hash
 from flask_wtf.csrf import generate_csrf

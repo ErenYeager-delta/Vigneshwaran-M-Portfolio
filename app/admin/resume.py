@@ -1,3 +1,15 @@
+"""
+📄 Resume Administration Controller
+Purpose:
+  Manages upload, activation, toggling, and deletion of resumes (PDFs).
+  Automatically handles deactivation of old files of the same category (e.g. IT vs. Sales & Marketing) upon new uploads,
+  preventing dual-active resumes. Leverages MD5/SHA-256 content hashes to detect and block duplicates.
+Connections:
+  - app/models.py: Interfaces with `Resume` data methods.
+  - app/security.py: Invokes `@admin_required`, `validate_upload`, and `get_safe_upload_path`.
+  - app/storage.py: Utilizes `save_file` and `delete_file` methods for files mapping in GridFS.
+  - app/templates/admin/dashboard.html: Hosts the upload and listing section.
+"""
 import os
 from flask import request, redirect, url_for, flash, current_app
 from app.extensions import limiter, cache

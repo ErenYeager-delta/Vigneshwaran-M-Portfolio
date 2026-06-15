@@ -1,3 +1,15 @@
+"""
+🚀 Project Administration Controller
+Purpose:
+  Manages portfolio projects CRUD operations, supporting both general and Data Science specific entries.
+  Handles preview image file uploads, automatic thumbnail extraction (via thum.io), Data Science structured metrics,
+  and visibility toggles. Clears caching upon data update.
+Connections:
+  - app/models.py: Interfaces with `Project` class schema logic for database operations.
+  - app/security.py: Invokes `@admin_required`, `validate_upload`, `sanitize_input`, `sanitize_url`, and `get_safe_upload_path`.
+  - app/storage.py: Utilizes `save_file` and `delete_file` methods for files mapping in GridFS.
+  - app/templates/admin/dashboard.html: Renders projects list and provides creation/editing forms.
+"""
 import os
 from flask import request, redirect, url_for, flash, current_app
 from app.extensions import cache

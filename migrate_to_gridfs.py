@@ -1,3 +1,12 @@
+"""
+📦 GridFS Migration Script
+Purpose:
+  Scans all locally uploaded files under the static/uploads folder on disk and migrates them
+  into MongoDB GridFS to prevent file loss on ephemeral hosting servers (like Render).
+Connections:
+  - app/storage.py: Operates on the same portfolioDB.fs GridFS collection.
+  - .env: Reads the MONGO_URI variable to access the remote database cluster.
+"""
 import os
 import mimetypes
 import gridfs

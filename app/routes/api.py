@@ -1,8 +1,13 @@
 """
-API routes — OTP send/verify.
-Refactored to cleanly delegate database and notification tasks to model/service layers.
+⚡ API Routes Blueprint — OTP Handlers and Visitor Interactions
+Purpose:
+  Provides asynchronous JSON API endpoints for identity verification (sending/verifying OTPs) 
+  and client project brief uploads.
+Connections:
+  - app/static/js/script.js: Receives fetch() requests from the public frontend interface.
+  - app/services.py: Invokes OTPService for code generation/verification, and EmailService for EmailJS dispatches.
+  - app/models.py: Stores VerifiedUser credentials and ProjectBrief data inside MongoDB.
 """
-
 import re
 from flask import Blueprint, request, jsonify
 from app.extensions import limiter

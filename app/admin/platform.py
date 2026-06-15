@@ -1,3 +1,13 @@
+"""
+🔗 Social Platforms & Links Controller
+Purpose:
+  Manages administration records of external social networking profiles, handling link addition,
+  visibility status toggles, deletion, and parsing of FontAwesome icon mapping tags.
+Connections:
+  - app/models.py: Interfaces with the `Platform` schema mapping logic.
+  - app/security.py: Invokes `@admin_required`, `sanitize_input`, and `sanitize_url` helpers.
+  - app/templates/admin/dashboard.html: Feeds and controls the social channels list pane.
+"""
 from flask import request, redirect, url_for, flash
 from app.extensions import cache
 from app.models import Platform

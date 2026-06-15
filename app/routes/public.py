@@ -1,8 +1,12 @@
 """
-Public routes — portfolio home page and health check.
-All data rendered server-side (backend-heavy).
+🌐 Public Routes Blueprint — Homepage and Professional Experience
+Purpose:
+  Serves all public-facing pages of the portfolio, including the homepage, professional experience landing page, sitemaps, and robots.txt.
+Connections:
+  - app/models.py: Fetches active certifications, platforms, visible projects, and resume files to inject into context.
+  - app/templates/{index.html, experience.html}: Renders server-side content with server-driven values.
+  - app/extensions.py: Utilizes Flask-Caching (@cache.cached) to speed up public page load times and save database queries.
 """
-
 import json
 import os
 from flask import Blueprint, render_template, jsonify, make_response, request

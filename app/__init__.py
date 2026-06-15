@@ -1,5 +1,15 @@
 """
-Application Factory — the single entry point for creating the Flask app.
+⚙️ Flask Application Factory & Initialization
+Purpose:
+  Initializes and configures the Flask application, loads environment variables,
+  registers global blueprints, sets up WSGI ProxyFix middleware for production (Render/HTTPS),
+  configures cross-origin requests (CORS), error handlers, and server-side Jinja templates.
+Connections:
+  - run.py: Imports and invokes create_app() to run the web server.
+  - app/config.py: Supplies BaseConfig/ProdConfig/DevConfig mapping environments.
+  - app/extensions.py: Instantiates rate limiting, cache, and CSRF protection.
+  - app/security.py: Hook for setting secure HTTP response headers and path validation.
+  - app/routes/* & app/admin/*: Registers public, API, downloads, and admin blueprints.
 """
 
 import os

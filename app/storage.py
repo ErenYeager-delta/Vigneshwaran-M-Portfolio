@@ -1,3 +1,13 @@
+"""
+📦 Storage Module — MongoDB GridFS Interaction
+Purpose:
+  Handles raw binary file streams (resumes, certificates, appointment letters, pay slips, incentives) 
+  uploaded from the admin dashboard and stores them in MongoDB GridFS.
+Connections:
+  - app/extensions.py: Utilizes get_mongo_db() to retrieve the active PyMongo database instance.
+  - app/admin/*.py: Mapped inside admin upload handlers (resume.py, certificate.py, experience.py, etc.) to persist uploads.
+  - app/routes/downloads.py: Queried in preview and download endpoints to retrieve stored binary streams from Atlas.
+"""
 import gridfs
 import mimetypes
 from app.extensions import get_mongo_db

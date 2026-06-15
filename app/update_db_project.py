@@ -1,3 +1,12 @@
+"""
+🛠️ Database Project Update Utility Script
+Purpose:
+  A standalone, local developer utility script that connects to MongoDB Atlas
+  and updates metadata (source code link, colab links, description, problem statement, metrics)
+  specifically for the 'Predictive Analytics Dashboard' project card.
+Connections:
+  - Run manually by the developer to sync local updates to the MongoDB database collection directly.
+"""
 import os
 from pymongo import MongoClient
 from dotenv import load_dotenv

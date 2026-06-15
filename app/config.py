@@ -1,3 +1,13 @@
+"""
+⚙️ Configuration Management Module
+Purpose:
+  Declares the application's configuration classes, loading key secrets and environment settings
+  (such as admin password, paths, rate limit rules, EmailJS tokens, and MongoDB Atlas URIs)
+  from the environment via python-dotenv. Establishes session cookie attributes (Secure, HttpOnly, SameSite) for production.
+Connections:
+  - app/__init__.py: Imports config_map to initialize the Flask application factory.
+  - run.py: Loads configurations through environment initialization.
+"""
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
